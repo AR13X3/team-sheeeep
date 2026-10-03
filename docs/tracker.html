@@ -399,6 +399,10 @@
     {
       "what": "Daily weather from Open-Meteo forecast + NASA POWER normal",
       "why": "Both free and keyless; the 30-year POWER data is already loaded."
+    },
+    {
+      "what": "Code lives in a private GitHub repo (AR13X3/team-sheeeep), branch main",
+      "why": "So the team can access it. private/ (personal guide) and all caches are in .gitignore."
     }
   ],
   "issues": [
@@ -532,6 +536,11 @@
   ],
   "checks": [
     {
+      "what": "Get the code",
+      "cmd": "git clone https://github.com/AR13X3/team-sheeeep.git",
+      "note": "Private repo: teammates need an invite (Settings → Collaborators). Then npm install and npm run dev."
+    },
+    {
       "what": "Run the app",
       "cmd": "npm run dev",
       "note": "http://localhost:5173 · Claude: preview_start with name “web”"
@@ -585,7 +594,8 @@
         "Pictures: all 10 m Sentinel-2 where possible (same pass, or nearest pass clear over the farm)",
         "Analysis picked by test: pure-pixel paddock readings adopted (+5–17 pts); 10 m canola map tested and rejected",
         "Wrote the 25-page Word project breakdown (docs/TEAM-SHEEEEP-Project-Breakdown.docx) with a generator in tools/docs",
-        "Planned the next stage (Supabase, OpenRouter Manami, weather actions, dashboard v2) in both documents"
+        "Planned the next stage (Supabase, OpenRouter Manami, weather actions, dashboard v2) in both documents",
+        "Pushed the project to a private GitHub repo: https://github.com/AR13X3/team-sheeeep (private/ excluded)"
       ],
       "leftOff": "Next stage planned. Start with Phase 1 (Supabase sign-in + cloud save) when the user is ready; the user needs to create a free Supabase project first."
     }
