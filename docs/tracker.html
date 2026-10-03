@@ -67,6 +67,15 @@
   "resumePrompt": "Read docs/tracker.html (the JSON in #tracker-data) and pick up from “Next up”. Start by going through “To discuss” with me.",
   "next": [
     {
+      "title": "Host on Cloudflare Pages (user connects the repo)",
+      "detail": "Repo is ready (.nvmrc = Node 22; build tested with vite preview). In Cloudflare: Workers & Pages → Create → Pages → Connect to Git → AR13X3/team-sheeeep; framework Vite (or None), build command npm run build, output dir dist. Every push to main redeploys; other branches get preview URLs. Optional: Cloudflare Access to limit the site to team emails.",
+      "size": "S",
+      "status": "todo",
+      "where": [
+        ".nvmrc"
+      ]
+    },
+    {
       "title": "Phase 1: Supabase sign-in and cloud save",
       "detail": "Email magic link + Google. One farms row per farm (state + space as JSON), row-level security, debounced sync; local copy stays for offline; demo works signed out.",
       "size": "M",
