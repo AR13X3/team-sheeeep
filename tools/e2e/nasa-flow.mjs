@@ -1,0 +1,45 @@
+import puppeteer from 'puppeteer-core';
+import { fileURLToPath as __f } from 'node:url';
+import { mkdirSync as __mk } from 'node:fs';
+process.chdir(__f(new URL('.', import.meta.url)));
+__mk('shots', { recursive: true });
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+const browser = await puppeteer.launch({ executablePath: process.env.CHROME_PATH || 'C:/Program Files/Google/Chrome/Application/chrome.exe', headless: 'new', userDataDir: './chrome-profile' });
+const page = await browser.newPage();
+await page.setViewport({ width: +(process.env.E2E_W || 1280), height: +(process.env.E2E_H || 832) }); // E2E_H=665 tests a laptop window (the app zooms to fit)
+const errors = [];
+page.on('pageerror', (e) => errors.push(e.message));
+page.on('console', (m) => ['error', 'warning'].includes(m.type()) && !/CORS|ERR_FAILED|net::/.test(m.text()) && errors.push(`[${m.type()}] ${m.text()}`));
+await page.goto('http://localhost:5173/', { waitUntil: 'networkidle2' });
+await page.evaluate(() => localStorage.clear());
+await page.reload({ waitUntil: 'networkidle2' });
+await page.evaluate(() => [...document.querySelectorAll('button')].find((b) => /try the demo/i.test(b.textContent)).click());
+await sleep(1200);
+const ids = await page.evaluate(() => JSON.parse(localStorage.getItem('sheeep:v1')).paddocks.map((p) => p.id));
+await page.goto(`http://localhost:5173/#/paddocks/${ids[0]}/history`, { waitUntil: 'domcontentloaded' });
+for (let i = 0; i < 150 && !(await page.evaluate(() => !!JSON.parse(localStorage.getItem('sheeep:v1')).space)); i++) await sleep(1000);
+await sleep(1500);
+await page.screenshot({ path: 'shots/n-history.png' });
+// apply satellite history on paddock 1
+await page.evaluate(() => [...document.querySelectorAll('button')].find((b) => /use as crop history/i.test(b.textContent))?.click());
+await sleep(400);
+const hist = await page.evaluate(() => JSON.parse(localStorage.getItem('sheeep:v1')).paddocks[0].history);
+console.log('history after "Use as crop history":', JSON.stringify(hist));
+// priorities: profit-focused so canola is attractive
+await page.goto(`http://localhost:5173/#/paddocks/${ids[3]}/priorities`, { waitUntil: 'domcontentloaded' });
+await sleep(1500);
+await page.screenshot({ path: 'shots/n-priorities.png' });
+await page.goto('http://localhost:5173/#/planner', { waitUntil: 'domcontentloaded' });
+await sleep(6000);
+await page.screenshot({ path: 'shots/n-planner.png' });
+console.log('planner notes:', await page.evaluate(() => [...document.querySelectorAll('.plan-list__note')].map((n) => n.textContent)));
+console.log('sowing:', await page.evaluate(() => [...document.querySelectorAll('.sow-list li')].map((li) => li.innerText.replace(/\s+/g, ' ')).join(' || ')));
+await page.evaluate(() => document.querySelector('.scroll-col').scrollTo(0, 560));
+await sleep(800);
+await page.screenshot({ path: 'shots/n-planner-sowing.png' });
+await page.goto('http://localhost:5173/#/dashboard', { waitUntil: 'domcontentloaded' });
+await sleep(4000);
+await page.screenshot({ path: 'shots/n-dashboard.png', fullPage: true });
+console.log('report:', await page.evaluate(() => document.querySelector('.report-card__headline')?.textContent));
+console.log(errors.length ? errors.join('\n') : 'no console errors');
+await browser.close();

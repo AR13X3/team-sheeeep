@@ -1,0 +1,735 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Project Tracker</title>
+<meta name="description" content="Where TEAM SHEEEEP is up to: next steps, open questions, decisions and session log.">
+<link rel="icon" href="../src/assets/art/manami.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap">
+<link rel="stylesheet" href="docs.css">
+<style>
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-top: 18px; }
+  .stat { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 14px 16px; }
+  .stat b { display: block; font-size: 32px; font-weight: 900; line-height: 1.1; }
+  .stat span { font-size: 14px; color: var(--ink-muted); }
+  .resume { border: 2px solid var(--teal); }
+  .resume ol { margin-bottom: 14px; }
+  .resume textarea {
+    width: 100%; min-height: 96px; resize: vertical; border-radius: 12px; border: 1px solid var(--line);
+    background: var(--bg); color: var(--ink); font: 15.5px/1.5 var(--font); padding: 10px 12px;
+  }
+  .btn {
+    border: 0; border-radius: 12px; padding: 10px 16px; font: 900 15px var(--font); cursor: pointer;
+    background: var(--olive); color: #fff;
+  }
+  .btn:hover { filter: brightness(0.92); }
+  .item { padding: 16px 18px; }
+  .item h3 { font-size: 17px; margin: 6px 0 4px; }
+  .item p { font-size: 15px; margin: 0 0 6px; }
+  .item .where { display: flex; flex-wrap: wrap; gap: 6px; font-size: 13px; }
+  .list { display: grid; gap: 12px; }
+  .q { padding: 16px 18px; border-left: 5px solid var(--gold); }
+  .q h3 { font-size: 17px; margin-bottom: 4px; }
+  .q p { font-size: 15px; margin: 0; color: var(--ink-muted); }
+  .ms { display: grid; gap: 10px; list-style: none; padding: 0; }
+  .ms li { display: grid; grid-template-columns: 34px 1fr; gap: 12px; margin: 0; }
+  .ms .n { width: 34px; height: 34px; border-radius: 50%; background: var(--olive); color: #fff; font-weight: 900; display: grid; place-items: center; }
+  .ms h3 { font-size: 17px; margin: 5px 0 2px; }
+  .ms p { font-size: 15px; margin: 0; color: var(--ink-muted); }
+  .files { display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); }
+  .files .card { padding: 14px 16px; }
+  .files h3 { font-size: 16px; }
+  .files code { display: inline-block; margin: 2px 4px 2px 0; font-size: 12.5px; }
+  .session { padding: 18px 20px; }
+  .session ul { font-size: 15px; margin-bottom: 8px; }
+  .for-claude { font-size: 14px; }
+</style>
+</head>
+<body>
+<!--
+  ╔══════════════════════════════════════════════════════════════════════════╗
+  ║  FOR CLAUDE: this page is the hand-off between sessions.                  ║
+  ║  The source of truth is the JSON in <script id="tracker-data"> below.     ║
+  ║  Read it at the start of a session. At the end of a session (or when the  ║
+  ║  user asks), update the JSON only: bump "updated", add a "sessions" entry,║
+  ║  move finished "next" items into "milestones", record new "decisions",    ║
+  ║  add or close "discuss" questions. Leave the markup and script alone.     ║
+  ║  Keep it valid JSON (no trailing commas, no comments).                    ║
+  ╚══════════════════════════════════════════════════════════════════════════╝
+-->
+<script type="application/json" id="tracker-data">
+{
+  "updated": "2026-10-04",
+  "phase": "Session 2 · next stage planned: Supabase accounts, AI Manami, daily weather, dashboard v2",
+  "summary": "The Figma design is a working web app with four NASA features (Paddock Memory from Space, neighbour canola → blackleg warning, safest sowing window, “Did my rotation work?”). In session 2 every screen now fits the window with no page scrolling, from small laptops to big monitors, and the Planner’s hard-to-use season dragger was replaced by a clickable season strip. Still to do: talk through the open questions, then the small fixes below.",
+  "resumePrompt": "Read docs/tracker.html (the JSON in #tracker-data) and pick up from “Next up”. Start by going through “To discuss” with me.",
+  "next": [
+    {
+      "title": "Phase 1: Supabase sign-in and cloud save",
+      "detail": "Email magic link + Google. One farms row per farm (state + space as JSON), row-level security, debounced sync; local copy stays for offline; demo works signed out.",
+      "size": "M",
+      "status": "todo",
+      "where": [
+        "supabase/",
+        "src/state/useCloudSync.js (new)",
+        "src/screens/Login.jsx"
+      ]
+    },
+    {
+      "title": "Phase 2: Farm diary",
+      "detail": "Diary table per paddock (sown, sprayed, fertilised, harvested + yield, note). Real yields feed the rotation report.",
+      "size": "M",
+      "status": "todo",
+      "where": [
+        "supabase/ (diary table)",
+        "src/screens/PaddockHistory.jsx"
+      ]
+    },
+    {
+      "title": "Phase 3: Manami with AI (OpenRouter)",
+      "detail": "Supabase Edge Function manami-chat holds the OpenRouter key, adds farm context, limits questions per user per day, falls back to the built-in answers. Tips and step guidance stay rule-based.",
+      "size": "M",
+      "status": "todo",
+      "where": [
+        "supabase/functions/manami-chat",
+        "src/components/ChatBot.jsx",
+        "src/logic/manami.js"
+      ]
+    },
+    {
+      "title": "Phase 4: Daily weather and actions",
+      "detail": "Open-Meteo 7-day forecast (free, no key), cached 3 h; rules in src/logic/actions.js for frost, spray windows, rain, heat, waterlogging, season rain vs the NASA POWER normal.",
+      "size": "M",
+      "status": "todo",
+      "where": [
+        "src/logic/actions.js (new)",
+        "src/services/forecast.js (new)"
+      ]
+    },
+    {
+      "title": "Phase 5: Dashboard v2",
+      "detail": "Today first: weather + actions, paddock cards (crop, stage, alerts), timeline, rain vs normal, recent diary.",
+      "size": "M",
+      "status": "todo",
+      "where": [
+        "src/screens/Dashboard.jsx"
+      ]
+    },
+    {
+      "title": "Talk through the open questions",
+      "detail": "Go through “To discuss” with the user before more building. The answers decide the pitch and the final polish.",
+      "size": "Talk",
+      "status": "todo",
+      "where": []
+    },
+    {
+      "title": "Demo-day safety net",
+      "detail": "Judging may happen on slow Wi-Fi, or when Planetary Computer, NASA POWER or SoilGrids are slow (POWER daily can take 20–60 s cold, SoilGrids allows ~5 requests/min). Pre-compute the demo farm (space result, weather, soil) into a bundled snapshot so the demo always loads instantly.",
+      "size": "M",
+      "status": "todo",
+      "where": [
+        "src/data/demoFarm.js",
+        "src/state/useSpace.js",
+        "src/services/weather.js"
+      ]
+    },
+    {
+      "title": "Final screenshots + short demo video",
+      "detail": "For the submission. The current screenshots are in docs/img/. Suggested 3-minute story: demo farm → history from space → blackleg alert → planner sowing window → dashboard report card.",
+      "size": "M",
+      "status": "todo",
+      "where": [
+        "docs/img/"
+      ]
+    },
+    {
+      "title": "“I have a tip!” bubble covers card text",
+      "detail": "At 1280×832 the chat nudge overlaps the bottom-right of the right-hand card (e.g. the source line under the time-lapse). Add bottom padding to scroll columns or move the nudge.",
+      "size": "S",
+      "status": "todo",
+      "where": [
+        "src/components/ChatBot.jsx",
+        "src/styles/chatbot.css"
+      ]
+    },
+    {
+      "title": "Stretch: tell cereals from pulses better",
+      "detail": "Add Sentinel-1 radar (sees crop structure through cloud) or train on labelled Australian paddocks (ABARES land use). This is the classifier’s weakest call.",
+      "size": "L",
+      "status": "idea",
+      "where": [
+        "src/logic/phenology.js",
+        "tools/validation/"
+      ]
+    },
+    {
+      "title": "Stretch: variety maturity in the sowing window",
+      "detail": "Let the farmer choose early, mid or late maturity instead of assuming mid.",
+      "size": "M",
+      "status": "idea",
+      "where": [
+        "src/logic/sowing.js",
+        "src/components/SowingCard.jsx"
+      ]
+    },
+    {
+      "title": "Idea: per-paddock crop limits",
+      "detail": "The crop list is farm-wide. Some paddocks may not suit a crop (e.g. no canola next to the creek, no chickpeas on the heavy flat). Could add “not on this paddock” ticks on each paddock’s Priorities step.",
+      "size": "M",
+      "status": "idea",
+      "where": [
+        "src/screens/PaddockPriorities.jsx",
+        "src/logic/cropSet.js"
+      ]
+    },
+    {
+      "title": "Idea: re-tune the canola detector for Sentinel-2",
+      "detail": "Sentinel-2 10 m found 46–59% of canola vs 73–92% for HLS 30 m with the HLS-tuned detector. Tuning on 2021 and testing on 2020 might close the gap. Only worth it if 10 m distances matter more than they do for the 500 m blackleg rule.",
+      "size": "M",
+      "status": "idea",
+      "where": [
+        "src/logic/phenology.js",
+        "tools/validation/validate-canola-10m.mjs"
+      ]
+    }
+  ],
+  "discuss": [
+    {
+      "q": "Should the planner keep some crop variety across the whole farm?",
+      "why": "Each paddock is still planned on its own, so the whole farm can end up in one crop in a season (in the demo every paddock gets Lupins in 2027). With the new crop list this matters more, because short lists make it more likely."
+    },
+    {
+      "q": "Which NASA Space Apps challenge statement are we answering?",
+      "why": "The pitch and demo should use the challenge’s own words and show how each feature answers it."
+    },
+    {
+      "q": "How do we pitch it?",
+      "why": "Proposal: lead with “Paddock Memory from Space” (no other planner does it), then show blackleg, sowing window and the report card as payoffs of the same NASA data."
+    },
+    {
+      "q": "What’s the app called?",
+      "why": "The design still says “Webapp Name” (src/config.js, index.html)."
+    },
+    {
+      "q": "Australia-first or global?",
+      "why": "The demo farm is in the NSW Riverina and sowing thermal times are Australian, but the classifier was validated in North Dakota (USDA data). Australian validation would strengthen the pitch."
+    },
+    {
+      "q": "Happy with how much we trust the satellite?",
+      "why": "Confident readings fill blank history automatically. “Best guess” seasons are filled only when the farmer presses “Use as crop history”."
+    },
+    {
+      "q": "Which free AI model on OpenRouter, and how many questions per farmer per day?",
+      "why": "Free models change and have rate limits; a cap (e.g. 30/day) keeps us inside them."
+    },
+    {
+      "q": "Sign-in options: email magic link only, or Google too?",
+      "why": "Both are free in Supabase; Google is one click for most users but needs a Google Cloud OAuth setup."
+    }
+  ],
+  "milestones": [
+    {
+      "title": "Figma file → working app",
+      "detail": "Decoded the .fig, exported its artwork as SVG, and built eight React screens with the Leaflet map, soil, slope and climate data, the rotation planner and Manami’s chat."
+    },
+    {
+      "title": "Animations",
+      "detail": "Sheep bob, blink and hop when clicked, grass sways, clouds drift. All off under reduced motion."
+    },
+    {
+      "title": "UI/UX refinement",
+      "detail": "Readability, step indicator and flow, Manami’s guidance, layout polish. Button colours kept exactly as designed."
+    },
+    {
+      "title": "Spacing, loading screens, map UI",
+      "detail": "Spacing scale, sheep-running loading screens, basemap switch, zoom rail, paddock tags, locate, better buttons and backgrounds."
+    },
+    {
+      "title": "Accuracy checks",
+      "detail": "Paddock area, soil sample points, texture classes, SoilGrids units, slope fit and slider behaviour checked against references."
+    },
+    {
+      "title": "Drawing next to neighbours",
+      "detail": "Snapping measured in screen pixels so zooming in keeps real gaps. Also: border tracing, Alt for free placement, automatic overlap trimming, corner editing."
+    },
+    {
+      "title": "NASA features (9-step plan)",
+      "detail": "Paddock Memory from Space, neighbour canola → blackleg, safest sowing window, “Did my rotation work?”, all validated. See plan.html."
+    },
+    {
+      "title": "Docs and hand-off",
+      "detail": "Visual README, plan and this tracker. Validation and browser checks moved into the repo (npm run validate:phenology, npm run test:e2e)."
+    },
+    {
+      "title": "Screens fit any window",
+      "detail": "The 1280×832 design zooms to fit the window: 0.8× on a 1280×665 laptop, up to 1.2× on big monitors, live on resize. No screen makes the page scroll at 1000–2560 px wide (checked automatically). Also fixed: hidden form inputs that stretched the History page by 2,600 px, a dashboard taller than the screen, and bright hairlines between map tiles at fractional zoom."
+    },
+    {
+      "title": "Season strip replaces the dragger",
+      "detail": "The Planner’s vertical drag ruler (cut off on the right, bottom seasons unreachable on laptops) became a strip of 10 season buttons along the top. Each shows the year and a dot per paddock in its crop colour. Click, arrows, or ←/→ keys."
+    },
+    {
+      "title": "Farmers choose their crops (and livestock)",
+      "detail": "New “Your Farm” step after About You: Crops only vs Crops + livestock, then a tick for each crop grouped by family. The plan, Priorities preview and Dashboard only use ticked crops. Edit any time from the Planner (“11 crops ✎”) or the menu. Plain warnings when the list has no break crop or no legume. Covered by the crop-set browser check."
+    },
+    {
+      "title": "Sharper satellite pictures (10 m)",
+      "detail": "Time-lapse pictures were 30 m HLS at ~120 px for a 3.6 km box, stretched ~6× by the browser. Pictures from Sentinel passes now use the original 10 m Sentinel-2 image of the same pass (9× the detail); Landsat passes stay 30 m and are labelled. The flowering picture is chosen by how yellow the canola actually looks. A picture that is both mid-season and flowering is shown once, and its chip reads “Flowering ’26”."
+    },
+    {
+      "title": "Analysis chosen by test, pictures always sharp",
+      "detail": "Paddocks are now read from pure pixels (wholly inside the paddock): on USDA fields, crop type right rose 62→79% / 73→78% (20–60 ha) and 68→85% / 88→93% (>60 ha). A 10 m Sentinel-2 canola map was tested and rejected (recall 46–59% vs 73–92% for NASA HLS). Every time-lapse picture is now 10 m Sentinel-2 where possible: the same pass, or the nearest pass that is cloud-free over the farm. Two new tests: npm run validate:pixels, npm run validate:canola10m."
+    },
+    {
+      "title": "Project breakdown (Word document)",
+      "detail": "25-page end-to-end breakdown in the team’s voice: problem, the farmer’s journey screen by screen, every capability in depth, data sources, accuracy and validation, stack and architecture diagram, design, quality checks, how we got here, a 3-minute demo script, limits and next steps, glossary. File: docs/TEAM-SHEEEEP-Project-Breakdown.docx; regenerate with python tools/docs/build_breakdown.py."
+    },
+    {
+      "title": "Next-stage plan written into both documents",
+      "detail": "Public breakdown section 13 and the private guide’s part 22 describe phases 1–5: Supabase accounts and sync, farm diary, AI Manami via OpenRouter, daily weather actions, dashboard v2."
+    }
+  ],
+  "decisions": [
+    {
+      "what": "Button fill and text colours stay exactly as in Figma",
+      "why": "The user’s call: “Keep as designed”."
+    },
+    {
+      "what": "Read NASA HLS through Microsoft Planetary Computer",
+      "why": "Free, works from the browser, and needs no login. NASA’s LP DAAC copy needs an Earthdata login."
+    },
+    {
+      "what": "Classifier thresholds kept at the simple defaults",
+      "why": "A tuned version fitted 2021 better but did worse on the held-out 2020 season (overfitting)."
+    },
+    {
+      "what": "Snap distance measured on screen: 14 px to corners, 10 px to edges",
+      "why": "Zooming in shrinks the ground distance, so real gaps between paddocks can still be drawn. Alt or the Snap switch places corners freely."
+    },
+    {
+      "what": "Blackleg buffer 500 m, coming season only",
+      "why": "Common grower guidance; spores come from last year’s stubble."
+    },
+    {
+      "what": "Frost counted at ≤ 1 °C",
+      "why": "A NASA POWER grid cell (~50 km) is milder than a cold paddock floor."
+    },
+    {
+      "what": "“Best guess” satellite seasons are never filled in automatically",
+      "why": "Cereal vs. pulse is the weakest call, so the farmer stays in control."
+    },
+    {
+      "what": "Canola made selectable (acid tolerance 2, water need 2, acid threshold pH 6.5 in water)",
+      "why": "Before this the planner never picked canola, so the blackleg feature could never show."
+    },
+    {
+      "what": "No backend: data stays in the browser",
+      "why": "localStorage for the farm and Cache Storage for satellite images and weather. Simple and private for a hackathon."
+    },
+    {
+      "what": "Docs are visual HTML pages in docs/",
+      "why": "The user is a visual person. README.md stays as the plain-text version for GitHub."
+    },
+    {
+      "what": "Fit-to-window with CSS zoom on the whole page",
+      "why": "Keeps the Figma proportions exactly and needed no rewrite of the px-based styles. Chrome scales viewport units and fixed elements consistently, and Leaflet’s clicks stay accurate (all drawing and snapping checks pass at 0.8×)."
+    },
+    {
+      "what": "Stacked layout only at 960 px wide or narrower",
+      "why": "Windows 961–1140 px wide (small laptops, tablets held sideways) fit the scaled desktop layout at ≥ 0.75×, which beats scrolling a stacked layout."
+    },
+    {
+      "what": "Zoom range 0.62× to 1.2×",
+      "why": "Below 0.62 the small text gets too small to read; above 1.2 map tiles start to look soft."
+    },
+    {
+      "what": "Season picker is a horizontal strip, not a drag ruler",
+      "why": "The user found the dragger “very bad UX”. One click reaches any season, and the crop dots show the whole rotation at a glance."
+    },
+    {
+      "what": "Crop list is farm-wide, asked once in onboarding",
+      "why": "Machinery, markets and livestock are whole-farm decisions. Per-paddock limits are kept as an idea in Next up."
+    },
+    {
+      "what": "Livestock only gates the grazed pasture",
+      "why": "Vetch is grown for hay and oats for grain or hay, so both can be sold without animals."
+    },
+    {
+      "what": "A thin crop list warns but never blocks",
+      "why": "Some farms really do grow only cereals. The farmer sees the cost (disease, nitrogen, falling soil health) and decides."
+    },
+    {
+      "what": "Everything ticked by default (incl. livestock)",
+      "why": "Existing plans and the demo farm keep working unchanged. New farmers see the choice right after About You."
+    },
+    {
+      "what": "Pictures at 10 m from Sentinel-2; analysis stays on NASA HLS 30 m",
+      "why": "HLS gives about twice the clear looks (Landsat + Sentinel) and is what the classifier is validated on. Sharper pictures help farmers trust what they see without changing any validated numbers."
+    },
+    {
+      "what": "Flowering picture chosen by visible yellowness, with a 1.2× bonus for 10 m",
+      "why": "The flower index is relative to the scene, so it under-rates full bloom late in the season. Measuring (R+G)/2 − B over the detected canola matched what the eye sees (19 Aug 77, 8 Sep 65, 1 Aug 43). 10 m wins if it looks at least ~83% as yellow."
+    },
+    {
+      "what": "Analysis method is chosen by validation; the UI always shows the clearest picture",
+      "why": "The user said “for analysis, use what’s best; just in the UI, show the clearer image”."
+    },
+    {
+      "what": "Read paddocks from pure pixels (≥ 6, else all)",
+      "why": "Validated on whole USDA fields in two seasons: +5 to +17 points crop-type accuracy on fields of 5 ha and more. Own-canola exclusion still uses every pixel so edge pixels can’t raise false blackleg alarms."
+    },
+    {
+      "what": "Neighbour-canola map stays on NASA HLS 30 m",
+      "why": "Tested Sentinel-2 10 m with the same detector: recall 45.7% vs 73.4% (2021) and 58.5% vs 91.9% (2020). Not the cloud mask (yellow canola is labelled clear vegetation)."
+    },
+    {
+      "what": "Landsat-date pictures swap to the nearest Sentinel-2 pass that is clear over the farm",
+      "why": "The user wants the clearest image in the UI. Clouds are checked from Sentinel-2’s scene classification over the farm box (< 2% not clear), within 12 days (5 for flowering, so the flowers still show)."
+    },
+    {
+      "what": "Backend = Supabase (auth, Postgres with row-level security, Edge Functions)",
+      "why": "The user’s choice: free tier, no server of our own. Start with one JSON document per farm that mirrors the current store; normalise only where we query (diary)."
+    },
+    {
+      "what": "Manami AI via OpenRouter, only through a Supabase function",
+      "why": "The OpenRouter key must never reach the browser. Free models; per-user daily cap; the built-in replies stay as tips and fallback."
+    },
+    {
+      "what": "Daily weather from Open-Meteo forecast + NASA POWER normal",
+      "why": "Both free and keyless; the 30-year POWER data is already loaded."
+    }
+  ],
+  "issues": [
+    {
+      "kind": "limit",
+      "title": "Cereal vs. pulse is the weakest call",
+      "detail": "Peas were read as cereal or canola about half the time. Sunflower can look like canola, and fallow like a weedy pulse."
+    },
+    {
+      "kind": "limit",
+      "title": "Validated in North Dakota, not Australia",
+      "detail": "USDA crop maps were the available ground truth."
+    },
+    {
+      "kind": "slow",
+      "title": "First space analysis takes ~30 s",
+      "detail": "About 100 images. Cached afterwards. The mirror sometimes returns brief 5xx errors, which are retried."
+    },
+    {
+      "kind": "slow",
+      "title": "Soil and weather services can be slow",
+      "detail": "SoilGrids allows ~5 requests/min. The planner waits at most 12 s, then shows the plan anyway."
+    },
+    {
+      "kind": "limit",
+      "title": "Login is front-end only, prices are examples",
+      "detail": "No accounts, no live market prices."
+    },
+    {
+      "kind": "bug",
+      "title": "Small visual nits",
+      "detail": "Duplicate “2026” chip in the time-lapse. The chat nudge can cover text at the bottom-right of the right-hand cards. Both are in Next up."
+    },
+    {
+      "kind": "limit",
+      "title": "Very short windows still scroll",
+      "detail": "Below about 515 px of window height the zoom stops at 0.62× (to keep text readable), so the page scrolls instead."
+    }
+  ],
+  "files": [
+    {
+      "area": "Screens",
+      "paths": [
+        "src/screens/*.jsx",
+        "src/App.jsx"
+      ]
+    },
+    {
+      "area": "Map & drawing",
+      "paths": [
+        "src/components/PaddockMap.jsx",
+        "src/logic/snap.js",
+        "src/logic/overlap.js",
+        "src/logic/geometry.js",
+        "src/styles/map.css"
+      ]
+    },
+    {
+      "area": "Seen from space",
+      "paths": [
+        "src/services/hls.js",
+        "src/services/space.js",
+        "src/logic/phenology.js",
+        "src/state/useSpace.js",
+        "src/components/SpaceHistoryCard.jsx",
+        "src/components/TimeLapse.jsx"
+      ]
+    },
+    {
+      "area": "Planner & blackleg",
+      "paths": [
+        "src/logic/rotation.js",
+        "src/logic/spacePlanning.js",
+        "src/data/crops.js",
+        "src/screens/Planner.jsx"
+      ]
+    },
+    {
+      "area": "Sowing window",
+      "paths": [
+        "src/logic/sowing.js",
+        "src/services/weather.js",
+        "src/state/useWeather.js",
+        "src/components/SowingCard.jsx"
+      ]
+    },
+    {
+      "area": "Rotation report",
+      "paths": [
+        "src/logic/performance.js",
+        "src/components/RotationReportCard.jsx",
+        "src/screens/Dashboard.jsx"
+      ]
+    },
+    {
+      "area": "Soil, slope, climate",
+      "paths": [
+        "src/services/soil.js",
+        "src/services/terrain.js",
+        "src/services/climate.js",
+        "src/state/useSiteData.js"
+      ]
+    },
+    {
+      "area": "Manami",
+      "paths": [
+        "src/logic/manami.js",
+        "src/components/ChatBot.jsx"
+      ]
+    },
+    {
+      "area": "Design",
+      "paths": [
+        "src/styles/tokens.css",
+        "tools/figma-export/",
+        "design/TEAM SHEEEEP.fig"
+      ]
+    },
+    {
+      "area": "Docs & checks",
+      "paths": [
+        "docs/*.html",
+        "README.md",
+        "CLAUDE.md",
+        "tools/validation/",
+        "tools/e2e/",
+        "docs/TEAM-SHEEEEP-Project-Breakdown.docx",
+        "tools/docs/build_breakdown.py"
+      ]
+    }
+  ],
+  "checks": [
+    {
+      "what": "Run the app",
+      "cmd": "npm run dev",
+      "note": "http://localhost:5173 · Claude: preview_start with name “web”"
+    },
+    {
+      "what": "Production build",
+      "cmd": "npm run build",
+      "note": ""
+    },
+    {
+      "what": "Browser checks (dev server must be running)",
+      "cmd": "npm run test:e2e",
+      "note": "Drawing, snapping, sliders, soil split, mobile, season strip, full NASA flow, and “no screen scrolls” (measure-fit). Prefix E2E_H=665 to run in a laptop-sized window, or add a word to run one check, e.g. npm run test:e2e -- fit"
+    },
+    {
+      "what": "Crop-from-space accuracy",
+      "cmd": "npm run validate:phenology",
+      "note": "Crop type from space vs USDA crop maps. Also: npm run validate:pixels (pure vs all pixels on whole fields) and npm run validate:canola10m (HLS 30 m vs Sentinel-2 10 m canola map). Images cached in tools/validation/.cache"
+    },
+    {
+      "what": "Regenerate the Word breakdown",
+      "cmd": "python tools/docs/build_breakdown.py",
+      "note": "Needs python-docx and Pillow. Uses the screenshots in docs/img, so refresh those first if screens changed, and update the text in the script when features change."
+    }
+  ],
+  "sessions": [
+    {
+      "date": "3–4 Oct 2026",
+      "title": "Session 1: from Figma to NASA features",
+      "did": [
+        "Built the app from the Figma file, then refined UI/UX, loading screens, map and buttons",
+        "Checked accuracy of paddock area, soil data and sliders",
+        "Fixed drawing next to neighbours (zoom-aware snapping, tracing, overlap trim)",
+        "Planned and built the four NASA features, validated against USDA crop maps",
+        "Fixed a bug where the map toolbar swallowed clicks on corners under it",
+        "Wrote the visual README, plan and this tracker; moved checks into the repo"
+      ],
+      "leftOff": "Paused at the user’s request to discuss before the final polish. Next: talk through “To discuss”, then the small fixes in “Next up”."
+    },
+    {
+      "date": "4 Oct 2026",
+      "title": "Session 2: screens fit laptops and desktops",
+      "did": [
+        "Added the HTML tracker hand-off; the user asked to keep it updated as we go",
+        "Measured the user’s window (≈1280×665) against the 1280×832 design: most pages scrolled",
+        "Added a live fit-to-window zoom (0.62×–1.2×) and moved the stacked layout down to ≤ 960 px",
+        "Fixed a 2,600 px phantom scroll on History, the over-tall dashboard and map-tile hairlines",
+        "Replaced the Planner’s drag ruler with a clickable season strip showing every paddock’s crop",
+        "All checks pass at 1280×665 and 1280×832. No page scroll at 1000×700 up to 2560×1300",
+        "Farmers can now choose their crops and say whether they keep livestock; the plan only uses ticked crops",
+        "Pictures: all 10 m Sentinel-2 where possible (same pass, or nearest pass clear over the farm)",
+        "Analysis picked by test: pure-pixel paddock readings adopted (+5–17 pts); 10 m canola map tested and rejected",
+        "Wrote the 25-page Word project breakdown (docs/TEAM-SHEEEEP-Project-Breakdown.docx) with a generator in tools/docs",
+        "Planned the next stage (Supabase, OpenRouter Manami, weather actions, dashboard v2) in both documents"
+      ],
+      "leftOff": "Next stage planned. Start with Phase 1 (Supabase sign-in + cloud save) when the user is ready; the user needs to create a free Supabase project first."
+    }
+  ]
+}
+</script>
+
+<header class="topnav">
+  <div class="topnav__in">
+    <a class="brand" href="readme.html"><img src="../src/assets/art/manami.svg" alt=""><span>TEAM SHEEEEP</span></a>
+    <nav>
+      <a href="readme.html">README</a>
+      <a href="plan.html">Plan</a>
+      <a href="tracker.html" aria-current="page">Tracker</a>
+    </nav>
+    <button class="theme-btn" type="button" aria-label="Switch theme"></button>
+  </div>
+</header>
+
+<main class="wrap" id="app">
+  <noscript><p class="callout">This page needs JavaScript to show the tracker. The raw data is in the source (<code>#tracker-data</code>).</p></noscript>
+</main>
+
+<script>
+(function () {
+  const data = JSON.parse(document.getElementById('tracker-data').textContent);
+  const app = document.getElementById('app');
+
+  function el(tag, attrs, ...kids) {
+    const n = document.createElement(tag);
+    for (const [k, v] of Object.entries(attrs || {})) {
+      if (k === 'class') n.className = v;
+      else if (k === 'style') n.style.cssText = v;
+      else n.setAttribute(k, v);
+    }
+    for (const k of kids.flat()) if (k != null && k !== false) n.append(k.nodeType ? k : String(k));
+    return n;
+  }
+  const chip = (text, tone) => el('span', { class: 'chip' + (tone ? ' chip--' + tone : '') }, text);
+  const section = (eyebrow, title, ...body) => el('section', { class: 'block' }, el('span', { class: 'eyebrow' }, eyebrow), title ? el('h2', {}, title) : null, ...body);
+  const fmtDate = (iso) => new Date(iso + 'T12:00:00').toLocaleDateString(undefined, { day: 'numeric', month: 'long', year: 'numeric' });
+  const store = {
+    get(k) { try { return localStorage.getItem(k) || ''; } catch { return ''; } },
+    set(k, v) { try { localStorage.setItem(k, v); } catch { /* storage blocked */ } },
+  };
+
+  const open = data.next.filter((n) => n.status !== 'done' && n.status !== 'idea');
+
+  // ---- hero
+  app.append(el('section', { class: 'hero', style: 'grid-template-columns:1fr' },
+    el('div', {},
+      el('span', { class: 'eyebrow' }, 'Project tracker'),
+      el('h1', {}, 'Where we ', el('span', {}, 'left off')),
+      el('p', { class: 'lead' }, data.summary),
+      el('div', { class: 'chips' }, chip('Updated ' + fmtDate(data.updated), 'olive'), chip(data.phase, 'gold')),
+      el('div', { class: 'stats' },
+        el('div', { class: 'stat' }, el('b', {}, open.length), el('span', {}, 'to do next')),
+        el('div', { class: 'stat' }, el('b', {}, data.discuss.length), el('span', {}, 'questions to discuss')),
+        el('div', { class: 'stat' }, el('b', {}, data.milestones.length), el('span', {}, 'milestones done')),
+        el('div', { class: 'stat' }, el('b', {}, data.sessions.length), el('span', {}, data.sessions.length === 1 ? 'session so far' : 'sessions so far'))))));
+
+  // ---- resume
+  const notes = el('textarea', { id: 'notes', placeholder: 'Anything Claude should know next time: what the team decided, what to do first… (saved in this browser only)' });
+  notes.value = store.get('sheeep-tracker:notes');
+  notes.addEventListener('input', () => store.set('sheeep-tracker:notes', notes.value));
+  const copyBtn = el('button', { class: 'btn', type: 'button' }, 'Copy prompt + my notes');
+  copyBtn.addEventListener('click', async () => {
+    const text = data.resumePrompt + (notes.value.trim() ? '\n\nMy notes since last time:\n' + notes.value.trim() : '');
+    copyBtn.textContent = (await window.sheeepCopy(text)) ? 'Copied! Paste it into Claude' : 'Select and copy manually';
+    setTimeout(() => (copyBtn.textContent = 'Copy prompt + my notes'), 2200);
+  });
+  app.append(el('section', { class: 'block', style: 'padding-top:28px' },
+    el('div', { class: 'card resume' },
+      el('h2', { style: 'font-size:24px' }, 'Continue in a new session'),
+      el('div', { class: 'grid grid-2' },
+        el('div', {},
+          el('ol', {},
+            el('li', {}, 'Open Claude Code in the ', el('code', {}, 'NASA'), ' folder.'),
+            el('li', {}, 'Say “continue”. Claude reads this tracker first (', el('code', {}, 'CLAUDE.md'), ' tells it to).'),
+            el('li', {}, 'Or copy the prompt with your notes and paste it in.')),
+          el('pre', { 'data-copy': data.resumePrompt }, data.resumePrompt)),
+        el('div', {},
+          el('label', { for: 'notes', style: 'font-weight:700;display:block;margin-bottom:6px' }, 'Your notes for Claude'),
+          notes,
+          el('div', { style: 'margin-top:10px' }, copyBtn))))));
+
+  // ---- next up + discuss
+  const statusTone = { todo: 'teal', doing: 'gold', blocked: 'rose', done: 'olive', idea: null };
+  const statusText = { todo: 'To do', doing: 'In progress', blocked: 'Blocked', done: 'Done', idea: 'Idea' };
+  const nextList = el('div', { class: 'list' }, data.next.map((n) =>
+    el('article', { class: 'card card--flat item' },
+      el('div', { class: 'chips', style: 'margin:0' }, chip(statusText[n.status] || n.status, statusTone[n.status]), chip(n.size === 'Talk' ? 'Discussion' : 'Size ' + n.size)),
+      el('h3', {}, n.title),
+      el('p', { class: 'muted' }, n.detail),
+      n.where.length ? el('div', { class: 'where' }, n.where.map((w) => el('code', {}, w))) : null)));
+  const discussList = el('div', { class: 'list' }, data.discuss.map((d) =>
+    el('article', { class: 'card card--flat q' }, el('h3', {}, d.q), el('p', {}, d.why))));
+  app.append(el('section', { class: 'block' },
+    el('div', { class: 'grid grid-2', style: 'align-items:start' },
+      el('div', {}, el('span', { class: 'eyebrow' }, 'Next up'), el('h2', {}, 'What to do next'), nextList),
+      el('div', {}, el('span', { class: 'eyebrow' }, 'To discuss'), el('h2', {}, 'Questions for the team'), discussList))));
+
+  // ---- milestones
+  app.append(section('Done so far', 'Milestones',
+    el('div', { class: 'card' }, el('ol', { class: 'ms' }, data.milestones.map((m, i) =>
+      el('li', {}, el('span', { class: 'n' }, '✓'), el('div', {}, el('h3', {}, (i + 1) + '. ' + m.title), el('p', {}, m.detail))))))));
+
+  // ---- decisions
+  app.append(section('Decisions', 'Already decided (and why)',
+    el('div', { class: 'table-wrap' }, el('table', {},
+      el('thead', {}, el('tr', {}, el('th', {}, 'Decision'), el('th', {}, 'Why'))),
+      el('tbody', {}, data.decisions.map((d) => el('tr', {}, el('td', { style: 'font-weight:700' }, d.what), el('td', {}, d.why))))))));
+
+  // ---- issues
+  const kindTone = { limit: 'gold', slow: 'teal', bug: 'rose' };
+  const kindText = { limit: 'Limit', slow: 'Slow', bug: 'Bug' };
+  app.append(section('Known issues & limits', 'Good to know',
+    el('div', { class: 'grid grid-3' }, data.issues.map((x) =>
+      el('div', { class: 'card card--flat item' }, chip(kindText[x.kind] || x.kind, kindTone[x.kind]), el('h3', {}, x.title), el('p', { class: 'muted' }, x.detail))))));
+
+  // ---- checks
+  app.append(section('Check it still works', 'Commands',
+    el('div', { class: 'grid grid-2' }, data.checks.map((c) =>
+      el('div', {}, el('h3', { style: 'font-size:16px' }, c.what), el('pre', { 'data-copy': c.cmd }, c.cmd), c.note ? el('p', { class: 'small muted' }, c.note) : null)))));
+
+  // ---- files
+  app.append(section('Map of the code', 'Key files',
+    el('div', { class: 'files' }, data.files.map((f) =>
+      el('div', { class: 'card card--flat' }, el('h3', {}, f.area), el('div', {}, f.paths.map((p) => el('code', {}, p))))))));
+
+  // ---- sessions
+  app.append(section('Session log', 'History',
+    el('div', { class: 'list' }, data.sessions.slice().reverse().map((s) =>
+      el('article', { class: 'card session' },
+        el('div', { class: 'chips', style: 'margin:0 0 6px' }, chip(s.date, 'olive')),
+        el('h3', {}, s.title),
+        el('ul', {}, s.did.map((d) => el('li', {}, d))),
+        el('p', { class: 'small' }, el('strong', {}, 'Left off: '), s.leftOff))))));
+
+  app.append(el('footer', { class: 'foot for-claude' },
+    'For Claude: the data behind this page is the JSON in ', el('code', {}, '<script id="tracker-data">'),
+    '. Update it at the end of each session and leave the markup alone. Notes typed above stay in this browser only; paste them into the chat so Claude sees them.'));
+})();
+</script>
+<script src="docs.js"></script>
+</body>
+</html>

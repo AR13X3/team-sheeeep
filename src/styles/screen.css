@@ -1,0 +1,256 @@
+/* Shared screen chrome + layouts. Desktop numbers come straight from the 1280x832 frames. */
+.screen {
+  position: relative;
+  min-height: var(--app-h);
+}
+
+.screen__back {
+  position: absolute;
+  left: 32px;
+  top: 27px;
+  z-index: 3;
+}
+
+.app-menu {
+  position: absolute;
+  right: 33px;
+  top: 37px;
+  z-index: 45;
+}
+.app-menu__panel {
+  position: absolute;
+  right: 0;
+  top: 82px;
+  min-width: 230px;
+  display: grid;
+  padding: 10px;
+  animation: rise-in 0.15s ease-out;
+}
+.app-menu__panel a,
+.app-menu__panel button {
+  display: block;
+  padding: 12px 14px;
+  border: 0;
+  border-radius: 10px;
+  background: none;
+  color: var(--c-ink);
+  font-size: 18px;
+  font-weight: 700;
+  text-align: left;
+  text-decoration: none;
+}
+.app-menu__panel a:hover,
+.app-menu__panel button:hover {
+  background: var(--c-sand);
+}
+.app-menu__panel a.active {
+  color: var(--btn-primary-hover);
+}
+
+/* Main content lets clicks through to the scene (so the sheep can be poked);
+   cards, buttons and maps opt back in. */
+.screen__main {
+  position: relative;
+  z-index: 1;
+  min-height: var(--app-h);
+  pointer-events: none;
+}
+.screen__main .btn,
+.screen__main .round-btn,
+.screen__main .map-frame,
+.screen__main a {
+  pointer-events: auto;
+}
+
+/* ---------- Two-column paddock layout (Each Paddock 1/2, Paddocks review, Planner) ---------- */
+.cols {
+  display: grid;
+  grid-template-columns: 516px 560px;
+  column-gap: var(--s-6);
+  justify-content: center;
+  align-items: start;
+  padding: var(--content-top) var(--gutter) 0;
+}
+.cols__left {
+  display: grid;
+  gap: var(--card-gap);
+}
+
+/* Scrolling column ("Frame 1", vertical scroll in the prototype) */
+.scroll-col {
+  position: relative; /* keeps visually-hidden inputs inside the column, not stretching the page */
+  height: calc(var(--app-h) - var(--content-top) - 32px);
+  min-height: 420px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 0 20px 150px; /* sides: room for card shadows; bottom: scroll clear of Manami */
+  display: grid;
+  grid-auto-rows: max-content; /* never squeeze cards to fit the column height */
+  align-content: start;
+  gap: var(--card-gap);
+  pointer-events: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgb(236 228 212 / 0.5) transparent;
+  mask-image: linear-gradient(to bottom, #000 calc(100% - 40px), transparent);
+}
+.scroll-col__end {
+  display: flex;
+  justify-content: center;
+  padding-top: 12px;
+}
+
+.name-card {
+  display: grid;
+  place-items: center;
+  min-height: 107px;
+  padding: 18px 24px;
+}
+.name-card h2 {
+  font-size: var(--fs-title);
+  font-weight: 700;
+  text-align: center;
+}
+
+.map-card {
+  padding: var(--s-4);
+}
+.map-card .map-frame {
+  aspect-ratio: 1;
+}
+
+/* Paddock steps: name card + map + action on the left, inputs scroll on the right. */
+.cols--paddock {
+  grid-template-areas:
+    'left right'
+    'actions right';
+  grid-template-rows: auto 1fr;
+}
+.cols--paddock .cols__left {
+  grid-area: left;
+}
+.cols--paddock .cols__right {
+  grid-area: right;
+}
+.cols__actions {
+  grid-area: actions;
+  padding-top: var(--card-gap);
+  pointer-events: auto;
+}
+.cols__actions .btn {
+  width: 100%;
+}
+.cols--paddock .map-card .map-frame {
+  aspect-ratio: 4 / 3;
+}
+.cols--paddock .name-card {
+  min-height: 0;
+  place-items: stretch;
+  padding: var(--s-4) var(--s-5);
+  gap: var(--s-1);
+}
+.name-card__meta {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  font-size: var(--fs-small) !important;
+  color: var(--c-ink-muted);
+}
+.saved {
+  font-weight: 700;
+  color: #5f6a2c;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+.saved.is-visible {
+  opacity: 1;
+}
+.segmented {
+  display: flex;
+  margin-top: var(--s-2);
+  padding: 4px;
+  border-radius: 12px;
+  background: var(--c-sand);
+}
+.segmented a {
+  flex: 1;
+  padding: 8px 12px;
+  border-radius: 9px;
+  color: var(--c-ink-muted);
+  font-size: 17px;
+  font-weight: 700;
+  text-align: center;
+  text-decoration: none;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+.segmented a:hover {
+  color: var(--c-ink);
+}
+.segmented a.active {
+  background: var(--c-cream);
+  color: var(--c-ink);
+  box-shadow: 0 1px 4px rgb(55 47 42 / 0.18);
+}
+
+@media (max-width: 960px) {
+  .cols {
+    grid-template-columns: minmax(0, 560px);
+    row-gap: var(--card-gap);
+    padding-bottom: 170px;
+  }
+  .cols--paddock {
+    grid-template-areas: 'left' 'right' 'actions';
+    grid-template-rows: none;
+    padding-bottom: 40px;
+  }
+  /* keep the step's action in reach while scrolling the form */
+  .cols__actions {
+    position: sticky;
+    bottom: 12px;
+    z-index: 5;
+  }
+  .cols__right {
+    padding-top: 0;
+  }
+  .scroll-col {
+    height: auto;
+    min-height: 0;
+    overflow: visible;
+    padding: 0;
+    mask-image: none;
+  }
+}
+
+@media (max-width: 720px) {
+  .cols__actions {
+    padding-right: 80px; /* room for Manami */
+  }
+  .screen__back {
+    left: 12px;
+    top: 12px;
+    transform: scale(0.8);
+    transform-origin: top left;
+  }
+  .app-menu {
+    right: 12px;
+    top: 12px;
+  }
+  .app-menu .round-btn {
+    transform: scale(0.8);
+    transform-origin: top right;
+  }
+  .app-menu__panel {
+    top: 64px;
+  }
+  .title-tab {
+    width: calc(var(--app-w) - 152px);
+    min-height: 66px;
+    padding: var(--s-2) var(--s-3);
+  }
+  .title-tab h1 {
+    font-size: 24px;
+  }
+
+  .map-card {
+    padding: 12px;
+  }
+}

@@ -1,0 +1,193 @@
+/* ---------- Running sheep ---------- */
+.runner-lane {
+  position: relative;
+  height: calc(var(--size) * 1.05);
+  overflow: hidden;
+  pointer-events: none;
+}
+.runner {
+  position: absolute;
+  bottom: 0;
+  left: calc(-1.2 * var(--size));
+  width: var(--size);
+  height: calc(var(--size) * 0.86);
+  animation: run-across var(--run) linear infinite;
+  /* spread the flock evenly along the lane */
+  animation-delay: calc(var(--n) * var(--run) / var(--count) * -1);
+}
+@keyframes run-across {
+  from { left: calc(-1.2 * var(--size)); }
+  to { left: 100%; }
+}
+.runner__hop {
+  width: 100%;
+  height: 100%;
+  transform-origin: 50% 100%;
+  animation: runner-hop 0.36s cubic-bezier(0.3, 0.6, 0.4, 1) infinite alternate;
+  animation-delay: calc(var(--n) * -0.13s);
+}
+@keyframes runner-hop {
+  from { transform: translateY(0) rotate(3deg) scale(1.04, 0.95); }
+  to { transform: translateY(-20%) rotate(-6deg) scale(0.98, 1.03); }
+}
+.runner__art {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+/* the art bobs on its own elsewhere; while running, the hop takes over */
+.runner .fx-sheep {
+  animation: none;
+}
+.runner .fx-leg {
+  transform-box: fill-box;
+  transform-origin: 50% 0%;
+  animation: leg-kick 0.18s ease-in-out infinite alternate;
+  animation-delay: calc(var(--leg, 0) * -0.18s);
+}
+@keyframes leg-kick {
+  from { transform: rotate(-30deg); }
+  to { transform: rotate(30deg); }
+}
+.runner .fx-ear {
+  transform-box: fill-box;
+  transform-origin: 100% 50%;
+  animation: ear-flap 0.36s ease-in-out infinite alternate;
+}
+@keyframes ear-flap {
+  from { transform: rotate(-14deg); }
+  to { transform: rotate(10deg); }
+}
+.runner__puff {
+  position: absolute;
+  left: 8%;
+  bottom: 2%;
+  width: 24%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: rgb(236 228 212 / 0.75);
+  opacity: 0;
+  animation: dust-puff 0.54s ease-out infinite;
+  animation-delay: calc(var(--p) * 0.18s + var(--n) * 0.07s);
+}
+@keyframes dust-puff {
+  0% { opacity: 0.8; transform: translate(0, 0) scale(0.3); }
+  100% { opacity: 0; transform: translate(-170%, -50%) scale(1.25); }
+}
+
+/* small inline version (status lines, map) */
+.runner-lane--mini {
+  flex: none;
+  width: 120px;
+}
+.runner-lane--mini .runner__puff {
+  display: none;
+}
+
+/* ---------- Full-screen loading ---------- */
+.loading {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: linear-gradient(to bottom, #6ba7a9, #86aea4 55%, #a7b394);
+  animation: fade-in 0.25s ease-out;
+}
+.loading__hill {
+  position: absolute;
+  left: calc(var(--app-w) * -0.3);
+  right: calc(var(--app-w) * -0.3);
+  bottom: calc(var(--app-h) * 0.14 + 40px);
+  height: calc(var(--app-h) * 0.52);
+  border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+  background: var(--c-gold);
+}
+.loading__hill--back {
+  bottom: calc(var(--app-h) * 0.14 + 120px);
+  height: calc(var(--app-h) * 0.64);
+  left: calc(var(--app-w) * -0.1);
+  right: calc(var(--app-w) * -0.5);
+  background: #a9b28a;
+  opacity: 0.6;
+}
+.loading__panel {
+  position: relative;
+  z-index: 1;
+  width: min(440px, calc(var(--app-w) - 32px));
+  margin-bottom: calc(var(--app-h) * 0.18);
+  padding: 28px 32px;
+  border-radius: var(--radius);
+  background: var(--c-cream);
+  box-shadow: var(--shadow-card);
+  text-align: center;
+  animation: rise-in 0.3s ease-out;
+}
+.loading__title {
+  font-size: 26px;
+  font-weight: 700;
+}
+.loading__detail {
+  margin-top: 8px;
+  font-size: var(--fs-small);
+  line-height: 1.4;
+  color: var(--c-ink-muted);
+}
+.loading__bar {
+  height: 10px;
+  margin-top: 18px;
+  border-radius: 5px;
+  background: var(--c-sand);
+  overflow: hidden;
+}
+.loading__bar > span {
+  display: block;
+  height: 100%;
+  border-radius: 5px;
+  background: var(--c-olive);
+  transition: width 0.4s ease;
+}
+.loading__action {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+}
+.loading__ground {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: calc(var(--app-h) * 0.14 + 40px);
+  background: var(--c-olive);
+}
+/* tufts of grass along the ground's top edge */
+.loading__ground::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -16px;
+  height: 18px;
+  background: radial-gradient(circle at 50% 100%, var(--c-olive) 0 15px, transparent 16px) 0 0 / 30px 18px repeat-x;
+}
+.loading__lane {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(100% - 46px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .runner,
+  .runner__hop,
+  .runner .fx-leg,
+  .runner .fx-ear,
+  .runner__puff {
+    animation-duration: 0s !important;
+    animation-iteration-count: 1 !important;
+  }
+  .runner {
+    left: calc(50% - var(--size) / 2 + (var(--n) - 1.5) * var(--size) * 1.1);
+  }
+}

@@ -1,0 +1,12 @@
+node_modules/
+dist/
+.vite/
+*.log
+.DS_Store
+tools/validation/.cache/
+tools/e2e/shots/
+tools/e2e/chrome-profile/
+tools/docs/.build/
+
+# personal notes and guides: never published
+private/

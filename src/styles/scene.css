@@ -1,0 +1,138 @@
+/* Background scene: artwork exported from Figma at 1280x832, scaled to the viewport width
+   (never below 900px wide so the sheep stay sheep-sized on phones). */
+.scene {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  background: var(--scene-bg);
+}
+
+.scene__art {
+  position: absolute;
+  left: 50%;
+  /* 4% wider than the viewport so parallax shifts never reveal an edge */
+  width: calc(max(var(--app-w), 900px) * 1.04);
+  aspect-ratio: 1280 / 832;
+  transform: translateX(-50%);
+}
+.scene--top .scene__art {
+  top: 0;
+}
+.scene--bottom .scene__art {
+  bottom: -10px;
+}
+.scene__art > svg {
+  overflow: visible;
+}
+.scene__art {
+  animation: scene-in 0.5s ease-out;
+}
+@keyframes scene-in {
+  from { opacity: 0; }
+}
+
+/* Soft light from the top, darker corners: gives the flat artwork some depth. */
+.scene__vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(120% 90% at 50% 18%, transparent 55%, rgb(28 24 20 / 0.32) 100%),
+    linear-gradient(to bottom, rgb(255 248 230 / 0.06), transparent 40%);
+}
+
+.scene__baa {
+  position: absolute;
+  transform: translate(-50%, -100%);
+  padding: 6px 12px;
+  border-radius: 12px;
+  background: var(--c-cream);
+  box-shadow: var(--shadow-chip);
+  font-weight: 700;
+  font-size: 16px;
+  white-space: nowrap;
+  pointer-events: none;
+  animation: baa-pop 1.5s ease-out forwards;
+}
+@keyframes baa-pop {
+  0% { opacity: 0; transform: translate(-50%, -80%) scale(0.6); }
+  15% { opacity: 1; transform: translate(-50%, -110%) scale(1); }
+  80% { opacity: 1; }
+  100% { opacity: 0; transform: translate(-50%, -160%); }
+}
+
+/* ---- Life: hooks added by tools/figma-export (fx-sheep, fx-grass, fx-eye) ---- */
+.fx-sheep {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: sheep-bob 3.8s ease-in-out infinite;
+  animation-delay: calc(var(--i, 0) * -0.9s);
+  cursor: pointer;
+}
+.fx-sheep.is-hopping {
+  animation: sheep-hop 0.7s cubic-bezier(0.3, 0.7, 0.4, 1);
+}
+@keyframes sheep-bob {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-3px) rotate(-1.2deg); }
+}
+@keyframes sheep-hop {
+  0% { transform: translateY(0) scale(1, 1); }
+  18% { transform: translateY(0) scale(1.08, 0.88); }
+  50% { transform: translateY(-26px) scale(0.95, 1.06); }
+  82% { transform: translateY(0) scale(1.05, 0.94); }
+  100% { transform: translateY(0) scale(1, 1); }
+}
+
+.fx-eye {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: sheep-blink 5.5s infinite;
+  animation-delay: calc(var(--i, 0) * -1.37s);
+}
+@keyframes sheep-blink {
+  0%, 93%, 100% { transform: scaleY(1); }
+  95% { transform: scaleY(0.1); }
+}
+
+.fx-grass {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: grass-sway 6s ease-in-out infinite alternate;
+  animation-delay: calc(var(--i, 0) * -2.1s);
+}
+@keyframes grass-sway {
+  from { transform: skewX(-1deg); }
+  to { transform: skewX(1deg); }
+}
+
+/* Parallax layers (sky moves least, front grass most). --px/--py come from Scene.jsx. */
+.fx-depth {
+  transform: translate(calc(var(--px, 0) * var(--d, 0) * -1px), calc(var(--py, 0) * var(--d, 0) * -0.4px));
+  transition: transform 0.8s cubic-bezier(0.2, 0.7, 0.3, 1);
+}
+
+/* Wool clouds drifting across the sky. */
+.fx-cloud {
+  animation: cloud-drift var(--dur, 120s) linear infinite;
+  animation-delay: var(--delay, 0s);
+}
+@keyframes cloud-drift {
+  from { transform: translateX(-1100px); }
+  to { transform: translateX(1100px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fx-sheep,
+  .fx-eye,
+  .fx-grass,
+  .fx-cloud,
+  .scene__art,
+  .scene__baa {
+    animation: none !important;
+  }
+  .fx-depth {
+    transform: none !important;
+  }
+}

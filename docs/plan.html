@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NASA Features Plan</title>
+<meta name="description" content="The nine-step plan that added NASA satellite and weather features to TEAM SHEEEEP.">
+<link rel="icon" href="../src/assets/art/manami.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap">
+<link rel="stylesheet" href="docs.css">
+</head>
+<body>
+<header class="topnav">
+  <div class="topnav__in">
+    <a class="brand" href="readme.html"><img src="../src/assets/art/manami.svg" alt=""><span>TEAM SHEEEEP</span></a>
+    <nav>
+      <a href="readme.html">README</a>
+      <a href="plan.html" aria-current="page">Plan</a>
+      <a href="tracker.html">Tracker</a>
+    </nav>
+    <button class="theme-btn" type="button" aria-label="Switch theme"></button>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="hero" style="grid-template-columns:1fr auto">
+    <div>
+      <span class="eyebrow">Build plan · NASA features</span>
+      <h1>Turn the planner into something a farmer <span>can’t get anywhere else</span></h1>
+      <p class="lead">Nine steps, built on NASA Earth data. All nine are done (Oct 2026). Methods, validation results and limits are in the <a href="readme.html#accuracy">README</a>; what happens next is in the <a href="tracker.html">tracker</a>.</p>
+    </div>
+    <div class="ring" style="--p:100"><div><b>9/9</b><span class="small muted">steps done</span></div></div>
+  </section>
+
+  <section class="block" style="padding-top:24px">
+    <span class="eyebrow">The four features</span>
+    <div class="grid grid-4">
+      <div class="card card--flat"><h3>Paddock Memory from Space</h3><p class="small muted">Steps 1–5</p><img class="shot" src="img/space-canola.webp" alt="Seen from space card"></div>
+      <div class="card card--flat"><h3>Neighbour canola → blackleg</h3><p class="small muted">Step 6</p><img class="shot" src="img/space-history.webp" alt="Blackleg risk alert and canola overlay"></div>
+      <div class="card card--flat"><h3>Safest sowing window</h3><p class="small muted">Step 7</p><img class="shot" src="img/sowing.webp" alt="Sowing window card"></div>
+      <div class="card card--flat"><h3>Did my rotation work?</h3><p class="small muted">Step 8</p><img class="shot" src="img/dashboard.webp" alt="Rotation report card"></div>
+    </div>
+  </section>
+
+  <section class="block">
+    <span class="eyebrow">Step by step</span>
+    <h2>What “done” meant, and what we built</h2>
+    <ol class="timeline">
+      <li class="tl-item"><div class="tl-node">1</div><div class="card">
+        <div class="tl-head"><h3>Data spike</h3><span class="chip chip--olive"><span class="dot"></span>Done</span></div>
+        <dl class="kv">
+          <dt>Done means</dt><dd>NASA HLS pixels for a farm can be read from the browser, with cloud masking, and 30 years of NASA POWER daily weather works.</dd>
+          <dt>Built</dt><dd>STAC search plus a data API that returns small per-farm PNGs holding NDVI, the yellow-flower index and the Fmask cloud mask. Works from the browser (CORS) with no login. Lesson: the <code>+</code> in band maths must be URL-encoded or the service returns 500.</dd>
+          <dt>Files</dt><dd><code>src/services/hls.js</code> <code>src/services/weather.js</code></dd>
+        </dl></div></li>
+
+      <li class="tl-item"><div class="tl-node">2</div><div class="card">
+        <div class="tl-head"><h3>HLS service</h3><span class="chip chip--olive"><span class="dot"></span>Done</span></div>
+        <dl class="kv">
+          <dt>Done means</dt><dd>For a farm: find usable scenes over 5 seasons, fetch the layers, compute per-paddock values and per-pixel maps. Cached, throttled, with progress.</dd>
+          <dt>Built</dt><dd>Searches Landsat and Sentinel-2 collections and keeps the clearest image per 8-day window around flowering (16-day otherwise). Uses a ~30 m grid with per-paddock pixel masks, Cache Storage with retries, and a 6-at-a-time worker pool reporting progress.</dd>
+          <dt>Result</dt><dd><span class="chip chip--teal">~104 images · ~28 s first time · instant after</span></dd>
+          <dt>Files</dt><dd><code>src/services/hls.js</code> <code>src/services/space.js</code> <code>src/state/useSpace.js</code></dd>
+        </dl></div></li>
+
+      <li class="tl-item"><div class="tl-node">3</div><div class="card">
+        <div class="tl-head"><h3>Phenology classifier</h3><span class="chip chip--olive"><span class="dot"></span>Done</span></div>
+        <dl class="kv">
+          <dt>Done means</dt><dd>From each paddock’s greenness curve per season: crop family (cereal / canola / pulse / pasture / fallow), a confidence level and the evidence (“NDVI peaked 0.82 on 12 Sep”).</dd>
+          <dt>Built</dt><dd>Season window set by latitude, then green-up, peak and dry-off dates. Canola is spotted when its yellow flowers stand out from the rest of the scene while the crop is near peak green. Pasture stays flat and green. Cereal vs. pulse comes from peak height and season length. The current season is handled with care.</dd>
+          <dt>Files</dt><dd><code>src/logic/phenology.js</code></dd>
+        </dl></div></li>
+
+      <li class="tl-item"><div class="tl-node">4</div><div class="card">
+        <div class="tl-head"><h3>Validation</h3><span class="chip chip--olive"><span class="dot"></span>Done</span></div>
+        <dl class="kv">
+          <dt>Done means</dt><dd>Classifier checked against independent ground truth (USDA Cropland Data Layer), accuracy reported honestly, thresholds tuned.</dd>
+          <dt>Built</dt><dd>About 5,500 uniform 150 m blocks per season in North Dakota. Developed on 2021, held out 2020. A tuned version overfitted (better on 2021, worse on 2020), so the simpler rules were kept.</dd>
+          <dt>Result</dt><dd><span class="chip chip--teal">Canola: 89–94% right when called · 85–96% found</span> <span class="chip chip--teal">Crop family: 78% / 88%</span></dd>
+          <dt>Files</dt><dd><code>tools/validation/validate-phenology.mjs</code> · <code>npm run validate:phenology</code></dd>
+        </dl></div></li>
+
+      <li class="tl-item"><div class="tl-node">5</div><div class="card">
+        <div class="tl-head"><h3>Paddock Memory UI</h3><span class="chip chip--olive"><span class="dot"></span>Done</span></div>
+        <dl class="kv">
+          <dt>Done means</dt><dd>The History step shows “Seen from space”: crop per season with confidence, a greenness sparkline, a time-lapse of real images, and one click to use it as the crop history.</dd>
+          <dt>Built</dt><dd>“Seen from space” card with confidence badges (sure / likely / best guess), evidence text, sparklines and a time-lapse player. Includes a “Looking back from space” loading screen that can keep working in the background.</dd>
+          <dt>Files</dt><dd><code>SpaceHistoryCard.jsx</code> <code>Sparkline.jsx</code> <code>TimeLapse.jsx</code> <code>PaddockHistory.jsx</code> <code>space.css</code></dd>
+        </dl></div></li>
+
+      <li class="tl-item"><div class="tl-node">6</div><div class="card">
+        <div class="tl-head"><h3>Neighbour canola → blackleg warning</h3><span class="chip chip--olive"><span class="dot"></span>Done</span></div>
+        <dl class="kv">
+          <dt>Done means</dt><dd>Canola flowering around the farm last season is shown on the map; paddocks within 500 m get a warning and the planner avoids canola there.</dd>
+          <dt>Built</dt><dd>Per-pixel canola map, ignoring patches mostly inside the paddock itself. Each paddock gets the nearest-canola distance and hectares within 500 m. Shown as a yellow overlay with a legend. The planner penalises canola for the coming season and adds a note saying why.</dd>
+          <dt>Files</dt><dd><code>phenology.js</code> (detectCanolaPixels) <code>space.js</code> <code>rotation.js</code> (BLACKLEG_DISTANCE_M) <code>spacePlanning.js</code></dd>
+        </dl></div></li>
+
+      <li class="tl-item"><div class="tl-node">7</div><div class="card">
+        <div class="tl-head"><h3>Safest sowing window</h3><span class="chip chip--olive"><span class="dot"></span>Done</span></div>
+        <dl class="kv">
+          <dt>Done means</dt><dd>30 years of NASA POWER daily temperatures → frost-at-flowering and heat-at-grain-fill risk per sowing date per crop → recommended window in the Planner.</dd>
+          <dt>Built</dt><dd>Thermal time to flowering per crop. Frost means ≤ 1 °C at flowering; heat means the crop’s limit is passed on 2+ days in grain fill. Weekly sowing dates are tested, and the window is every date within 8 points of the lowest risk. Shown as a risk chart.</dd>
+          <dt>Result</dt><dd><span class="chip chip--teal">Demo farm: wheat ~29 Apr · barley 6 May · canola &amp; lupins 6–13 May</span></dd>
+          <dt>Files</dt><dd><code>src/logic/sowing.js</code> <code>src/services/weather.js</code> <code>SowingCard.jsx</code></dd>
+        </dl></div></li>
+
+      <li class="tl-item"><div class="tl-node">8</div><div class="card">
+        <div class="tl-head"><h3>“Did my rotation work?”</h3><span class="chip chip--olive"><span class="dot"></span>Done</span></div>
+        <dl class="kv">
+          <dt>Done means</dt><dd>Season vigour from space (rainfall-adjusted) per paddock; a report card comparing crops after a break vs. after the same crop.</dd>
+          <dt>Built</dt><dd>Vigour is the area under the greenness curve, compared with the farm’s other cropped paddocks the same season. It compares cereals after a break crop with cereals after cereals, with rain and the French &amp; Schultz water-limited wheat benchmark for context.</dd>
+          <dt>Result</dt><dd><span class="chip chip--teal">Demo farm: 1.12× after a break (n=2) vs 0.92× after a cereal (n=8) → +21%</span></dd>
+          <dt>Files</dt><dd><code>src/logic/performance.js</code> <code>RotationReportCard.jsx</code> <code>Dashboard.jsx</code></dd>
+        </dl></div></li>
+
+      <li class="tl-item"><div class="tl-node">9</div><div class="card">
+        <div class="tl-head"><h3>Polish</h3><span class="chip chip--olive"><span class="dot"></span>Done</span></div>
+        <dl class="kv">
+          <dt>Done means</dt><dd>Manami knows the new features, the README documents methods, validation and limits, and tests and screenshots pass.</dd>
+          <dt>Built</dt><dd>Manami can now answer questions about satellites, blackleg, sowing and the report card. The README and these docs were written, and the validation script was added to the repo. The regression runs also found and fixed a bug where the map toolbar blocked clicks on corners beneath it.</dd>
+          <dt>Files</dt><dd><code>src/logic/manami.js</code> <code>README.md</code> <code>docs/</code></dd>
+        </dl></div></li>
+    </ol>
+  </section>
+
+  <section class="block">
+    <span class="eyebrow">Data notes</span>
+    <div class="grid grid-2">
+      <div class="callout callout--teal"><p>NASA HLS v2.0 is read through <strong>Microsoft Planetary Computer’s mirror</strong>: free, browser-friendly, no login. NASA’s own LP DAAC copy needs an Earthdata login.</p></div>
+      <div class="callout callout--teal"><p><strong>NASA POWER</strong> (daily and climatology) is used directly.</p></div>
+    </div>
+  </section>
+
+  <footer class="foot">TEAM SHEEEEP · NASA features plan · next steps live in the <a href="tracker.html">tracker</a></footer>
+</main>
+<script src="docs.js"></script>
+</body>
+</html>

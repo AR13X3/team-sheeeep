@@ -1,0 +1,34 @@
+{
+  "name": "team-sheeeep",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Paddock & crop-rotation planner web app built from the TEAM SHEEEEP Figma design.",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "export:figma": "node tools/figma-export/export.mjs",
+    "validate:phenology": "node tools/validation/validate-phenology.mjs",
+    "test:e2e": "node tools/e2e/run-all.mjs",
+    "validate:pixels": "node tools/validation/validate-paddock-pixels.mjs",
+    "validate:canola10m": "node tools/validation/validate-canola-10m.mjs"
+  },
+  "engines": {
+    "node": ">=22.15"
+  },
+  "dependencies": {
+    "leaflet": "^1.9.4",
+    "polygon-clipping": "^0.15.7",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "react-router-dom": "^7.18.4"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^6.1.1",
+    "kiwi-schema": "^0.5.0",
+    "pngjs": "^7.0.0",
+    "puppeteer-core": "^25.12.0",
+    "vite": "^8.3.2"
+  }
+}

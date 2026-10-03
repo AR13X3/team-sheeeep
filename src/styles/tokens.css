@@ -1,0 +1,90 @@
+/* Design tokens taken from the TEAM SHEEEEP Figma file (palette board + component sets). */
+:root {
+  /* Palette board */
+  --c-charcoal: #5d6052;
+  --c-teal: #6ba7a9;
+  --c-olive: #989b66;
+  --c-gold: #cfb173;
+  --c-rose: #df9c93;
+  --c-taupe: #d1b8a6;
+
+  /* Surfaces & ink */
+  --c-ink: #372f2a;
+  --c-ink-30: rgb(55 47 42 / 0.3); /* borders only (design value) */
+  --c-ink-muted: rgb(55 47 42 / 0.78); /* secondary text: ~5:1 on cream */
+  --c-ink-hint: rgb(55 47 42 / 0.6); /* placeholders & input icons */
+  --c-cream: #ece4d4;
+  --c-sand: #e7dac1;
+  --c-soil: #464033;
+  --c-stone: #c6c0b2;
+
+  /* Grass layers */
+  --c-grass-1: #626735;
+  --c-grass-2: #71763e;
+  --c-grass-3: #989b66;
+
+  /* Buttons: [default, hover] per tone (Action Button component set) */
+  --btn-primary: #969965;
+  --btn-primary-hover: #7e8155;
+  --btn-secondary: #cfb173;
+  --btn-secondary-hover: #ae9561;
+  --btn-danger: #df9c93;
+  --btn-danger-hover: #bb837b;
+  --btn-chat: #989b66;
+  --btn-chat-hover: #808256;
+  --btn-login: #df9c93;
+  --btn-login-hover: #d37f74;
+  --btn-login-border: #be7369;
+
+  /* Season markers (Planner season strip) */
+  --c-marker-now: #9b7255;
+  --c-marker-selected: #838459;
+
+  /* Shape */
+  --radius: 15px;
+  --radius-map: 12px;
+  --border-input: 3px solid var(--c-ink-30);
+
+  /* Elevation (Figma drop shadows) */
+  --shadow-card: 0 4px 80px -27px var(--c-ink);
+  --shadow-round: 0 2.26px 45px -7.35px var(--c-ink);
+  --shadow-chip: 0 0.45px 9px -3px var(--c-ink);
+
+  /* Type (Lato) */
+  --font: 'Lato', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --fs-title: 36.46px;
+  --fs-heading: 25px;
+  --fs-body: 23px;
+  --fs-control: 20px;
+  --fs-small: 16px;
+  --fs-caption: 14px;
+
+  /* Spacing scale */
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-5: 24px;
+  --s-6: 32px;
+  --s-7: 48px;
+  --card-pad: 28px; /* inside every card */
+  --card-gap: 24px; /* between cards */
+  --content-top: 120px; /* where content starts under the title tab */
+
+  /* Layout: the design canvas is 1280 x 832 */
+  --canvas-w: 1280px;
+  --gutter: 32px;
+}
+
+@media (max-width: 720px) {
+  :root {
+    --fs-title: 28px;
+    --fs-heading: 21px;
+    --fs-body: 18px;
+    --fs-control: 17px;
+    --gutter: 16px;
+    --card-pad: 20px;
+    --card-gap: 16px;
+    --content-top: 100px;
+  }
+}

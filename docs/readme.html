@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TEAM SHEEEEP README</title>
+<meta name="description" content="Paddock and crop-rotation planner that reads a farm's past from NASA satellites.">
+<link rel="icon" href="../src/assets/art/manami.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap">
+<link rel="stylesheet" href="docs.css">
+</head>
+<body>
+<header class="topnav">
+  <div class="topnav__in">
+    <a class="brand" href="readme.html"><img src="../src/assets/art/manami.svg" alt=""><span>TEAM SHEEEEP</span></a>
+    <nav>
+      <a href="readme.html" aria-current="page">README</a>
+      <a href="plan.html">Plan</a>
+      <a href="tracker.html">Tracker</a>
+    </nav>
+    <button class="theme-btn" type="button" aria-label="Switch theme"></button>
+  </div>
+</header>
+
+<main class="wrap">
+  <!-- ============ HERO ============ -->
+  <section class="hero">
+    <div>
+      <img class="hero__art" src="../src/assets/art/manami-large.svg" alt="Manami the sheep">
+      <h1>Plan your paddocks with <span>your farm’s own past, seen from space</span></h1>
+      <p class="lead">Farmers outline their paddocks on a satellite map. Manami the sheep reads what grew there over the last five seasons from NASA satellites, adds soil, slope and 30 years of NASA weather, and plans the next ten seasons of crop rotations.</p>
+      <div class="chips">
+        <span class="chip chip--nasa">NASA HLS · Landsat + Sentinel-2</span>
+        <span class="chip chip--nasa">NASA POWER</span>
+        <span class="chip chip--olive">No login or API key</span>
+        <span class="chip">React 19 + Vite</span>
+      </div>
+    </div>
+    <div class="frame">
+      <div class="frame__bar"><i></i><i></i><i></i></div>
+      <img src="img/space-history.webp" alt="Paddock details: the “Seen from space” card shows the crop in each of the last five seasons and warns that canola flowered 52 m away">
+    </div>
+  </section>
+
+  <!-- ============ NASA FEATURES ============ -->
+  <section class="block" id="nasa">
+    <span class="eyebrow">What makes it different</span>
+    <h2>NASA Earth data that answers farmers’ real questions</h2>
+    <p class="lead">Other rotation planners ask the farmer to type in what grew where, then guess. This one reads the farm’s own record from space and uses it.</p>
+    <div class="grid grid-2">
+      <article class="card feature">
+        <img src="img/space-canola.webp" alt="Seen from space: canola detected flowering in four of five seasons, with greenness curves">
+        <div class="feature__body">
+          <h3>1 · Paddock Memory from Space</h3>
+          <div class="feature__row"><b>Problem</b><span>Crop records are missing, especially on newly bought or leased land, and a plan is only as good as its history.</span></div>
+          <div class="feature__row"><b>Does</b><span>Reads every clear image of the farm over <strong>5 seasons</strong> (about 100 images) and names each season’s crop family with a confidence level and its evidence. One click fills in the history. A time-lapse shows the real images.</span></div>
+          <div class="chips"><span class="chip chip--nasa">HLS v2.0 · 30 m · every 2–3 days</span></div>
+        </div>
+      </article>
+      <article class="card feature">
+        <img src="img/planner.webp" alt="Planner map with last season's canola flowering shown in yellow next to the paddocks">
+        <div class="feature__body">
+          <h3>2 · Neighbour canola → blackleg warning</h3>
+          <div class="feature__row"><b>Problem</b><span>Blackleg spores blow from last year’s canola stubble, including the neighbour’s, which the farmer can’t see on paper. Growers keep about 500 m away.</span></div>
+          <div class="feature__row"><b>Does</b><span>Finds canola <strong>flowering</strong> in every field around the farm and maps it. Within 500 m, the planner steers next season’s canola elsewhere and says why.</span></div>
+          <div class="chips"><span class="chip chip--nasa">HLS yellow-flower index</span></div>
+        </div>
+      </article>
+      <article class="card feature">
+        <img src="img/sowing.webp" alt="Sowing window card: frost and heat risk by sowing date, best window 6 to 13 May for lupins">
+        <div class="feature__body">
+          <h3>3 · Safest sowing window</h3>
+          <div class="feature__row"><b>Problem</b><span>Sow too early and frost hits at flowering. Sow too late and heat hits during grain fill. Rules of thumb ignore the farm’s own climate.</span></div>
+          <div class="feature__row"><b>Does</b><span>Replays <strong>30 years</strong> of daily temperatures for every sowing date and crop, then shows the risk curve and the lowest-risk window.</span></div>
+          <div class="chips"><span class="chip chip--nasa">POWER daily · T2M_MIN, T2M_MAX</span></div>
+        </div>
+      </article>
+      <article class="card feature">
+        <img src="img/dashboard.webp" alt="Dashboard: Did my rotation work? Cereals after a break crop were 21% more vigorous">
+        <div class="feature__body">
+          <h3>4 · “Did my rotation work?”</h3>
+          <div class="feature__row"><b>Problem</b><span>Farmers rarely see evidence that their rotation pays off on their own farm.</span></div>
+          <div class="feature__row"><b>Does</b><span>Compares cereals grown after a break crop with cereals after cereals, using satellite vigour relative to the rest of the farm that season, with rainfall and the water-limited yield benchmark for context.</span></div>
+          <div class="chips"><span class="chip chip--nasa">HLS</span><span class="chip chip--nasa">POWER rain · PRECTOTCORR</span></div>
+        </div>
+      </article>
+    </div>
+    <div class="grid grid-2" style="margin-top:18px;align-items:center">
+      <figure><img class="shot" src="img/resolution-compare.webp" alt="Same field, same satellite pass: NASA HLS at 30 m vs the original Sentinel-2 image at 10 m"><figcaption>Same paddocks, same satellite pass (1 Aug 2026): the analysis uses NASA HLS at 30 m (left); the time-lapse pictures use the original 10 m Sentinel-2 image of that pass (right).</figcaption></figure>
+      <div><h3>Sharp pictures, best-tested analysis</h3><p class="muted">Every picture a farmer looks at is 10 m Sentinel-2 where possible: the same pass, or for a Landsat date the nearest pass that is cloud-free over the farm. The analysis uses whatever tested best. NASA HLS at 30 m found far more canola than Sentinel-2 at 10 m, so it stays. Each paddock is read only from pixels lying wholly inside it, which lifted crop-type accuracy on real fields by 5–17 points.</p></div>
+    </div>
+    <p class="muted small" style="margin-top:14px">Everything runs in the browser and images are cached, so a farm is read once (about 30 seconds the first time). Click any screenshot to enlarge it.</p>
+  </section>
+
+  <!-- ============ RUN IT ============ -->
+  <section class="block" id="run">
+    <span class="eyebrow">Run it</span>
+    <h2>Start the app</h2>
+    <div class="grid grid-2">
+      <div>
+<pre data-copy="npm install
+npm run dev"><span class="c"># first time</span>
+npm install
+<span class="c"># then open http://localhost:5173</span>
+npm run dev</pre>
+<pre data-copy="npm run build"><span class="c"># production build in dist/</span>
+npm run build</pre>
+<pre data-copy="npm run validate:phenology"><span class="c"># re-check the crop-from-space accuracy</span>
+npm run validate:phenology</pre>
+      </div>
+      <div class="grid" style="align-content:start">
+        <div class="callout callout--teal"><p><strong>Node.js 20.19+</strong> runs the app. <strong>22.15+</strong> is needed only for <code>npm run export:figma</code>.</p></div>
+        <div class="callout"><p>No API keys are needed. The project lives in OneDrive, so <code>node_modules/</code> syncs too. Consider pausing OneDrive sync for this folder.</p></div>
+        <div class="card card--flat"><p class="small" style="margin:0">No farm handy? On the login screen press <strong>“Try the demo farm”</strong>: four paddocks in the NSW Riverina, near Wagga Wagga.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FLOW ============ -->
+  <section class="block" id="flow">
+    <span class="eyebrow">The flow</span>
+    <h2>Nine screens, from the Figma prototype</h2>
+    <p class="muted">Click a screenshot to enlarge it. Everything you enter is saved in this browser’s <code>localStorage</code> (<code>sheeep:v1</code>).</p>
+    <div class="strip">
+      <article class="card step-card"><img src="img/login.webp" alt="Login screen"><div><h3><span class="step-num">1</span>Login</h3><p class="muted small"><code>#/</code></p>Names the local profile. Front-end only for now; passwords are never stored.</div></article>
+      <article class="card step-card"><img src="img/experience.webp" alt="Experience screen"><div><h3><span class="step-num">2</span>Experience</h3><p class="muted small"><code>#/experience</code></p>New or experienced farmer. New farmers get a tip from Manami on every screen.</div></article>
+      <article class="card step-card"><img src="img/your-farm.webp" alt="Your Farm: livestock and the crops the farm can grow"><div><h3><span class="step-num">2</span>Your Farm</h3><p class="muted small"><code>#/farm</code></p>Livestock or crops only, and a tick for every crop you can grow and sell. The plan only uses ticked crops.</div></article>
+      <article class="card step-card"><img src="img/outline.webp" alt="Outline your paddocks"><div><h3><span class="step-num">3</span>Outline paddocks</h3><p class="muted small"><code>#/paddocks</code></p>Search, then click corners. Corners snap to neighbours within 14 screen pixels, so zooming in keeps real gaps. Overlaps are trimmed.</div></article>
+      <article class="card step-card"><img src="img/snapping.webp" alt="Snapping to a neighbouring paddock while drawing"><div><h3><span class="step-num">3</span>Snapping</h3><p class="muted small">Alt or the Snap switch = free placement</p>Two clicks on a neighbour’s border trace it. Backspace undoes a click and its traced corners together.</div></article>
+      <article class="card step-card"><img src="img/soil-check.webp" alt="Soil check suggesting a paddock split"><div><h3><span class="step-num">4</span>Soil check</h3><p class="muted small"><code>#/paddocks/review</code></p>Samples soil at both ends of each paddock and suggests a split when it really differs.</div></article>
+      <article class="card step-card"><img src="img/space-history.webp" alt="Paddock history seen from space"><div><h3><span class="step-num">5</span>History</h3><p class="muted small"><code>#/paddocks/:id/history</code></p>“Seen from space” card, neighbour canola on the map, then crops, soil, slope, issues.</div></article>
+      <article class="card step-card"><img src="img/timelapse.webp" alt="Satellite time-lapse of the paddock"><div><h3><span class="step-num">5</span>Time-lapse</h3><p class="muted small">Real NASA HLS images</p>Peak of each season, plus the canola-flowering image, with the paddock outlined.</div></article>
+      <article class="card step-card"><img src="img/priorities.webp" alt="Priorities sliders"><div><h3><span class="step-num">6</span>Priorities</h3><p class="muted small"><code>#/paddocks/:id/priorities</code></p>Sliders from “Not important” to “Top priority”, reasons for rotating, a live preview of the plan.</div></article>
+      <article class="card step-card"><img src="img/planner.webp" alt="Planner"><div><h3><span class="step-num">7</span>Planner</h3><p class="muted small"><code>#/planner</code></p>A season strip on top: click any of the 10 seasons, and each dot shows a paddock’s crop. Below it: the map coloured by crop, Crops to Grow, Sowing window and Soil Health.</div></article>
+      <article class="card step-card"><img src="img/dashboard.webp" alt="Dashboard"><div><h3><span class="step-num">8</span>Dashboard</h3><p class="muted small"><code>#/dashboard</code></p>Farm summary, next season, soil health and “Did my rotation work?”.</div></article>
+      <article class="card step-card"><img src="img/manami.webp" alt="Chatting with Manami"><div><h3><span class="step-num">★</span>Manami</h3><p class="muted small">On every screen</p>Ask about soil, satellites, blackleg, sowing dates or rotations. Offline keyword answers for now.</div></article>
+    </div>
+    <div class="grid grid-2" style="margin-top:10px;align-items:center">
+      <div style="display:flex;gap:14px;justify-content:center">
+        <img class="shot" style="width:44%;max-width:200px" src="img/mobile-outline.webp" alt="Outline screen on a phone">
+        <img class="shot" style="width:44%;max-width:200px" src="img/mobile-planner.webp" alt="Planner on a phone">
+      </div>
+      <div><h3>Fits any window, phones too</h3><p class="muted">Every screen is drawn at the Figma frame size and zoomed to fit the window, so nothing needs scrolling on a laptop (a 1280×665 window shows it at 0.8×) and big monitors get it slightly larger. Windows 960 px wide or narrower stack the columns, and phones get smaller type and padding.</p>
+        <img class="shot" src="img/planner-laptop.webp" alt="The planner fitted to a 1280×665 laptop window" style="margin-top:10px"></div>
+    </div>
+  </section>
+
+  <!-- ============ ACCURACY ============ -->
+  <section class="block" id="accuracy">
+    <span class="eyebrow">How accurate is it?</span>
+    <h2>Checked against independent ground truth</h2>
+    <div class="grid grid-2">
+      <div class="card">
+        <h3>Crop from space vs. USDA crop maps</h3>
+        <p class="muted small">The USDA Cropland Data Layer maps the crop in every 30 m pixel of the US. Region: canola country in Cavalier County, North Dakota. About 5,500 uniform 150 m blocks per season were classified by the app’s own code. 2021 was used while developing. 2020 was <strong>held out</strong> and only checked at the end.</p>
+        <div class="legend"><span><i style="background:var(--olive)"></i>2021 · development</span><span><i style="background:var(--teal)"></i>2020 · held out</span></div>
+        <div class="metric"><div class="metric__name">Canola found<br><span class="muted small">recall</span></div><div class="metric__bars">
+          <div class="bar"><span>2021</span><span class="bar__track"><span class="bar__fill" style="width:85.3%"></span></span><b>85.3%</b></div>
+          <div class="bar bar--held"><span>2020</span><span class="bar__track"><span class="bar__fill" style="width:95.7%"></span></span><b>95.7%</b></div></div></div>
+        <div class="metric"><div class="metric__name">Canola right when called<br><span class="muted small">precision</span></div><div class="metric__bars">
+          <div class="bar"><span>2021</span><span class="bar__track"><span class="bar__fill" style="width:94.1%"></span></span><b>94.1%</b></div>
+          <div class="bar bar--held"><span>2020</span><span class="bar__track"><span class="bar__fill" style="width:89.2%"></span></span><b>89.2%</b></div></div></div>
+        <div class="metric"><div class="metric__name">Crop family right<br><span class="muted small">cereal · canola · pulse · pasture · fallow</span></div><div class="metric__bars">
+          <div class="bar"><span>2021</span><span class="bar__track"><span class="bar__fill" style="width:78.3%"></span></span><b>78.3%</b></div>
+          <div class="bar bar--held"><span>2020</span><span class="bar__track"><span class="bar__fill" style="width:87.7%"></span></span><b>87.7%</b></div></div></div>
+        <div class="metric"><div class="metric__name">Neighbour-canola map<br><span class="muted small">per pixel, precision / recall</span></div><div class="metric__bars">
+          <div class="bar"><span>2021</span><span class="bar__track"><span class="bar__fill" style="width:83.7%"></span></span><b>83.7%</b></div>
+          <div class="bar"><span></span><span class="bar__track"><span class="bar__fill" style="width:64.6%;opacity:.6"></span></span><b>64.6%</b></div>
+          <div class="bar bar--held"><span>2020</span><span class="bar__track"><span class="bar__fill" style="width:79.7%"></span></span><b>79.7%</b></div>
+          <div class="bar bar--held"><span></span><span class="bar__track"><span class="bar__fill" style="width:86.7%;opacity:.6"></span></span><b>86.7%</b></div></div></div>
+        <p class="small muted" style="margin-top:12px">Reproduce: <code>npm run validate:phenology</code> (<code>tools/validation/</code>).</p>
+      </div>
+      <div class="grid" style="align-content:start">
+        <div class="card">
+          <h3>Where it goes wrong (the app says so too)</h3>
+          <ul class="checks checks--warn">
+            <li><span><strong>Cereal vs. pulse</strong> is the weakest call. Peas were read as cereal or canola about half the time, and 26% of 2021 wheat as pulse. These are marked “best guess” and never filled in automatically.</span></li>
+            <li><span><strong>Sunflower</strong> also flowers yellow and was read as canola in 2021. It’s rare in Australian winter cropping.</span></li>
+            <li><span><strong>Fallow</strong> is sometimes read as a weedy pulse.</span></li>
+            <li><span>Thresholds were tuned on 2021 only. A tuned version that fitted 2021 better did worse on 2020, so the simpler rules were kept.</span></li>
+            <li><span>Validated in North Dakota, a different climate from Australia. Seasons are set by latitude (southern: April–January).</span></li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Tested to pick the best analysis</h3>
+          <ul class="checks small">
+            <li><span><strong>Pure pixels adopted.</strong> Reading paddocks only from pixels wholly inside them: crop type right on 20–60 ha fields 62 → 79 % (2021) and 73 → 78 % (2020); over 60 ha 68 → 85 % and 88 → 93 %. <code>npm run validate:pixels</code></span></li>
+            <li><span><strong>10 m canola map not adopted.</strong> Sentinel-2 at 10 m found 46–59 % of canola vs 73–92 % for NASA HLS at 30 m, same detector, field interiors. <code>npm run validate:canola10m</code></span></li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Other checks (Oct 2026)</h3>
+          <ul class="checks small">
+            <li><span><strong>Paddock area</strong> within 0.001% of the WGS84 geodesic, 1 ha to 40,000 ha, even at 60° latitude.</span></li>
+            <li><span><strong>Soil sample point</strong> always inside the paddock, including U-shapes, crescents and split halves.</span></li>
+            <li><span><strong>Texture class</strong> 22/22 USDA reference cases. SoilGrids units verified against the live API.</span></li>
+            <li><span><strong>Slope fit</strong> recovers known slopes to ±0.02% and the right facing direction.</span></li>
+            <li><span><strong>Drawing</strong>: finishes with exactly the clicked corners, rejects crossed outlines and mis-clicks.</span></li>
+            <li><span><strong>Sliders</strong> move the plan the right way across their whole range (monotone).</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="callout" style="margin-top:18px"><p><strong>Limits worth knowing:</strong> SoilGrids is a 250 m model, NASA POWER climate is regional (~50 km), and the elevation model is 90 m. Sowing-window thermal times are typical mid-maturity values for south-eastern Australia, and varieties differ by a few weeks. Frost counts from ≤ 1 °C because a POWER grid cell is milder than a cold paddock floor. The rotation report is a first hint until it has at least two cases on each side.</p></div>
+  </section>
+
+  <!-- ============ PLANNER ============ -->
+  <section class="block" id="planner">
+    <span class="eyebrow">How the planner decides</span>
+    <h2>Every crop, every season, scored</h2>
+    <div class="card">
+      <div class="diagram">
+        <div class="diagram__col">
+          <div class="pill"><b>Priorities</b><span class="muted small">four sliders weight soil benefit, water use, margin and risk</span></div>
+          <div class="pill"><b>Rotation rules</b><span class="muted small">no same crop or family back to back, break crops after cereals, legume nitrogen bonus</span></div>
+          <div class="pill"><b>Issues &amp; goals</b><span class="muted small">salinity → barley, waterlogging → faba beans and oats, weeds → pasture and hay</span></div>
+          <div class="pill"><b>Site data</b><span class="muted small">acid soil → lupins and oats, alkaline → barley and chickpeas, under 400 mm → low-water crops</span></div>
+          <div class="pill"><b>Your crop list</b><span class="muted small">only ticked crops are scored; “Crops only” removes grazed pasture</span></div>
+          <div class="pill pill--space"><b>From space</b><span class="muted small">fills blank history from confident readings; canola within 500 m → avoid canola</span></div>
+        </div>
+        <div class="diagram__arrow">→</div>
+        <div class="box"><h3>Score each crop</h3><p class="small muted" style="margin:0"><code>src/logic/rotation.js</code><br>10 seasons ahead, per paddock</p></div>
+        <div class="diagram__arrow">→</div>
+        <div class="box box--out"><h3>Best crop + why</h3><p class="small muted" style="margin:0">Soil-health index moves with each season’s crop</p></div>
+      </div>
+    </div>
+    <p class="muted small" style="margin-top:12px">Slider strengths live in <code>PRIORITY_STRENGTH</code>, crop attributes in <code>src/data/crops.js</code>, and Manami’s answers in <code>src/logic/manami.js</code>. Swap <code>reply()</code> for an LLM call to make her smarter without touching the chat UI.</p>
+  </section>
+
+  <!-- ============ DATA ============ -->
+  <section class="block" id="data">
+    <span class="eyebrow">Data sources</span>
+    <h2>Where every number comes from</h2>
+    <div class="grid grid-3">
+      <div class="card"><div class="chips" style="margin-top:0"><span class="chip chip--nasa">NASA</span></div><h3>HLS v2.0</h3><p class="small">Crop history, neighbour canola, vigour. Landsat 8/9 + Sentinel-2 via <a href="https://planetarycomputer.microsoft.com/dataset/hls2-s30">Microsoft Planetary Computer</a>, which serves NASA’s HLS to browsers without a login. Cached in Cache Storage.</p></div>
+      <div class="card"><div class="chips" style="margin-top:0"><span class="chip chip--nasa">NASA</span></div><h3>POWER daily</h3><p class="small">Sowing window and season rainfall: T2M_MIN, T2M_MAX and PRECTOTCORR for the last 30 complete years, one request per farm, cached.</p></div>
+      <div class="card"><div class="chips" style="margin-top:0"><span class="chip chip--nasa">NASA</span></div><h3>POWER climatology</h3><p class="small">Long-term rainfall, temperature and root-zone soil wetness (PRECTOTCORR, T2M, GWETROOT) on the Soil card.</p></div>
+      <div class="card"><div class="chips" style="margin-top:0"><span class="chip chip--olive">ISRIC</span></div><h3>SoilGrids 2.0</h3><p class="small">Texture, pH, clay/sand, organic carbon. 250 m, 0–30 cm. Requests are spaced (fair use ≈ 5/min), cached for 30 days, with “Try again” when down.</p></div>
+      <div class="card"><div class="chips" style="margin-top:0"><span class="chip chip--teal">Open-Meteo</span></div><h3>Elevation</h3><p class="small">Slope, aspect and elevation from the Copernicus 90 m DEM. A plane is fitted across the whole paddock.</p></div>
+      <div class="card"><div class="chips" style="margin-top:0"><span class="chip chip--gold">Maps</span></div><h3>Esri + OpenStreetMap</h3><p class="small">Esri World Imagery / Topo basemaps, Nominatim place search. Prices in <code>src/data/crops.js</code> are <strong>example values only</strong>.</p></div>
+    </div>
+  </section>
+
+  <!-- ============ DESIGN ============ -->
+  <section class="block" id="design">
+    <span class="eyebrow">Design → code</span>
+    <h2>Straight from the Figma file</h2>
+    <div class="grid grid-2">
+      <div>
+        <p>Colours, radii, shadows and type sizes come from the Figma components and live in <code>src/styles/tokens.css</code>. Button fill and text colours are kept exactly as designed.</p>
+        <div class="swatches">
+          <div class="swatch"><i style="background:#5d6052"></i><span>Charcoal<br><code>#5d6052</code></span></div>
+          <div class="swatch"><i style="background:#6ba7a9"></i><span>Teal<br><code>#6ba7a9</code></span></div>
+          <div class="swatch"><i style="background:#989b66"></i><span>Olive<br><code>#989b66</code></span></div>
+          <div class="swatch"><i style="background:#cfb173"></i><span>Gold<br><code>#cfb173</code></span></div>
+          <div class="swatch"><i style="background:#df9c93"></i><span>Rose<br><code>#df9c93</code></span></div>
+          <div class="swatch"><i style="background:#d1b8a6"></i><span>Taupe<br><code>#d1b8a6</code></span></div>
+          <div class="swatch"><i style="background:#ece4d4"></i><span>Cream<br><code>#ece4d4</code></span></div>
+          <div class="swatch"><i style="background:#372f2a"></i><span>Ink<br><code>#372f2a</code></span></div>
+        </div>
+      </div>
+      <div>
+        <p>The scenes, sheep, Manami and icons are exported straight from the <code>.fig</code> file as SVG by <code>tools/figma-export</code>. It decodes the binary (Kiwi schema + zstd) and renders Figma’s own vector geometry. The exporter tags sheep, eyes and grass so they can bob, blink and sway. Click a sheep and it hops.</p>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin:6px 0 14px">
+          <img src="../src/assets/art/sheep-1.svg" alt="" style="width:54px"><img src="../src/assets/art/sheep-2.svg" alt="" style="width:54px"><img src="../src/assets/art/sheep-3.svg" alt="" style="width:54px"><img src="../src/assets/art/sheep-4.svg" alt="" style="width:54px"><img src="../src/assets/art/sheep-5.svg" alt="" style="width:54px"><img src="../src/assets/art/sheep-6.svg" alt="" style="width:54px">
+        </div>
+<pre data-copy="npm run export:figma"><span class="c"># re-export artwork after design changes</span>
+npm run export:figma
+<span class="c"># or from another export of the file</span>
+npm run export:figma -- path/to/new.fig</pre>
+        <p class="small muted">If a frame is rebuilt in Figma, update its node ID in <code>tools/figma-export/export.mjs</code> (URL <code>node-id=25-1867</code> → <code>25:1867</code>).</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ STRUCTURE ============ -->
+  <section class="block" id="structure">
+    <span class="eyebrow">Project structure</span>
+    <h2>Where things live</h2>
+<pre>design/                 the source .fig file
+docs/                   these pages: readme, plan, tracker (+ screenshots in img/)
+tools/figma-export/     .fig decoder + SVG renderer + asset manifest
+tools/validation/       crop-from-space classifier vs. USDA Cropland Data Layer
+src/
+  App.jsx               routes (hash router, lazy-loaded screens)
+  config.js             app name, mascot name, planning horizon, sowing date
+  screens/              one file per Figma frame
+  components/           Screen chrome, Scene, ChatBot, PaddockMap (Leaflet), SpaceHistoryCard,
+                        TimeLapse, SowingCard, RotationReportCard, Timeline, UI kit…
+  state/                store (useReducer + localStorage), site data, space, weather hooks
+  services/             NASA HLS (hls.js), farm analysis from space (space.js), NASA POWER
+                        (climate + daily), SoilGrids, Open-Meteo, Nominatim, cached fetch
+  logic/                rotation planner, crop classifier (phenology.js), sowing risk,
+                        rotation report, snapping/overlap, geometry, Manami's replies
+  data/                 crop knowledge base, demo farm
+  styles/               tokens, base, components, screens, scene animation, chat, map, space</pre>
+  </section>
+
+  <!-- ============ GAPS ============ -->
+  <section class="block" id="gaps">
+    <span class="eyebrow">Known gaps</span>
+    <h2>What’s next</h2>
+    <div class="grid grid-3">
+      <div class="card card--flat"><h3>Crop from space</h3><p class="small">Telling cereals from pulses needs more than greenness. Sentinel-1 radar or labelled Australian paddocks (e.g. ABARES land use) would sharpen it.</p></div>
+      <div class="card card--flat"><h3>Sowing window</h3><p class="small">Let the farmer pick variety maturity (early / mid / late) instead of assuming mid.</p></div>
+      <div class="card card--flat"><h3>Auth &amp; name</h3><p class="small">No backend yet; login only names the local profile. The design still says “Webapp Name” (<code>src/config.js</code>, <code>index.html</code>).</p></div>
+      <div class="card card--flat"><h3>Prices</h3><p class="small">Static examples. Connect a market feed in <code>src/services/</code>.</p></div>
+      <div class="card card--flat"><h3>Soil split</h3><p class="small">A two-sample heuristic per paddock. Soil-zone mapping from a raster or EM survey would sharpen it.</p></div>
+      <div class="card card--flat"><h3>Live status</h3><p class="small">Open questions and next steps are kept in the <a href="tracker.html">tracker</a>.</p></div>
+    </div>
+  </section>
+
+  <footer class="foot">TEAM SHEEEEP · built from <code>design/TEAM SHEEEEP.fig</code> · plain-text version: <code>README.md</code></footer>
+</main>
+<script src="docs.js"></script>
+</body>
+</html>
