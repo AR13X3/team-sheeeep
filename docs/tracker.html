@@ -61,9 +61,9 @@
 -->
 <script type="application/json" id="tracker-data">
 {
-  "updated": "2026-10-04",
-  "phase": "Session 2 · next stage planned: Supabase accounts, AI Manami, daily weather, dashboard v2",
-  "summary": "The Figma design is a working web app with four NASA features (Paddock Memory from Space, neighbour canola → blackleg warning, safest sowing window, “Did my rotation work?”). In session 2 every screen now fits the window with no page scrolling, from small laptops to big monitors, and the Planner’s hard-to-use season dragger was replaced by a clickable season strip. Still to do: talk through the open questions, then the small fixes below.",
+  "updated": "2026-10-09",
+  "phase": "Session 4 · enterprise UI redo done (same theme); open questions still to talk through",
+  "summary": "The app is now a full planning workspace in the same colours, Lato and Manami as the Figma design: a soil-coloured sidebar, Ctrl K search, live satellite status, light and dark themes, an Overview dashboard with charts and alerts, a Paddocks table, paddock pages with tabs, a rotation grid in the Planner with “why this crop”, Insights and Settings. The four NASA features (Paddock Memory from Space, neighbour canola → blackleg, safest sowing window, “Did my rotation work?”) are unchanged and now easier to find. Still to do: talk through the open questions (including button label contrast), then hosting and Phase 1.",
   "resumePrompt": "Read docs/tracker.html (the JSON in #tracker-data) and pick up from “Next up”. Start by going through “To discuss” with me.",
   "next": [
     {
@@ -119,7 +119,7 @@
     },
     {
       "title": "Phase 5: Dashboard v2",
-      "detail": "Today first: weather + actions, paddock cards (crop, stage, alerts), timeline, rain vs normal, recent diary.",
+      "detail": "Much of the layout now exists (Overview with KPIs, alerts, map, charts, activity). Still to add once Phase 4 lands: today’s weather and actions at the top, and recent diary entries.",
       "size": "M",
       "status": "todo",
       "where": [
@@ -146,7 +146,7 @@
     },
     {
       "title": "Final screenshots + short demo video",
-      "detail": "For the submission. The current screenshots are in docs/img/. Suggested 3-minute story: demo farm → history from space → blackleg alert → planner sowing window → dashboard report card.",
+      "detail": "Screenshots in docs/img were refreshed for the new UI (node tools/e2e/_doc-shots.mjs). Still to do: the short demo video. Suggested 3-minute story (in the Word breakdown): demo farm → Overview → blackleg alert → paddock history from space → Planner grid and “why this crop” → sowing window → Insights report.",
       "size": "M",
       "status": "todo",
       "where": [
@@ -154,13 +154,12 @@
       ]
     },
     {
-      "title": "“I have a tip!” bubble covers card text",
-      "detail": "At 1280×832 the chat nudge overlaps the bottom-right of the right-hand card (e.g. the source line under the time-lapse). Add bottom padding to scroll columns or move the nudge.",
+      "title": "Priorities: one set of controls, clearer names",
+      "detail": "Partly done in the redo: “Low Risk” is now “Play it safe”, each slider has a one-line hint, and the reasons are toggle chips. Still open: fold the reason ticks into the sliders (the Profit tick and slider, and Spread Risk and Play it safe, ask the same thing).",
       "size": "S",
       "status": "todo",
       "where": [
-        "src/components/ChatBot.jsx",
-        "src/styles/chatbot.css"
+        "src/screens/PaddockPriorities.jsx"
       ]
     },
     {
@@ -207,7 +206,7 @@
   "discuss": [
     {
       "q": "Should the planner keep some crop variety across the whole farm?",
-      "why": "Each paddock is still planned on its own, so the whole farm can end up in one crop in a season (in the demo every paddock gets Lupins in 2027). With the new crop list this matters more, because short lists make it more likely."
+      "why": "Each paddock is still planned on its own, so the whole farm can end up in one crop in a season (in the demo every paddock gets Lupins in 2027). With the new crop list this matters more, because short lists make it more likely. Seen again in the design critique (7 Oct): after the soil check finished, all four paddocks were Lupins in 2027 (122 ha), and paddock #3 had changed from Chickpeas between two visits. The plan is the main thing the app shows, so a one-crop farm looks wrong to farmers and judges."
     },
     {
       "q": "Which NASA Space Apps challenge statement are we answering?",
@@ -219,7 +218,7 @@
     },
     {
       "q": "What’s the app called?",
-      "why": "The design still says “Webapp Name” (src/config.js, index.html)."
+      "why": "It still says “Webapp Name” (src/config.js, index.html). The new sidebar and sign-in page show the name prominently, so a real name matters more now."
     },
     {
       "q": "Australia-first or global?",
@@ -236,6 +235,10 @@
     {
       "q": "Sign-in options: email magic link only, or Google too?",
       "why": "Both are free in Supabase; Google is one click for most users but needs a Google Cloud OAuth setup."
+    },
+    {
+      "q": "Button text is hard to read. Should we ask the Figma designer to change the label colour?",
+      "why": "Button fills and text must stay as in Figma, but cream text on the olive, gold and rose buttons has 2.4:1, 1.6:1 and 1.8:1 contrast (WCAG asks for 4.5:1). Dark ink text on the same fills would be 4.4:1, 6.4:1 and 5.8:1. Only the text colour would change; the fills stay. Still open after the UI redo: labels were kept cream to respect the rule. Changing them is one token (--btn-label in src/styles/tokens.css)."
     }
   ],
   "milestones": [
@@ -298,6 +301,10 @@
     {
       "title": "Next-stage plan written into both documents",
       "detail": "Public breakdown section 13 and the private guide’s part 22 describe phases 1–5: Supabase accounts and sync, farm diary, AI Manami via OpenRouter, daily weather actions, dashboard v2."
+    },
+    {
+      "title": "Enterprise UI redo, same theme",
+      "detail": "Rebuilt the whole interface as a workspace: app shell (collapsible soil sidebar, breadcrumbs, Ctrl K command palette, live satellite status, light/dark/system theme, Manami as a side panel with page tips inline), Overview dashboard (KPIs with animated numbers, season map, Needs attention, soil-health outlook chart, crop-mix donut, paddock table, activity feed, data-source status), Paddocks register, paddock tabs (Overview, History, Conditions, Priorities) with a sticky map rail, Planner rotation grid with a “why this crop” panel and option scores, CSV export and print, Insights (rotation report, rain chart, paddock memory grid, canola distances, sowing windows), Settings (profile, tips, crops, theme, export/import, delete). Background loading with inline progress replaced the full-screen loaders; toasts with Undo; six-step setup with a sidebar checklist. Also fixed every item from the 7 Oct critique (tip bubble, phone overflow, unlabelled bar, duplicate step, small text, mixed capitals, dates, best-guess badge, NDVI wording, demo button, Continue placement, small targets)."
     }
   ],
   "decisions": [
@@ -412,6 +419,46 @@
     {
       "what": "Code lives in a private GitHub repo (AR13X3/team-sheeeep), branch main",
       "why": "So the team can access it. private/ (personal guide) and all caches are in .gitignore."
+    },
+    {
+      "what": "Step outside the Figma layout; keep the theme",
+      "why": "The user asked for a complete redo good enough for an enterprise tool, keeping the theme. The palette, Lato, the sheep and Manami stay; the layout, components and navigation are new."
+    },
+    {
+      "what": "Button fill and label colours still exactly as in Figma",
+      "why": "CLAUDE.md rule. Cream labels on olive/gold/rose stay (contrast question still open in To discuss). New tones (ghost, subtle, plain) use ink text."
+    },
+    {
+      "what": "App shell with a dark soil sidebar on every signed-in page",
+      "why": "Gives a tool-like structure (one place for navigation) while the sign-in page keeps the meadow scene as the brand moment."
+    },
+    {
+      "what": "No page zoom any more; real-size fluid layout",
+      "why": "The 1280×832 fit-to-window zoom suited fixed Figma frames. A workspace needs real sizes, scrolling content and responsive grids. The fit check now asserts no page scroll and no sideways overflow."
+    },
+    {
+      "what": "Light and dark themes from semantic tokens",
+      "why": "Enterprise tools are expected to offer both. Dark mode uses the soil and ink colours, so it still feels like the same app."
+    },
+    {
+      "what": "Background loading instead of full-screen loaders",
+      "why": "The satellite read (~30 s) and SoilGrids (~5 requests/min) used to block the screen. Now they run in the background with progress in the top bar and in place, and the plan refines as data arrives."
+    },
+    {
+      "what": "Satellite read starts automatically once paddocks exist (except on the Farm map)",
+      "why": "The Overview and Planner need it; waiting until the farmer opens a paddock hid the best feature. Skipped while drawing so new shapes don’t trigger repeated reads."
+    },
+    {
+      "what": "Demo farm goes straight to the Overview with setup marked done",
+      "why": "Judges see the whole workspace in one click; the setup flow is still there for new farms."
+    },
+    {
+      "what": "Lucide icons (lucide-react 0.468, ISC licence)",
+      "why": "The Figma file only had a handful of icons; a full tool needs a consistent set."
+    },
+    {
+      "what": "Charts are our own small SVG components",
+      "why": "No chart library needed for a line, a donut and bars; they follow the theme tokens and have hover tooltips."
     }
   ],
   "issues": [
@@ -456,7 +503,25 @@
       "area": "Screens",
       "paths": [
         "src/screens/*.jsx",
-        "src/App.jsx"
+        "src/App.jsx",
+        "src/components/Page.jsx"
+      ]
+    },
+    {
+      "area": "App shell",
+      "paths": [
+        "src/components/shell/",
+        "src/styles/shell.css",
+        "src/state/useFarm.js",
+        "src/state/prefs.js",
+        "src/state/toast.jsx"
+      ]
+    },
+    {
+      "area": "Charts",
+      "paths": [
+        "src/components/charts.jsx",
+        "src/styles/charts.css"
       ]
     },
     {
@@ -526,6 +591,8 @@
       "area": "Design",
       "paths": [
         "src/styles/tokens.css",
+        "src/styles/ui.css",
+        "src/components/ui.jsx",
         "tools/figma-export/",
         "design/TEAM SHEEEEP.fig"
       ]
@@ -562,7 +629,7 @@
     {
       "what": "Browser checks (dev server must be running)",
       "cmd": "npm run test:e2e",
-      "note": "Drawing, snapping, sliders, soil split, mobile, season strip, full NASA flow, and “no screen scrolls” (measure-fit). Prefix E2E_H=665 to run in a laptop-sized window, or add a word to run one check, e.g. npm run test:e2e -- fit"
+      "note": "Drawing (with delete + Undo), snapping, sliders, soil split + phone, crop list, the six-step setup flow (grid, “why” panel, Ctrl K, Manami), the NASA flow, and fit (no page scroll or overflow on 14 pages). Prefix E2E_H=665 to run in a laptop-sized window, or add a word to run one check, e.g. npm run test:e2e -- fit"
     },
     {
       "what": "Crop-from-space accuracy",
@@ -573,6 +640,11 @@
       "what": "Regenerate the Word breakdown",
       "cmd": "python tools/docs/build_breakdown.py",
       "note": "Needs python-docx and Pillow. Uses the screenshots in docs/img, so refresh those first if screens changed, and update the text in the script when features change."
+    },
+    {
+      "what": "Refresh the doc screenshots",
+      "cmd": "node tools/e2e/_doc-shots.mjs",
+      "note": "Dev server running. Light theme, demo farm, writes docs/img/*.webp (uses the warm chrome-profile caches)."
     }
   ],
   "sessions": [
@@ -607,6 +679,32 @@
         "Pushed the project to a private GitHub repo: https://github.com/AR13X3/team-sheeeep (private/ excluded)"
       ],
       "leftOff": "Next stage planned. Start with Phase 1 (Supabase sign-in + cloud save) when the user is ready; the user needs to create a free Supabase project first."
+    },
+    {
+      "date": "7 Oct 2026",
+      "title": "Session 3: design critique",
+      "did": [
+        "Reviewed every screen at 1280×665 and at phone width (390 px), including the chat, the menu and the soil check",
+        "Measured text size, contrast and target size on each screen with a headless Chrome script",
+        "Found two cards wider than a phone screen, an unlabelled soil-health bar, a duplicate “Step 1 of 5”, and 8–10 px text at the laptop zoom",
+        "Button label contrast fails (1.6–2.4:1); raised as a question because the colours come from Figma",
+        "Queued the fixes in Next up"
+      ],
+      "leftOff": "Critique done. Next: decide the button-contrast question, then the small fixes from the critique, then the open questions and Phase 1."
+    },
+    {
+      "date": "9 Oct 2026",
+      "title": "Session 4: enterprise UI redo",
+      "did": [
+        "The user asked for a complete UI redo, good enough for an enterprise tool, keeping the theme and making it dynamic",
+        "Built the app shell: dark soil sidebar (collapsible, setup checklist), top bar with breadcrumbs, Ctrl K command palette, live satellite status, light/dark/system theme, Manami as a docked side panel with inline page tips",
+        "New and rebuilt pages: Overview dashboard, Farm map editor, Soil check with a live per-paddock list, Paddocks table, paddock tabs (Overview, History, Conditions, Priorities), Planner rotation grid with “why this crop”, Insights, Settings",
+        "Dynamic touches: animated KPI numbers, hover charts, plan that refines as soil/climate data arrive, toasts with Undo, activity feed, CSV export and print, keyboard season switching",
+        "Removed the page zoom; real-size responsive layout checked on all 14 pages at 1280×665 and 390×844",
+        "Fixed every item from the 7 Oct design critique",
+        "Updated all browser checks for the new UI (all pass), refreshed the 25 doc screenshots, README, readme.html, plan.html, CLAUDE.md and the Word breakdown"
+      ],
+      "leftOff": "UI redo done and checked. Next: talk through “To discuss” (button label contrast, app name, one-crop seasons, pitch), then hosting on Cloudflare Pages and Phase 1."
     }
   ]
 }

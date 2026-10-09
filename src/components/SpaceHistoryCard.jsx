@@ -1,13 +1,17 @@
 import Sparkline from './Sparkline.jsx';
 import TimeLapse from './TimeLapse.jsx';
-import SheepRunner from './SheepRunner.jsx';
-import { Button, Card } from './ui.jsx';
+import Icon from './Icon.jsx';
+import { Badge, Button, Card, CropChip, Progress, Source } from './ui.jsx';
 import { CROP_BY_ID } from '../data/crops.js';
 import { seasonWindow } from '../logic/phenology.js';
 import { paddockSpace } from '../state/useSpace.js';
 
-const CONF = { high: 'sure', medium: 'likely', low: 'best guess' };
+const CONF = { high: 'Sure', medium: 'Likely', low: 'Best guess' };
+const CONF_TONE = { high: 'ok', medium: 'info', low: 'neutral' };
 const HISTORY_KEYS = ['last', 'prev', 'prev2'];
+
+// "NDVI 0.53" reads as jargon: say greenness, keep the index name in the tooltip.
+const plain = (text = '') => text.replace(/NDVI /g, 'greenness ');
 
 /**
  * "Seen from space": what NASA satellites saw growing on this paddock each season,
@@ -16,28 +20,29 @@ const HISTORY_KEYS = ['last', 'prev', 'prev2'];
 export default function SpaceHistoryCard({ paddock, space, onApply }) {
   const { result, running, progress, error, start } = space;
   const mine = paddockSpace(result, paddock.id);
+  const head = { title: 'Seen from space', subtitle: 'What NASA satellites saw growing here each season', icon: 'satellite' };
 
   if (!mine) {
     return (
-      <Card className="space-card">
-        <div className="space-card__head">
-          <h2 className="card__title">Seen from space</h2>
-          <span className="space-badge">NASA</span>
-        </div>
+      <Card {...head} actions={<Badge tone="info">NASA HLS</Badge>}>
         {running ? (
-          <div className="status status--loading">
-            <SheepRunner count={1} size={34} speed={1.8} className="runner-lane--mini" />
-            <span>
-              Reading NASA satellite images of your farm{progress.total ? ` (${progress.done} of ${progress.total})` : '…'}
-            </span>
+          <div className="space-wait">
+            <p>
+              Reading NASA satellite images of your farm
+              <span className="num">{progress.total ? ` · ${progress.done} of ${progress.total}` : '…'}</span>
+            </p>
+            <Progress value={progress.total ? (progress.done / progress.total) * 100 : 4} tone="teal" label="Satellite images read" />
+            <p className="muted small">This takes about 30 seconds the first time and is cached afterwards. You can keep working.</p>
           </div>
         ) : (
-          <>
-            <p className="small">{error ? `Couldn’t read the satellite images: ${error}.` : 'See what grew here in past seasons, straight from NASA satellites.'}</p>
-            <Button size="compact" icon="search" onClick={start}>
-              {error ? 'Try again' : 'Look from space'}
-            </Button>
-          </>
+          <div className="space-wait">
+            <p>{error ? `Couldn’t read the satellite images: ${error}.` : 'See what grew here in past seasons, straight from NASA satellites.'}</p>
+            <div>
+              <Button size="sm" icon={error ? 'refresh' : 'satellite'} onClick={start}>
+                {error ? 'Try again' : 'Look from space'}
+              </Button>
+            </div>
+          </div>
         )}
       </Card>
     );
@@ -57,18 +62,21 @@ export default function SpaceHistoryCard({ paddock, space, onApply }) {
   }
 
   return (
-    <Card className="space-card">
-      <div className="space-card__head">
-        <h2 className="card__title">Seen from space</h2>
-        <span className="space-badge" title={result.source}>
+    <Card
+      {...head}
+      actions={
+        <Badge tone="info" title={result.source}>
           NASA · {result.looks} images
-        </span>
-      </div>
-
+        </Badge>
+      }
+      className="space-card"
+    >
       {near != null && near < 500 && (
-        <p className="space-alert" role="note">
-          <strong>Blackleg risk:</strong> canola flowered {near < 30 ? 'right next to' : `${near} m from`} this paddock in {canola.year}. Its stubble spreads blackleg spores up to ~500 m, so
-          Manami will avoid canola here next season.
+        <p className="callout callout--bad space-alert" role="note">
+          <Icon name="alert" size={16} />
+          <span>
+            <strong>Blackleg risk:</strong> canola flowered {near < 30 ? 'right next to' : `${near} m from`} this paddock in {canola.year}. Its stubble spreads blackleg spores up to ~500 m, so the plan avoids canola here next season.
+          </span>
         </p>
       )}
 
@@ -78,19 +86,20 @@ export default function SpaceHistoryCard({ paddock, space, onApply }) {
           const win = seasonWindow(s.year, result.lat);
           return (
             <li key={s.year}>
-              <span className="space-seasons__year">
+              <span className="space-seasons__year num">
                 {s.year}
-                {!s.complete && <em> now</em>}
+                {!s.complete && <em>now</em>}
               </span>
               <div className="space-seasons__main">
                 <div className="space-seasons__crop">
-                  <span className="crop-chip">
-                    {crop && <span className="crop-dot" style={{ background: crop.color }} />}
+                  <CropChip crop={crop} size="sm">
                     {s.label || 'Not enough clear images'}
-                  </span>
-                  {s.confidence && <span className={`conf conf--${s.confidence}`}>{CONF[s.confidence]}</span>}
+                  </CropChip>
+                  {s.confidence && <Badge tone={CONF_TONE[s.confidence]}>{CONF[s.confidence]}</Badge>}
                 </div>
-                <p className="space-seasons__why">{s.evidence || s.reason}</p>
+                <p className="space-seasons__why" title={s.evidence || s.reason}>
+                  {plain(s.evidence || s.reason)}
+                </p>
               </div>
               <Sparkline series={s.series} start={win.start} end={win.end} color={crop?.color === '#d9c48f' ? '#9b7a2f' : '#5f6a2c'} label={`${s.year} greenness curve`} />
             </li>
@@ -102,16 +111,15 @@ export default function SpaceHistoryCard({ paddock, space, onApply }) {
 
       {applicable.length > 0 && (
         <div className="space-card__actions">
-          <Button size="compact" icon="done" onClick={apply}>
+          <Button size="sm" icon="done" onClick={apply}>
             Use as crop history
           </Button>
           <span className="small muted">You can still correct each season below.</span>
         </div>
       )}
-      <p className="source">
-        NASA HLS v2.0 (Landsat + Sentinel-2, 30 m) via Microsoft Planetary Computer; pictures from Sentinel passes use the original 10 m Sentinel-2 image. Checked against USDA crop maps: canola found 85–96% of the time; crop type right
-        78–88%. Cereal vs pulse is the least certain.
-      </p>
+      <Source>
+        NASA HLS v2.0 (Landsat + Sentinel-2, 30 m) via Microsoft Planetary Computer; pictures from Sentinel passes use the original 10 m Sentinel-2 image. Checked against USDA crop maps: canola found 85–96% of the time; crop type right 78–88%. Cereal vs pulse is the least certain.
+      </Source>
     </Card>
   );
 }

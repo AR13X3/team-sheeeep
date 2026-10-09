@@ -1,12 +1,13 @@
 import { useMemo } from 'react';
-import { Card, Status } from './ui.jsx';
+import Icon from './Icon.jsx';
+import { Card, CropChip, Source, Status } from './ui.jsx';
 import { sowingRisk, fmtMMDD, CROP_PHENOLOGY } from '../logic/sowing.js';
 import { CROP_BY_ID } from '../data/crops.js';
 
 const pct = (v) => `${Math.round(v * 100)}%`;
 
 function RiskChart({ result }) {
-  const W = 260, H = 64, pad = 4;
+  const W = 300, H = 64, pad = 4;
   const d = result.dates.filter((x) => x.risk != null);
   if (d.length < 2) return null;
   const x = (i) => pad + (i / (result.dates.length - 1)) * (W - 2 * pad);
@@ -20,8 +21,12 @@ function RiskChart({ result }) {
       <polyline points={line('frost')} className="risk-chart__frost" />
       <polyline points={line('heat')} className="risk-chart__heat" />
       <polyline points={line('risk')} className="risk-chart__risk" />
-      <text x={pad} y={H + 12} className="risk-chart__axis">{fmtMMDD(result.dates[0].sow)}</text>
-      <text x={W - pad} y={H + 12} textAnchor="end" className="risk-chart__axis">{fmtMMDD(result.dates.at(-1).sow)}</text>
+      <text x={pad} y={H + 12} className="risk-chart__axis">
+        {fmtMMDD(result.dates[0].sow)}
+      </text>
+      <text x={W - pad} y={H + 12} textAnchor="end" className="risk-chart__axis">
+        {fmtMMDD(result.dates.at(-1).sow)}
+      </text>
     </svg>
   );
 }
@@ -30,18 +35,16 @@ function RiskChart({ result }) {
  * Safest sowing window for each crop planned in a season, from 30 years of NASA POWER daily
  * temperatures: chance of frost at flowering and of heat stress during grain fill.
  */
-export default function SowingCard({ cropIds, weather, error, lat, seasonLabel }) {
+export default function SowingCard({ cropIds, weather, error, lat, seasonLabel, compact = false }) {
+  const key = cropIds.join();
   const results = useMemo(
     () => (weather ? [...new Set(cropIds)].filter((id) => CROP_PHENOLOGY[id]).map((id) => sowingRisk(weather, id, lat)).filter(Boolean) : []),
-    [weather, cropIds.join(), lat],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [weather, key, lat],
   );
   const noSowing = [...new Set(cropIds)].filter((id) => !CROP_PHENOLOGY[id]).map((id) => CROP_BY_ID[id]?.name);
   return (
-    <Card className="plan-card sowing-card">
-      <h2 className="card__title">Sowing window</h2>
-      <p className="muted small">
-        Season sown {seasonLabel} · from {weather ? `${weather.days.length / 365 | 0} years` : '30 years'} of NASA POWER daily weather
-      </p>
+    <Card title="Sowing window" subtitle={`Season sown ${seasonLabel} · ${weather ? `${(weather.days.length / 365) | 0} years` : '30 years'} of NASA POWER weather`} icon="calendar" className="sowing-card">
       {!weather && !error && <Status state="loading">Fetching 30 years of NASA weather…</Status>}
       {error && <Status state="error">NASA POWER is unavailable right now.</Status>}
       <ul className="sow-list">
@@ -50,30 +53,46 @@ export default function SowingCard({ cropIds, weather, error, lat, seasonLabel }
           return (
             <li key={r.cropId}>
               <div className="sow-list__head">
-                <span className="crop-chip">
-                  <span className="crop-dot" style={{ background: crop.color }} />
-                  {crop.name}
-                </span>
-                <strong>
+                <CropChip crop={crop} />
+                <span className="sow-list__window">
                   Sow {fmtMMDD(r.window[0])}
                   {r.window[1] !== r.window[0] && ` – ${fmtMMDD(r.window[1])}`}
-                </strong>
+                </span>
               </div>
               <p className="sow-list__facts">
-                Flowers ~{fmtMMDD(r.best.flower)} · frost at flowering {pct(r.best.frost)} of years · heat in grain fill {pct(r.best.heat)}
+                <span>
+                  <Icon name="flower" size={13} /> Flowers ~{fmtMMDD(r.best.flower)}
+                </span>
+                <span>
+                  <Icon name="frost" size={13} /> Frost at flowering {pct(r.best.frost)} of years
+                </span>
+                <span>
+                  <Icon name="heat" size={13} /> Heat in grain fill {pct(r.best.heat)}
+                </span>
               </p>
-              <RiskChart result={r} />
+              {!compact || results.length === 1 ? <RiskChart result={r} /> : null}
             </li>
           );
         })}
       </ul>
       {results.length > 0 && (
         <p className="risk-legend">
-          <i className="risk-legend__frost" /> frost <i className="risk-legend__heat" /> heat <i className="risk-legend__risk" /> either <i className="risk-legend__window" /> best window
+          <span>
+            <i className="risk-legend__frost" /> Frost
+          </span>
+          <span>
+            <i className="risk-legend__heat" /> Heat
+          </span>
+          <span>
+            <i className="risk-legend__risk" /> Either
+          </span>
+          <span>
+            <i className="risk-legend__window" /> Best window
+          </span>
         </p>
       )}
-      {noSowing.length > 0 && <p className="small muted">{noSowing.join(', ')}: no sowing date needed.</p>}
-      <p className="source">Typical mid-maturity varieties; long- or short-season varieties shift these dates. Frost counted at ≤ 1 °C screen minimum.</p>
+      {noSowing.length > 0 && <p className="small muted" style={{ marginTop: 10 }}>{noSowing.join(', ')}: no sowing date needed.</p>}
+      <Source>Typical mid-maturity varieties; long- or short-season varieties shift these dates. Frost counted at ≤ 1 °C screen minimum.</Source>
     </Card>
   );
 }

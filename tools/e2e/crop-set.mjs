@@ -24,9 +24,9 @@ await sleep(1500);
 // onboarding: About you → Your Farm
 await page.goto('http://localhost:5173/#/experience', { waitUntil: 'domcontentloaded' });
 await sleep(800);
-await clickText('button', 'New Farmer');
+await clickText('button', 'New farmer');
 await sleep(800);
-result(page.url().endsWith('#/farm'), `“New Farmer” leads to the Your Farm step (${page.url().split('#')[1]})`);
+result(page.url().endsWith('#/farm'), `“New farmer” leads to the Your crops step (${page.url().split('#')[1]})`);
 const before = await page.evaluate(() => document.querySelectorAll('.crop-toggle.is-on').length);
 result(before === 12, `every crop is ticked by default (${before} of 12, incl. fallow)`);
 
@@ -45,7 +45,7 @@ await page.screenshot({ path: 'shots/crop-set-farm.png' });
 
 // planner: every season of every paddock uses only those crops
 const allowed = new Set(['Wheat', 'Barley', 'Canola', 'Lupins']);
-const planCrops = async () => page.evaluate(() => [...document.querySelectorAll('.season-strip__item')].flatMap((b) => b.getAttribute('aria-label').split('. ')[1].split(', ').map((x) => x.split(': ')[1])));
+const planCrops = async () => page.evaluate(() => [...document.querySelectorAll('.rotation-cell')].map((b) => b.dataset.crop));
 await clickText('button', 'Continue');
 await sleep(500);
 result(page.url().endsWith('#/paddocks'), 'Continue goes on to outlining paddocks');

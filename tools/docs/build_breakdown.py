@@ -46,7 +46,7 @@ d.text((40, 76), 'Everything runs in the farmer’s browser. No backend, no acco
 # browser frame
 d.rounded_rectangle((30, 130, 1080, 1030), 26, outline=INK, width=3)
 d.text((56, 142), 'In the browser (React 19 + Vite)', font=F(26, True), fill=INK)
-box(60, 195, 990, 165, 'Screens (src/screens)', ['Login · About you · Your farm · Outline paddocks · Soil check', 'Paddock details (history from space, priorities) · Planner · Dashboard', 'Leaflet map · season strip · time-lapse · Manami chat · loading screens'])
+box(60, 195, 990, 165, 'Pages in the app shell (src/screens, src/components)', ['Sign in · Overview · Farm map · Soil check · Paddocks · Paddock tabs', 'Planner (rotation grid) · Insights · Settings · six-step setup', 'Sidebar · Ctrl K search · Manami panel · charts · Leaflet map · time-lapse'])
 box(60, 400, 990, 200, 'Logic (src/logic): pure functions, testable in Node', ['rotation.js: scores every crop, every season   ·   cropSet.js: the farm’s crop list', 'phenology.js: crop from the greenness curve, canola flowering map', 'sowing.js: frost/heat risk by sowing date   ·   performance.js: did my rotation work?', 'geometry · snap · overlap · seasons · spacePlanning · manami'])
 box(60, 640, 990, 165, 'Services (src/services): fetch, cache, retry', ['hls.js + space.js: NASA HLS search, layers, pure-pixel readings, 10 m pictures', 'weather.js + climate.js: NASA POWER   ·   soil.js: SoilGrids   ·   terrain.js: elevation', 'geocode.js: place search   ·   http.js: cached fetch with timeouts'])
 box(60, 845, 470, 160, 'State', ['useReducer store → localStorage', '(paddocks, history, priorities,', 'crop list, satellite results)'], fill=SAND)
@@ -379,47 +379,50 @@ callout('**Our idea:** use NASA Earth observation to fill these gaps automatical
 # =====================================================================================
 # 3. JOURNEY
 # =====================================================================================
-H1('3. The farmer’s journey, screen by screen')
-P('The flow follows our Figma prototype: five steps, shown under each screen’s title. Everything the farmer enters is saved in their browser, so they can leave and come back.')
+H1('3. The farmer’s journey, page by page')
+P('After signing in, everything happens in one workspace with the look of our Figma design: a dark soil-coloured sidebar (Overview, Farm map, Paddocks, Planner, Insights, Settings), a top bar with breadcrumbs, a search box (Ctrl K), the live status of the satellite read, a light/dark switch and Manami. The first visit is a six-step setup with a progress bar on each page and a “Getting started” card in the sidebar. Everything the farmer enters is saved in their browser, so they can leave and come back.')
 
-H2('3.1 Login and “About you”')
-two_figures('login.png', 'experience.png', 'Login (left) and “About you” (right).')
-P('The login names the farmer’s profile (it is front-end only for now). Anyone can press **“Try the demo farm”** to load four example paddocks. On “About you”, a **new farmer** gets a tip from Manami on every screen; an **experienced farmer** goes straight to the tools.')
+H2('3.1 Sign in and “About you”')
+two_figures('login.png', 'experience.png', 'Sign in (left) and “About you” (right).')
+P('The sign-in page keeps the meadow scene from the design (click a sheep and it hops). It names the farmer’s profile (front-end only for now). Anyone can press **“Try the demo farm”** to go straight to the Overview of four example paddocks. On “About you”, a **new farmer** gets one short tip from Manami at the top of each page; an **experienced farmer** goes straight to the tools.')
 
-H2('3.2 Your farm: crops and livestock')
-figure('your-farm.png', 'The “Your Farm” step: livestock or crops only, then a tick for every crop the farm can grow and sell.', 14.5)
-P('Two quick questions: **Do you keep livestock?** (“Crops only” removes grazed pasture from the plan) and **Which crops can you grow and sell?**, grouped as cereals, oilseeds, legumes and hay, pasture and fallow. The planner only ever picks from what is ticked. If the list has no break crop or no legume, the app says what that will cost (disease, nitrogen, soil health) but still lets the farmer decide. The list can be changed any time from the Planner or the menu.')
+H2('3.2 Crops and livestock')
+figure('your-farm.png', 'Crops and livestock: livestock or crops only, then a tick for every crop the farm can grow and sell.', 14.5)
+P('Two quick questions: **Do you keep livestock?** (“Crops only” removes grazed pasture from the plan) and **Which crops can you grow and sell?**, grouped as cereals, oilseeds, legumes and hay, pasture and fallow. The planner only ever picks from what is ticked. If the list has no break crop or no legume, the app says what that will cost (disease, nitrogen, soil health) but still lets the farmer decide. The list can be changed any time from Settings, the Planner or the account menu.')
 
-H2('3.3 Outline your paddocks')
-two_figures('outline.png', 'snapping.png', 'The satellite map with the demo farm (left) and a new paddock snapping to its neighbour (right).')
-P('The farmer searches for their farm and clicks the corners of each paddock. Corners **snap** to a neighbouring paddock’s corner or edge when the mouse is close on screen, so paddocks share boundaries exactly, yet a real gap can still be drawn by zooming in or holding Alt. Two clicks on a neighbour’s border trace along it. Overlaps are trimmed automatically, crossed outlines and mis-clicks are rejected, and finished paddocks can be reshaped by dragging corners.')
+H2('3.3 Farm map')
+two_figures('outline.png', 'snapping.png', 'The farm map with the demo farm and the paddock list (left) and a new paddock snapping to its neighbour (right).')
+P('The farmer searches for their farm, presses **Draw paddock** and clicks the corners. Corners **snap** to a neighbouring paddock’s corner or edge when the mouse is close on screen, so paddocks share boundaries exactly, yet a real gap can still be drawn by zooming in or holding Alt. Two clicks on a neighbour’s border trace along it. Overlaps are trimmed automatically and crossed outlines and mis-clicks are rejected. A list beside the map lets the farmer select a paddock to reshape it, open it or delete it, and a deleted paddock can be brought back with **Undo**.')
 
 H2('3.4 Soil check')
-figure('soil-check.png', 'The soil check suggests splitting a paddock whose two ends have different soils.', 14.5)
-P('The app samples the soil at both ends of each paddock. If they really differ (a change in texture class backed by at least 4% more clay or 6% more sand, a pH difference of 0.5, or 8% more clay), it suggests splitting the paddock so each part can be managed for its own soil. The farmer can accept, or keep the old paddocks and say why.')
+figure('soil-check.png', 'The soil check samples both ends of every paddock, with a live list of its progress.', 14.5)
+P('The app samples the soil at both ends of each paddock, and a live list shows each paddock as it is checked. If the ends really differ (a change in texture class backed by at least 4% more clay or 6% more sand, a pH difference of 0.5, or 8% more clay), it suggests splitting the paddock so each part can be managed for its own soil. The farmer can accept, or keep the old paddocks and note why.')
 
-H2('3.5 Paddock details: history from space')
-two_figures('space-history.png', 'timelapse.png', '“Seen from space” (left): the crop in each of the last five seasons, with a blackleg warning. Time-lapse (right): real satellite pictures, with the paddock outlined.')
-P('For each paddock, the **“Seen from space”** card lists the last five seasons: the crop family, how sure we are (sure, likely or best guess), the evidence (“greened up 23 July, peaked at NDVI 0.74 on 23 Sept, dried off 2 Nov”) and a small greenness curve. One click, **“Use as crop history”**, fills in the paddock’s history. The **time-lapse** plays real satellite pictures of the farm, one per season plus the canola-flowering picture. The map shows canola that flowered around the farm, and a **blackleg alert** appears when it was within 500 m. Below the card are the paddock’s soil and slope and any known issues (salinity, waterlogging, herbicide-resistant weeds and so on).')
+H2('3.5 Paddock pages: overview and history from space')
+two_figures('paddock-overview.png', 'space-history.png', 'Paddock overview (left) and the History tab with “Seen from space” and a blackleg warning (right).')
+P('Every paddock has four tabs: **Overview** (soil health after the plan, next crop and why, blackleg distance, the ten-season plan, its soil-health chart and sowing window), **History**, **Conditions** (soil, slope and climate) and **Priorities**. A rail beside them keeps the map and the paddock’s next five seasons in view. On History, the **“Seen from space”** card lists the last five seasons: the crop family, how sure we are (sure, likely or best guess), the evidence (“greened up 23 July, peaked at greenness 0.74 on 23 Sept, dried off 2 Nov”) and a small greenness curve. **“Use as crop history”** fills in the paddock’s history in one click, and any blank season shows what the satellite saw. The **time-lapse** plays real satellite pictures of the farm, and a **blackleg alert** appears when canola flowered within 500 m.')
+figure('timelapse.png', 'Time-lapse: real satellite pictures of the farm, one per season plus the canola-flowering picture, with the paddock outlined.', 11)
 
-H2('3.6 Paddock details: priorities')
+H2('3.6 Paddock pages: priorities')
 figure('priorities.png', 'Priority sliders with a live preview of the next seasons.', 14.5)
-P('Four sliders (soil health, water saving, profit, low risk) run from “Not important” to “Top priority”. The farmer also ticks their reasons for rotating (disease break, nitrogen, weed control, erosion, spreading risk, profit). A live preview shows the next four seasons with these settings, and indicative prices are shown for the crops the plan leans towards.')
+P('Four sliders (soil health, water saving, profit, play it safe) run from “Not important” to “Top priority”. A **live preview** beside them shows the next four seasons with these settings and changes as the sliders move. The farmer also ticks their reasons for rotating (disease break, nitrogen, weed control, erosion, spreading risk, profit), and indicative prices are shown for the crops the plan leans towards.')
 
-H2('3.7 Your plan')
-two_figures('planner.png', 'sowing.png', 'The Planner (left) and the Sowing window card (right).')
-P('Across the top, a **season strip** shows all ten seasons; each has a dot per paddock in its crop’s colour, so the whole rotation reads at a glance, and a click jumps to any season. The map is coloured by the planned crop. **Crops to Grow** says what to plant in each paddock and why (“breaks the cereal disease cycle”, “uses nitrogen left by the legume”), including blackleg notes. The **Sowing window** card gives the safest sowing dates for the crops planned that season, from 30 years of NASA weather. **Soil Health** shows how each paddock’s soil index changes. A button opens the crop list so the farmer can change it and watch the plan update.')
+H2('3.7 The Planner')
+two_figures('planner.png', 'planner-why.png', 'The rotation grid (left) and the “why this crop” panel (right).')
+P('The Planner opens with key figures (soil health after ten seasons, the share of break crops, crops per season, how many paddocks were steered away from blackleg). The **rotation grid** shows every paddock against every season in its crop’s colour, so the whole rotation reads at a glance. Clicking a season (or pressing ← →) shows it on the map; clicking any cell opens **why that crop** was chosen, how it moves soil health and, for next season, how the alternatives scored. Below are the map for the selected season (with last season’s neighbour canola in yellow), the crops to grow and the **sowing window** from 30 years of NASA weather. The plan can be exported as a spreadsheet (CSV) or printed.')
+figure('sowing.png', 'The sowing window: frost and heat risk by sowing date, and the safest window.', 11)
 
-H2('3.8 Dashboard')
-figure('dashboard.png', 'The dashboard, with “Did my rotation work?”.', 14.5)
-P('A summary of the farm (paddocks and hectares), the coming season’s crop mix, soil health now and after ten seasons, and the **“Did my rotation work?”** report, with each season’s rainfall and the rainfall-limited wheat yield for context.')
+H2('3.8 Overview and Insights')
+two_figures('dashboard.png', 'insights.png', 'The Overview (left) and Insights (right).')
+P('The **Overview** is the farm at a glance: next season’s crops, the sowing window and any blackleg risks up front; key figures; the farm map for any of the next five seasons; a **Needs attention** list (blackleg risks, missing history, soil gaps, one-crop seasons, crop-list warnings) where each item links to the fix; the soil-health outlook; the crop mix; a paddock table; recent activity; and the status of every data source. **Insights** gathers the evidence: “Did my rotation work?”, rain in each season against the long-term normal, the **paddock memory from space** as one grid (every paddock × every season), each paddock’s distance to neighbour canola, and sowing windows for every crop on the list. A **Paddocks** page lists every paddock in a sortable, searchable table.')
 
-H2('3.9 Manami, the guide')
-figure('manami.png', 'Asking Manami a question on the Planner.', 14.5)
-P('Manami sits in the corner of every screen. New farmers get a tip for each screen, and anyone can ask questions in plain words: soil, slope, rainfall, legumes and nitrogen, weeds, satellites, blackleg, sowing dates, livestock and crop lists, or what a screen does. The answers run offline from a built-in knowledge base, and the design lets us plug in a full AI assistant later without changing the chat window.')
+H2('3.9 Manami, search and settings')
+two_figures('manami.png', 'search.png', 'Manami’s side panel (left) and Ctrl K search (right).')
+P('Manami opens as a side panel from the top bar, with suggested questions for the page. New farmers get her tip for each page at the top of the content, where it never covers anything. Anyone can ask in plain words: soil, slope, rainfall, legumes and nitrogen, weeds, satellites, blackleg, sowing dates, livestock and crop lists, shortcuts or what a page does. The answers run offline from a built-in knowledge base, and the design lets us plug in a full AI assistant later. **Ctrl K** jumps to any page or paddock or runs an action. **Settings** holds the profile and tips, the crop list, the theme (light, dark or system) and exporting or importing the farm as a file.')
 
-H2('3.10 Fits any screen')
-P('Every screen is drawn at the Figma frame size and **zoomed to fit the window**: out on laptops (a typical 1280 × 665 window shows it at 0.8×), slightly in on large monitors (up to 1.2×), and it adjusts live when the window is resized. Windows 960 px wide or narrower switch to a stacked layout, with phone-sized type below 720 px. In testing, no screen makes the page scroll at any window size from 1000 × 700 up to 2560 × 1300.')
+H2('3.10 Any screen, light or dark')
+two_figures('dashboard-dark.png', 'mobile-planner.png', 'Dark mode (left) and the Planner on a phone (right).', 8.1)
+P('The app fills the window at its real size: only the content area scrolls, never the page, and nothing is wider than the window (checked automatically on every page in a 1280 × 665 laptop window). The sidebar collapses to icons for more room, and below 960 px it becomes a slide-out menu. Long jobs (the satellite read, soil, slope, climate) run in the background with progress shown in place, and the plan updates itself as the data arrives.')
 
 # =====================================================================================
 # 4. CAPABILITIES IN DEPTH
@@ -475,7 +478,7 @@ table(['Input', 'Effect on the choice'], [
     ['From space', 'Blank history is filled from confident satellite readings; nearby canola stubble steers canola away.'],
     ['Crop list', 'Only crops the farmer ticked are scored; “Crops only” removes grazed pasture.'],
 ], widths=[3.6, 13.2], first_bold=True)
-P('A **soil-health index** starts from organic carbon, pH and known issues, and each season’s crop nudges it up or down. Every screen that shows a plan (Priorities preview, Planner, Dashboard) uses the same engine and the same crop list.')
+P('A **soil-health index** starts from organic carbon, pH and known issues, and each season’s crop nudges it up or down. Every page that shows a plan (Priorities preview, Planner, Overview, paddock pages) uses the same engine and the same crop list.')
 
 H2('4.6 The safest sowing window')
 P('From 30 years of NASA POWER daily minimum and maximum temperatures at the farm, for each candidate sowing date (weekly, April to June) and each crop:')
@@ -568,11 +571,11 @@ H2('7.1 Stack')
 table(['Layer', 'Technology', 'Why we chose it'], [
     ['User interface', 'React 19 (function components, hooks, lazy-loaded screens)', 'Fast, familiar, and each screen loads only when needed.'],
     ['Routing', 'React Router 7 (hash routes)', 'Works from any static host with no server set-up.'],
-    ['Build and dev server', 'Vite 8 with the React plugin', 'Instant reloads while building; small production build (main bundle about 340 kB, 103 kB compressed; the map code loads only with the map screens).'],
+    ['Build and dev server', 'Vite 8 with the React plugin', 'Instant reloads while building; small production build (main bundle about 354 kB, 107 kB compressed; every page and the map code load only when needed).'],
     ['Maps and drawing', 'Leaflet 1.9 with our own drawing, snapping and editing tools', 'Lightweight, reliable, and easy to extend with custom controls.'],
     ['Geometry', 'Our own WGS84 geometry + polygon-clipping 0.15', 'Accurate areas, inside-point and overlap trimming.'],
     ['Satellite processing', 'Our own code on NASA HLS layers (NDVI, flower index, cloud mask)', 'Runs in the browser on small per-farm images: no servers, no keys.'],
-    ['Styling and artwork', 'Plain CSS with design tokens; SVG artwork exported from the Figma file', 'Pixel-faithful to the design and easy to change.'],
+    ['Styling and artwork', 'Plain CSS with semantic design tokens (light and dark themes) built from the Figma palette; Lucide line icons; SVG artwork exported from the Figma file', 'Keeps the design’s look across a full app, with one place to change colours.'],
     ['Storage', 'Browser localStorage (farm data) and Cache Storage (images, weather)', 'Private by default; a farm’s satellite record is downloaded once.'],
     ['Testing', 'Puppeteer + Chrome (browser checks), pngjs (accuracy scripts)', 'Tests drive the real app like a user would.'],
     ['Tooling', 'Node.js 22.15+, our Figma exporter (Kiwi schema + zstd)', 'Re-exports all artwork when the design changes.'],
@@ -580,11 +583,11 @@ table(['Layer', 'Technology', 'Why we chose it'], [
 
 H2('7.2 How the code is organised')
 table(['Folder', 'What lives there'], [
-    ['src/screens', 'One file per screen in the design: Login, Experience, YourFarm, OutlinePaddocks, ReviewPaddocks, PaddockHistory, PaddockPriorities, Planner, Dashboard.'],
-    ['src/components', 'Reusable pieces: the Leaflet map, season strip, time-lapse, crop picker, sowing and report cards, Manami’s chat, loading screens, UI kit.'],
+    ['src/screens', 'One file per page: Login, Dashboard (Overview), Experience, YourFarm, OutlinePaddocks (Farm map), ReviewPaddocks (Soil check), Register (Paddocks), PaddockOverview, PaddockHistory, PaddockConditions, PaddockPriorities, Planner, Insights, Settings.'],
+    ['src/components', 'The app shell (sidebar, top bar, Ctrl K search, Manami’s panel), the page frame, the UI kit (cards, KPI tiles, tables, tabs, toasts, dialogs), SVG charts, the Leaflet map, paddock table, time-lapse, crop picker, sowing and report cards.'],
     ['src/logic', 'Pure decision code, testable without a browser: rotation planner, crop-from-space classifier, sowing risk, rotation report, crop list, geometry, snapping, overlap, Manami’s answers.'],
     ['src/services', 'Talking to data services, with caching and retries: NASA HLS and the farm analysis, NASA POWER, SoilGrids, elevation, place search.'],
-    ['src/state', 'The app’s saved state and data-loading hooks.'],
+    ['src/state', 'The app’s saved state (with an activity log), the farm-wide plan and alerts (useFarm), data-loading hooks, notices and preferences.'],
     ['src/data', 'The crop knowledge base (11 crops + fallow, editable by agronomists) and the demo farm.'],
     ['tools/', 'Figma exporter, accuracy-test scripts (validation) and browser checks (e2e).'],
     ['docs/', 'Visual README, build plan, project tracker and this document.'],
@@ -596,30 +599,30 @@ P('**Design choice:** there is deliberately no backend. Everything a farmer ente
 # =====================================================================================
 H1('8. Design: from Figma to a working app')
 bullets([
-    '**Straight from the design file.** We wrote an exporter that decodes the Figma file itself (Kiwi schema + zstd compression) and renders every scene, sheep, Manami and icon to SVG using Figma’s own vector geometry, so the art matches the editor exactly.',
-    '**Design tokens.** Colours, corner radii, shadows and type sizes come from the Figma components. Button colours are kept exactly as designed.',
-    '**A living world.** The exporter tags sheep, eyes and grass so the sheep bob and blink, the grass sways, the background shifts gently with the mouse, and a clicked sheep hops and says “Baa!”. Loading screens show sheep running across a field. All motion switches off for people who prefer reduced motion.',
-    '**Guidance built in.** A five-step progress bar under every title, Manami’s tips for new farmers, plain-language explanations on every recommendation.',
-    '**Accessible.** Everything works with the keyboard (including the map drawing and the season strip), with visible focus outlines and screen-reader labels.',
-    '**Fits any window**, as described in section 3.10.',
+    '**Straight from the design file.** We wrote an exporter that decodes the Figma file itself (Kiwi schema + zstd compression) and renders every scene, sheep and Manami to SVG using Figma’s own vector geometry, so the art matches the editor exactly.',
+    '**The same look, grown into a tool.** The Figma palette (charcoal, teal, olive, gold, rose, taupe, cream, ink) and Lato became a set of design tokens with a light theme on warm cream and a dark theme on soil brown. Button colours are kept exactly as designed. On top sits our own UI kit: cards, key-figure tiles with animated numbers, tables, tabs, notices, dialogs, a command palette and small charts with hover details.',
+    '**A living world, where it helps.** The meadow scene with its bobbing, blinking sheep stays on the sign-in page; the sheep mark each paddock; Manami lives in the sidebar, the top bar and her panel. Motion switches off for people who prefer reduced motion.',
+    '**Guidance built in.** A six-step setup with progress, Manami’s tips for new farmers, plain-language reasons on every recommendation, and a Needs attention list that links to each fix.',
+    '**Accessible.** Everything works with the keyboard (including map drawing, the season grid and Ctrl K search), with visible focus outlines, screen-reader labels and a skip-to-content link.',
+    '**Any window**, as described in section 3.10.',
 ])
-two_figures('mobile-outline.png', 'mobile-planner.png', 'The same app on a phone: outlining paddocks and the plan.', 5.0)
+two_figures('mobile-outline.png', 'mobile-planner.png', 'The same app on a phone: the farm map and the plan.', 5.0)
 
 # =====================================================================================
 # 9. QUALITY
 # =====================================================================================
 H1('9. How we keep it working: quality checks')
-P('Every change is checked by automated tests that drive the real app in Chrome, at both a laptop-sized window and the design size.')
+P('Every change is checked by automated tests that drive the real app in Chrome, in a laptop-sized window and a larger one.')
 table(['Check', 'What it proves'], [
-    ['Drawing', 'Selecting paddocks, undo, double-click finish, rejecting crossed and tiny shapes, dragging and adding corners.'],
+    ['Drawing', 'Selecting paddocks, undo, double-click finish, rejecting crossed and tiny shapes, dragging and adding corners, delete with Undo.'],
     ['Snapping', 'Corners lock onto neighbours exactly, gaps survive zooming in, border tracing, Alt to place freely, overlap trimming.'],
-    ['Whole flow', 'Every screen from login to dashboard, the season strip (keyboard, clicking the last season), Manami’s chat.'],
+    ['Whole flow', 'The six setup steps from sign-in to the plan, setup finishing on the Planner, the season grid (keyboard, clicking a season, the “why” panel), Ctrl K search and Manami’s panel.'],
     ['Soil split + mobile', 'The soil-based split suggestion and the phone layouts.'],
     ['Sliders (UI)', 'Click, drag and keyboard values, and the labels from “Not important” to “Top priority”.'],
     ['Sliders (plan)', 'Each priority moves the plan in the right direction across its range.'],
-    ['Crop list', '“Crops only” removes pasture; the Planner, Priorities preview and Dashboard use only ticked crops; editing from the Planner updates the plan.'],
+    ['Crop list', '“Crops only” removes pasture; the Planner and the Priorities preview use only ticked crops; editing from the Planner updates the plan.'],
     ['NASA flow', 'Satellite history, “Use as crop history”, sowing windows and the rotation report, with no errors.'],
-    ['Fit', 'No screen makes the page scroll in a laptop-sized window.'],
+    ['Fit', 'No page scrolls as a whole or is wider than the window, on all 14 pages in a laptop-sized window.'],
 ], widths=[3.6, 13.2], size=9.5, first_bold=True)
 P('Plus the three accuracy scripts in section 6. Run everything with **npm run test:e2e** (dev server running) and **npm run validate:phenology / validate:pixels / validate:canola10m**.')
 
@@ -636,6 +639,7 @@ table(['Stage', 'What we did'], [
     ['6. Works on every screen', 'Fit-to-window zoom so nothing needs scrolling on a laptop, and a clickable season strip in place of a drag ruler.'],
     ['7. The farmer’s own crops', 'The crop list and livestock choice, so plans only use what the farm can grow.'],
     ['8. Sharper and more accurate', 'Pure-pixel paddock readings (tested: +5 to +17 points on real fields) and 10 m pictures.'],
+    ['9. A tool, not a mock-up', 'Rebuilt the interface as a full workspace in the same colours: sidebar and search, Overview, Paddocks, paddock tabs, a rotation grid with “why this crop”, Insights, Settings, light and dark themes, background loading with live progress, and undo.'],
 ], widths=[4.2, 12.6], size=9.5, first_bold=True)
 
 # =====================================================================================
@@ -646,18 +650,18 @@ H2('Running it')
 bullets([
     'Install Node.js 22.15 or newer.',
     'In the project folder: **npm install**, then **npm run dev**, then open http://localhost:5173.',
-    'On the login screen press **“Try the demo farm”**.',
+    'On the sign-in page press **“Try the demo farm”**.',
     '**npm run build** produces a static site in the dist folder that can be hosted anywhere.',
 ], style='List Number')
 H2('A three-minute demo')
 table(['Time', 'Show', 'Say'], [
-    ['0:00', 'Login → “Try the demo farm”', 'A real farm in the NSW Riverina: four paddocks, 122 ha.'],
-    ['0:20', 'Paddock details → “Seen from space”', 'We read about 100 NASA images over five seasons and know what grew here, with the evidence. One click fills the history.'],
-    ['0:50', 'Time-lapse → flowering picture; the yellow map', 'Canola flowered 52 m from this paddock. Its stubble spreads blackleg: something you can’t see from the farm gate.'],
-    ['1:20', 'Planner → season strip, Crops to Grow', 'The plan steers canola away from that paddock and explains why. Every dot is a paddock’s crop, ten seasons ahead.'],
-    ['1:50', 'Sowing window card', 'Thirty years of NASA weather: sow canola 6–13 May to dodge frost at flowering and heat in grain fill.'],
-    ['2:15', 'Your crops → Crops only', 'No livestock? Pasture disappears and the plan updates instantly.'],
-    ['2:35', 'Dashboard → Did my rotation work?', 'Proof from space: cereals after a break crop were 27% more vigorous on this farm.'],
+    ['0:00', 'Sign in → “Try the demo farm” → Overview', 'A real farm in the NSW Riverina: four paddocks, 122 ha. Next season, the sowing window and three blackleg risks are right at the top.'],
+    ['0:25', 'Needs attention → Blackleg risk on Paddock #1', 'One click to the paddock. We read about 100 NASA images over five seasons and know what grew here, with the evidence.'],
+    ['0:55', 'Time-lapse → flowering picture; the yellow map', 'Canola flowered right next to this paddock. Its stubble spreads blackleg: something you can’t see from the farm gate.'],
+    ['1:20', 'Planner → rotation grid → click a cell', 'Every paddock, ten seasons ahead. Why this crop, and how the options scored: canola was pushed down by the blackleg risk.'],
+    ['1:50', 'Sowing window', 'Thirty years of NASA weather: sow lupins 6–13 May to dodge frost at flowering and heat in grain fill.'],
+    ['2:15', 'Crop list → Crops only', 'No livestock? Pasture disappears and the grid updates instantly.'],
+    ['2:35', 'Insights → Did my rotation work?', 'Proof from space: cereals after a break crop were 27% more vigorous on this farm.'],
     ['2:50', 'Accuracy slide', 'Checked against USDA crop maps: canola found 85–96% of the time.'],
 ], widths=[1.4, 5.2, 10.2], size=9)
 P('Tip: open the demo farm once before presenting so the satellite images and weather are already cached.', size=9.5, color=MUTED)

@@ -1,4 +1,4 @@
-// Screenshots each screen at a given window size, to check the fit-to-window scaling.
+// Screenshots each screen at a given window size, to check the layout.
 //   node _fit-shots.mjs [width] [height]   → shots/fit-<w>x<h>-<screen>.png
 import puppeteer from 'puppeteer-core';
 import { fileURLToPath } from 'node:url';
@@ -13,14 +13,12 @@ const page = await browser.newPage();
 await page.setViewport({ width: W, height: H });
 await page.goto('http://localhost:5173/', { waitUntil: 'networkidle2' });
 const id = await page.evaluate(() => JSON.parse(localStorage.getItem('sheeep:v1') || '{}').paddocks?.[0]?.id);
-const screens = { login: '#/', experience: '#/experience', farm: '#/farm', paddocks: '#/paddocks', review: '#/paddocks/review', history: `#/paddocks/${id}/history`, priorities: `#/paddocks/${id}/priorities`, planner: '#/planner', dashboard: '#/dashboard' };
+const screens = { login: '#/', dashboard: '#/dashboard', experience: '#/experience', farm: '#/farm', paddocks: '#/paddocks', review: '#/paddocks/review', register: '#/register', paddock: `#/paddocks/${id}`, history: `#/paddocks/${id}/history`, conditions: `#/paddocks/${id}/conditions`, priorities: `#/paddocks/${id}/priorities`, planner: '#/planner', insights: '#/insights', settings: '#/settings' };
 for (const [name, hash] of Object.entries(screens)) {
   if (only && !name.includes(only)) continue;
   await page.goto('http://localhost:5173/' + hash, { waitUntil: 'domcontentloaded' });
   await sleep(900); // loading screens appear after a short delay
-  for (let i = 0; i < 40 && (await page.$('.loading')); i++) await sleep(500);
   await sleep(1500);
   await page.screenshot({ path: `shots/fit-${W}x${H}-${name}.png` });
 }
-console.log('scale', await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue('--ui-scale')));
 await browser.close();

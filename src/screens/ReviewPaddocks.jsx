@@ -1,16 +1,17 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
-import Screen from '../components/Screen.jsx';
+import Page from '../components/Page.jsx';
 import PaddockMap from '../components/PaddockMap.jsx';
 import Modal from '../components/Modal.jsx';
-import LoadingScreen from '../components/LoadingScreen.jsx';
-import { useLoadingGate } from '../state/useLoadingGate.js';
+import Icon from '../components/Icon.jsx';
+import { SheepAvatar } from '../components/Art.jsx';
 import { SoilFacts } from '../components/SiteCards.jsx';
-import { Button, Card, TextArea } from '../components/ui.jsx';
+import { Badge, Button, Card, Progress, Source, TextArea } from '../components/ui.jsx';
 import { newPaddockId, renumberPaddocks, useStore } from '../state/store.jsx';
+import { useToast } from '../state/toast.jsx';
 import { interiorPoint, splitAcrossLongAxis, areaHa, formatHa } from '../logic/geometry.js';
 import { averageSoil, fetchSoil, soilsDiffer } from '../services/soil.js';
-import '../styles/screens.css';
+import '../styles/paddock.css';
 
 export const TEXTURE_COLORS = {
   Sand: '#efe3c4',
@@ -63,9 +64,18 @@ function useSoilSplitAnalysis(paddocks, dispatch) {
   return { results, retry: () => setAttempt((a) => a + 1) };
 }
 
+const STATUS = {
+  waiting: { icon: 'clock', label: 'Waiting', tone: 'neutral' },
+  loading: { icon: 'spinner', label: 'Sampling both ends…', tone: 'info' },
+  same: { icon: 'circle-check', label: 'Consistent soil', tone: 'ok' },
+  split: { icon: 'paddocks', label: 'Soil differs: split suggested', tone: 'warn' },
+  error: { icon: 'alert', label: 'Soil service unavailable', tone: 'bad' },
+};
+
 export default function ReviewPaddocks() {
   const { state, dispatch } = useStore();
   const navigate = useNavigate();
+  const toast = useToast();
   const { paddocks } = state;
   const { results, retry } = useSoilSplitAnalysis(paddocks, dispatch);
   const [selected, setSelected] = useState(null);
@@ -76,7 +86,6 @@ export default function ReviewPaddocks() {
   const finished = paddocks.length > 0 && done === paddocks.length;
   const splitCount = paddocks.filter((p) => results[p.id]?.differ).length;
   const failed = paddocks.filter((p) => results[p.id]?.status === 'error').length;
-  const showLoading = useLoadingGate(paddocks.length > 0 && !finished);
 
   // The "new paddocks": split where the soil differs, unchanged elsewhere.
   const suggested = useMemo(
@@ -93,7 +102,7 @@ export default function ReviewPaddocks() {
   const current = suggested.find((s) => s.id === selected);
 
   const styleFor = useCallback(
-    (s) => (s.soil?.texture ? { fillColor: TEXTURE_COLORS[s.soil.texture] || '#989b66', fillOpacity: 0.6, color: '#ece4d4' } : { fillColor: '#ece4d4', fillOpacity: 0.2, color: '#ece4d4' }),
+    (s) => (s.soil?.texture ? { fillColor: TEXTURE_COLORS[s.soil.texture] || '#989b66', fillOpacity: 0.65, color: '#ece4d4' } : { fillColor: '#ece4d4', fillOpacity: 0.2, color: '#ece4d4' }),
     [],
   );
   const labelFor = useCallback((s) => `${s.name} · ${s.soil?.texture || 'no soil data'}`, []);
@@ -102,7 +111,8 @@ export default function ReviewPaddocks() {
   if (!paddocks.length) return <Navigate to="/paddocks" replace />;
 
   function goToFirst(list) {
-    navigate(`/paddocks/${list[0].id}/history`);
+    dispatch({ type: 'completeStep', step: 'soil' });
+    navigate(state.setupDone ? '/register' : `/paddocks/${list[0].id}/history`);
   }
 
   function accept() {
@@ -114,7 +124,8 @@ export default function ReviewPaddocks() {
       } else next.push(p);
     }
     const list = renumberPaddocks(next);
-    dispatch({ type: 'setPaddocks', paddocks: list });
+    dispatch({ type: 'setPaddocks', paddocks: list, note: `Soil check: split ${splitCount} paddock${splitCount > 1 ? 's' : ''} (${list.length} now)` });
+    toast({ tone: 'ok', title: 'New paddocks accepted', description: `You now have ${list.length} paddocks, each on one soil.` });
     goToFirst(list);
   }
 
@@ -126,16 +137,46 @@ export default function ReviewPaddocks() {
 
   const textures = [...new Set(suggested.map((s) => s.soil?.texture).filter(Boolean))];
   const samples = paddocks.flatMap((p) => (results[p.id]?.halves || []).map((h) => ({ at: interiorPoint(h), label: `Soil sampled here (${p.name})` })));
+  const statusOf = (p) => {
+    const r = results[p.id];
+    if (!r) return 'waiting';
+    if (r.status === 'loading') return 'loading';
+    if (r.status === 'error') return 'error';
+    return r.differ ? 'split' : 'same';
+  };
+
+  const actions = !finished ? (
+    <>
+      <Button tone="ghost" onClick={() => goToFirst(paddocks)}>
+        Skip for now
+      </Button>
+      <Button loading>Checking soil…</Button>
+    </>
+  ) : splitCount ? (
+    <>
+      <Button tone="danger" onClick={() => setAskWhy(true)}>
+        Keep old paddocks
+      </Button>
+      <Button onClick={accept} icon="done">
+        Accept new paddocks
+      </Button>
+    </>
+  ) : (
+    <Button onClick={() => goToFirst(paddocks)} iconEnd="arrow-forward">
+      Continue
+    </Button>
+  );
 
   return (
-    <Screen scene="field" title="Soil Check" step={2} back="/paddocks" chat="review">
-      <div className="cols cols--review">
-        <div className="cols__left">
-          <Card className="map-card">
-            <div className="map-frame">
-              <PaddockMap paddocks={suggested} markers={samples} styleFor={styleFor} labelFor={labelFor} tagFor={tagFor} highlightId={selected} onSelect={(id) => setSelected((s) => (s === id ? null : id))} fitKey={paddocks.length} initialView={state.mapView} />
-              {textures.length > 0 && (
-                <ul className="legend" aria-label="Soil texture">
+    <Page title="Soil check" description="Manami samples the soil at both ends of every paddock and suggests a split where it changes." step="soil" tip="review" actions={actions}>
+      <div className="split split--map">
+        <Card flush className="map-card">
+          <div className="map-frame map-card__frame">
+            <PaddockMap paddocks={suggested} markers={samples} styleFor={styleFor} labelFor={labelFor} tagFor={tagFor} highlightId={selected} onSelect={(id) => setSelected((s) => (s === id ? null : id))} fitKey={paddocks.length} initialView={state.mapView} />
+            {textures.length > 0 && (
+              <div className="map-legend">
+                <span className="map-legend__title">Soil texture (0–30 cm)</span>
+                <ul aria-label="Soil texture">
                   {textures.map((t) => (
                     <li key={t}>
                       <span className="crop-dot" style={{ background: TEXTURE_COLORS[t] }} />
@@ -143,94 +184,91 @@ export default function ReviewPaddocks() {
                     </li>
                   ))}
                 </ul>
-              )}
-              {finished && failed > 0 && <p className="map-chip map-note">Soil colours unavailable for {failed === paddocks.length ? 'these paddocks' : `${failed} paddock${failed > 1 ? 's' : ''}`}</p>}
-            </div>
-          </Card>
-        </div>
-
-        <div className="cols__right review__right">
-          <Card title={current ? `Soil · ${current.name}` : 'Soil'} className="data-card">
-            {current ? (
-              <>
-                <p className="muted small">{formatHa(areaHa(current.coords))} ha{current.id.includes(':') ? ' · suggested new paddock' : ''}</p>
-                {current.soil ? <SoilFacts soil={current.soil} /> : <p className="status">Soil data unavailable here.</p>}
-              </>
-            ) : !finished ? (
-              <p className="status">Checking the soil at both ends of each paddock… ({done}/{paddocks.length})</p>
-            ) : (
-              <>
-                {splitCount > 0 && (
-                  <p>
-                    {splitCount} of {paddocks.length} paddock{paddocks.length > 1 ? 's have' : ' has'} different soil at each end, so I’ve split {splitCount > 1 ? 'them' : 'it'} into new paddocks. Click one to see its soil.
-                  </p>
-                )}
-                {!splitCount && !failed && <p>Good news — the soil is consistent inside each paddock, so there’s nothing to change. Click a paddock to see its soil.</p>}
-                {failed > 0 && (
-                  <p className="status status--error">
-                    I couldn’t reach the soil service for {failed === paddocks.length ? 'your paddocks' : `${failed} paddock${failed > 1 ? 's' : ''}`}, so I can’t check {failed > 1 ? 'them' : 'it'} for soil changes right now.{' '}
-                    <button type="button" className="link-btn" onClick={retry}>
-                      Try again
-                    </button>
-                  </p>
-                )}
-              </>
-            )}
-            <p className="source">ISRIC SoilGrids 2.0 · 0–30 cm</p>
-          </Card>
-
-          <div className="review__actions">
-            {!finished ? (
-              <>
-                <Button disabled>Checking soil…</Button>
-                <Button tone="danger" onClick={() => goToFirst(paddocks)}>
-                  Skip
-                </Button>
-              </>
-            ) : splitCount ? (
-              <>
-                <Button onClick={accept} icon="done">
-                  Accept new paddocks
-                </Button>
-                <Button tone="danger" onClick={() => setAskWhy(true)}>
-                  Keep old paddocks
-                </Button>
-              </>
-            ) : (
-              <Button onClick={() => goToFirst(paddocks)} iconEnd="arrow-forward">
-                Continue
-              </Button>
+              </div>
             )}
           </div>
+        </Card>
+
+        <div className="stack">
+          <Card
+            title="Soil sampling"
+            subtitle={finished ? (splitCount ? `${splitCount} of ${paddocks.length} paddocks have two soils` : 'Every paddock is on one soil') : `Checked ${done} of ${paddocks.length} paddocks`}
+            icon="mountain"
+            actions={failed > 0 && finished && <Button tone="ghost" size="sm" icon="refresh" onClick={retry}>Retry</Button>}
+          >
+            <Progress value={(done / paddocks.length) * 100} tone={finished ? 'accent' : 'teal'} className={finished ? '' : 'progress--live'} label="Soil check progress" />
+            <ul className="sample-list">
+              {paddocks.map((p) => {
+                const st = STATUS[statusOf(p)];
+                const r = results[p.id];
+                return (
+                  <li key={p.id}>
+                    <button type="button" className={`sample-list__row${selected && (selected === p.id || selected.startsWith(`${p.id}:`)) ? ' is-active' : ''}`} onClick={() => setSelected(r?.differ ? `${p.id}:0` : p.id)}>
+                      <SheepAvatar n={p.sheep} size={26} />
+                      <span className="sample-list__text">
+                        <strong>{p.name}</strong>
+                        <span>
+                          {formatHa(areaHa(p.coords))} ha
+                          {r?.soils && ` · ${r.differ ? r.soils.map((s) => s?.texture || '?').join(' / ') : averageSoil(r.soils)?.texture || 'no data'}`}
+                        </span>
+                      </span>
+                      <Badge tone={st.tone}>
+                        <Icon name={st.icon} size={12} className={st.icon === 'spinner' ? 'spin' : ''} />
+                        {st.label}
+                      </Badge>
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+            {finished && !splitCount && !failed && (
+              <p className="callout callout--ok">
+                <Icon name="circle-check" size={16} />
+                <span>Good news: the soil is consistent inside each paddock, so there’s nothing to change.</span>
+              </p>
+            )}
+            {finished && splitCount > 0 && (
+              <p className="callout callout--warn">
+                <Icon name="paddocks" size={16} />
+                <span>
+                  Splitting gives {splitCount > 1 ? 'these paddocks' : 'this paddock'} two halves that can be managed for their own soil. Click one on the map to compare.
+                </span>
+              </p>
+            )}
+            {finished && failed > 0 && (
+              <p className="callout callout--bad">
+                <Icon name="alert" size={16} />
+                <span>I couldn’t reach the soil service for {failed === paddocks.length ? 'your paddocks' : `${failed} paddock${failed > 1 ? 's' : ''}`}. Retry, or continue and check later.</span>
+              </p>
+            )}
+          </Card>
+
+          <Card title={current ? current.name : 'Soil detail'} subtitle={current ? `${formatHa(areaHa(current.coords))} ha${current.id.includes(':') ? ' · suggested new paddock' : ''}` : 'Click a paddock on the map'} icon="info">
+            {current ? current.soil ? <SoilFacts soil={current.soil} /> : <p className="muted">Soil data unavailable here.</p> : <p className="muted">Texture, pH, clay and organic carbon for the paddock or half you select.</p>}
+            <Source>ISRIC SoilGrids 2.0 · 0–30 cm average at the centre of each half</Source>
+          </Card>
         </div>
       </div>
 
-      {showLoading && (
-        <LoadingScreen
-          title="Checking the soil"
-          detail={`Manami is sampling both ends of every paddock (${done} of ${paddocks.length} done). This can take a little while.`}
-          progress={paddocks.length ? done / paddocks.length : 0}
-          action={
-            <Button tone="danger" size="compact" onClick={() => goToFirst(paddocks)}>
-              Skip for now
-            </Button>
-          }
-        />
-      )}
-
       {askWhy && (
         <Modal
-          title="Why?"
+          title="Keep your old paddocks?"
+          description="A short note helps you (and Manami) remember why."
           onClose={() => setAskWhy(false)}
           footer={
-            <Button size="compact" onClick={keep} icon="done">
-              OK
-            </Button>
+            <>
+              <Button tone="ghost" onClick={() => setAskWhy(false)}>
+                Cancel
+              </Button>
+              <Button onClick={keep} icon="done">
+                Keep old paddocks
+              </Button>
+            </>
           }
         >
-          <TextArea label="Why do you want to keep your old paddocks?" value={why} onChange={(e) => setWhy(e.target.value)} />
+          <TextArea label="Why do you want to keep your old paddocks?" value={why} onChange={(e) => setWhy(e.target.value)} placeholder="e.g. same fence line, managed as one block" />
         </Modal>
       )}
-    </Screen>
+    </Page>
   );
 }

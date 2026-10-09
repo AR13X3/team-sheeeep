@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-
-const fmt = (d) => new Date(d).toLocaleDateString('en-AU', { day: 'numeric', month: 'short', year: 'numeric' });
+import Icon from './Icon.jsx';
+import { fmtDate } from '../logic/seasons.js';
 
 /**
  * Real satellite true-colour images of the farm across seasons, with one paddock outlined.
@@ -44,13 +44,13 @@ export default function TimeLapse({ frames = [], bbox, grid, coords }) {
           <polygon points={pts} className="timelapse__outline" />
         </svg>
         <span className={`timelapse__tag ${frame.kind === 'flowering' ? 'is-flowering' : ''}`}>
-          {fmt(frame.date)} · {frame.kind === 'flowering' ? 'canola flowering' : 'mid-season'}
+          {fmtDate(frame.date)} · {frame.kind === 'flowering' ? 'canola flowering' : 'mid-season'}
           {frame.sensor && <span className="timelapse__sensor"> · {frame.sensor} {frame.metres} m</span>}
         </span>
       </div>
       <figcaption className="timelapse__controls">
         <button type="button" className="timelapse__play" onClick={() => setPlaying((p) => !p)} aria-label={playing ? 'Pause time-lapse' : 'Play time-lapse'}>
-          {playing ? '❚❚' : '▶'}
+          <Icon name={playing ? 'pause' : 'play'} size={15} />
         </button>
         <div className="timelapse__dots" role="tablist" aria-label="Satellite images">
           {frames.map((f, k) => (
@@ -61,7 +61,7 @@ export default function TimeLapse({ frames = [], bbox, grid, coords }) {
               aria-selected={k === i}
               className={`${k === i ? 'is-current' : ''}${f.kind === 'flowering' ? ' is-flowering' : ''}`}
               onClick={() => (setI(k), setPlaying(false))}
-              title={`${fmt(f.date)}${f.kind === 'flowering' ? ' · canola flowering' : ''}`}
+              title={`${fmtDate(f.date)}${f.kind === 'flowering' ? ' · canola flowering' : ''}`}
             >
               {f.kind === 'flowering' ? `Flowering ’${String(new Date(f.date).getFullYear()).slice(2)}` : new Date(f.date).getFullYear()}
             </button>

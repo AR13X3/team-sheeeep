@@ -7,7 +7,7 @@ const ALL_IDS = CROPS.map((c) => c.id);
 
 /**
  * The farm's crop list: livestock yes/no plus a tick for every crop the farmer can grow and sell.
- * Used on the "Your Farm" screen and in the Planner's "Your crops" dialog. `onChange` gets a
+ * Used on the setup step, in Settings and in the Planner's "Your crops" dialog. `onChange` gets a
  * partial farm ({ livestock } or { crops }). `action` (e.g. a Continue button) sits beside the warnings.
  */
 export default function CropSetPicker({ farm, onChange, action }) {
@@ -21,25 +21,37 @@ export default function CropSetPicker({ farm, onChange, action }) {
 
   return (
     <div className="crop-set">
-      <div className="crop-set__section">
+      <section className="crop-set__section">
         <h3 className="crop-set__q" id="q-livestock">
-          Do you keep livestock?
+          <span className="crop-set__num">1</span> Do you keep livestock?
         </h3>
         <div className="choice-pair" role="radiogroup" aria-labelledby="q-livestock">
           <button type="button" role="radio" aria-checked={noLivestock} className="choice" onClick={() => onChange({ livestock: false })}>
-            <strong>Crops only</strong>
-            <span>No sheep or cattle, so no pasture phases</span>
+            <span className="choice__icon">
+              <Icon name="wheat" size={18} />
+            </span>
+            <span>
+              <strong>Crops only</strong>
+              <span>No sheep or cattle, so no pasture phases</span>
+            </span>
           </button>
           <button type="button" role="radio" aria-checked={!noLivestock} className="choice" onClick={() => onChange({ livestock: true })}>
-            <strong>Crops + livestock</strong>
-            <span>Pasture phases can be grazed</span>
+            <span className="choice__icon">
+              <Icon name="sprout" size={18} />
+            </span>
+            <span>
+              <strong>Crops + livestock</strong>
+              <span>Pasture phases can be grazed</span>
+            </span>
           </button>
         </div>
-      </div>
+      </section>
 
-      <div className="crop-set__section">
+      <section className="crop-set__section">
         <div className="crop-set__head">
-          <h3 className="crop-set__q">Which crops can you grow and sell?</h3>
+          <h3 className="crop-set__q">
+            <span className="crop-set__num">2</span> Which crops can you grow and sell?
+          </h3>
           <span className="crop-set__quick">
             <button type="button" onClick={() => setCrops(ALL_IDS)}>
               Tick all
@@ -50,46 +62,61 @@ export default function CropSetPicker({ farm, onChange, action }) {
           </span>
         </div>
         <div className="crop-set__groups">
-          {CROP_GROUPS.map((g) => (
-            <div key={g.family} className="crop-set__group">
-              <span className="crop-set__group-label">{g.label}</span>
-              <div className="crop-set__chips">
-                {CROPS.filter((c) => c.family === g.family).map((c) => {
-                  const blocked = c.needsLivestock && noLivestock;
-                  const on = isTicked(farm, c.id) && !blocked;
-                  return (
-                    <button
-                      key={c.id}
-                      type="button"
-                      className={`crop-toggle${on ? ' is-on' : ''}`}
-                      aria-pressed={on}
-                      disabled={blocked}
-                      title={blocked ? 'Needs livestock to graze it' : undefined}
-                      onClick={() => toggle(c.id)}
-                    >
-                      <span className="crop-dot" style={{ background: c.color }} />
-                      {c.name}
-                      {on && <Icon name="check" size={16} className="crop-toggle__check" />}
-                    </button>
-                  );
-                })}
-                {g.livestock && noLivestock && <span className="crop-set__note">Needs livestock</span>}
+          {CROP_GROUPS.map((g) => {
+            const list = CROPS.filter((c) => c.family === g.family);
+            const on = list.filter((c) => isTicked(farm, c.id) && !(c.needsLivestock && noLivestock)).length;
+            return (
+              <div key={g.family} className="crop-set__group">
+                <p className="crop-set__group-label">
+                  {g.label}
+                  <span>
+                    {on}/{list.length}
+                  </span>
+                  {g.livestock && noLivestock && <em className="crop-set__note">Needs livestock</em>}
+                </p>
+                <div className="crop-set__chips">
+                  {list.map((c) => {
+                    const blocked = c.needsLivestock && noLivestock;
+                    const ticked = isTicked(farm, c.id) && !blocked;
+                    return (
+                      <button
+                        key={c.id}
+                        type="button"
+                        className={`crop-toggle${ticked ? ' is-on' : ''}`}
+                        aria-pressed={ticked}
+                        disabled={blocked}
+                        title={blocked ? 'Needs livestock to graze it' : undefined}
+                        onClick={() => toggle(c.id)}
+                      >
+                        <span className="crop-toggle__box" aria-hidden="true">
+                          {ticked && <Icon name="check" size={12} strokeWidth={3} />}
+                        </span>
+                        <span className="crop-dot" style={{ background: c.color }} />
+                        {c.name}
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
-      </div>
+      </section>
 
       <div className="crop-set__foot">
         <div className="crop-set__status">
           {warnings.length > 0 && (
             <div className="crop-set__warn" role="status">
               {warnings.map((w) => (
-                <p key={w}>{w}</p>
+                <p key={w}>
+                  <Icon name="alert" size={14} /> {w}
+                </p>
               ))}
             </div>
           )}
-          <p className="crop-set__summary">Planning with {describeCropSet(farm)}.</p>
+          <p className="crop-set__summary">
+            <Icon name="circle-check" size={14} /> Planning with {describeCropSet(farm)}.
+          </p>
         </div>
         {action}
       </div>

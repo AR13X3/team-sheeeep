@@ -12,7 +12,7 @@ const histories = [
   { last: [''], prev: [''], prev2: [''] },
 ];
 const metric = { soilHealth: ['soil', +1], water: ['water', -1], profit: ['profit', +1], risk: ['risk', -1] };
-const label = { soilHealth: 'Soil Health', water: 'Water Saving', profit: 'Profit', risk: 'Low Risk' };
+const label = { soilHealth: 'Soil Health', water: 'Water Saving', profit: 'Profit', risk: 'Play it safe' };
 const avgAttr = (plan, attr) => plan.seasons.reduce((s, x) => s + x.crop[attr], 0) / plan.seasons.length;
 console.log('Each slider swept 0→100 (others at 50), averaged over 4 paddock histories.');
 console.log('Value = average of the crop attribute that slider should favour, over 10 seasons.\n');
@@ -36,7 +36,7 @@ for (const [name, pr] of Object.entries({
   'Profit 100': { soilHealth: 50, water: 50, profit: 100, risk: 50 },
   'Soil Health 100': { soilHealth: 100, water: 50, profit: 50, risk: 50 },
   'Water Saving 100': { soilHealth: 50, water: 100, profit: 50, risk: 50 },
-  'Low Risk 100': { soilHealth: 50, water: 50, profit: 50, risk: 100 },
+  'Play it safe 100': { soilHealth: 50, water: 50, profit: 50, risk: 100 },
   'all 0': { soilHealth: 0, water: 0, profit: 0, risk: 0 },
 })) {
   const p = planPaddock({ ...base, priorities: pr }, 8);

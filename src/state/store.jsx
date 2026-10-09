@@ -3,26 +3,26 @@ import { createContext, useContext, useEffect, useMemo, useReducer } from 'react
 const STORAGE_KEY = 'sheeep:v1';
 
 export const PRIORITY_KEYS = [
-  { key: 'soilHealth', label: 'Soil Health' },
-  { key: 'water', label: 'Water Saving' },
-  { key: 'profit', label: 'Profit' },
-  { key: 'risk', label: 'Low Risk' },
+  { key: 'soilHealth', label: 'Soil health', hint: 'Build organic matter and structure' },
+  { key: 'water', label: 'Water saving', hint: 'Prefer crops that need less water' },
+  { key: 'profit', label: 'Profit', hint: 'Favour crops with a strong margin' },
+  { key: 'risk', label: 'Play it safe', hint: 'Avoid crops that fail more often' },
 ];
 
 export const ISSUE_KEYS = [
   { key: 'waterlogging', label: 'Waterlogging' },
   { key: 'erosion', label: 'Erosion' },
-  { key: 'herbicideWeeds', label: 'Herbicide-resistant Weeds' },
-  { key: 'diseaseHistory', label: 'Disease History' },
+  { key: 'herbicideWeeds', label: 'Herbicide-resistant weeds' },
+  { key: 'diseaseHistory', label: 'Disease history' },
   { key: 'salinity', label: 'Salinity' },
 ];
 
 export const REASON_KEYS = [
-  { key: 'weedControl', label: 'Weed-Control' },
+  { key: 'weedControl', label: 'Weed control' },
   { key: 'nitrogen', label: 'Nitrogen' },
   { key: 'erosion', label: 'Erosion' },
-  { key: 'diseaseBreak', label: 'Disease Break' },
-  { key: 'spreadRisk', label: 'Spread Risk' },
+  { key: 'diseaseBreak', label: 'Disease break' },
+  { key: 'spreadRisk', label: 'Spread risk' },
   { key: 'profit', label: 'Profit' },
 ];
 
@@ -35,6 +35,9 @@ const initialState = {
   dismissedTips: {},
   space: null, // { key, result } from services/space.js (satellite history of the farm)
   farm: { livestock: true, crops: null }, // the farm's crop list (logic/cropSet.js); crops: null = every crop
+  setupDone: false, // true once the farmer has reached their plan (hides the setup checklist)
+  setupSteps: {}, // onboarding steps finished: { about, crops, paddocks, soil, details, plan }
+  activity: [], // recent changes, newest first: { id, at, kind, text, paddockId? }
 };
 
 // Sheep art (src/assets/art/sheep-N.svg) handed out to paddocks, most colourful first.
@@ -66,7 +69,7 @@ export function createPaddock(coords, existing) {
   };
 }
 
-function reducer(state, action) {
+function baseReducer(state, action) {
   switch (action.type) {
     case 'login':
       return { ...state, user: { name: action.name } };
@@ -97,9 +100,71 @@ function reducer(state, action) {
       return { ...state, farm: { ...state.farm, ...action.value } };
     case 'dismissTip':
       return { ...state, dismissedTips: { ...state.dismissedTips, [action.id]: true } };
+    case 'resetTips':
+      return { ...state, dismissedTips: {} };
+    case 'setSetupDone':
+      return { ...state, setupDone: action.value };
+    case 'completeStep': {
+      const steps = { ...state.setupSteps, [action.step]: true };
+      return { ...state, setupSteps: steps, setupDone: state.setupDone || action.step === 'plan' };
+    }
+    case 'completeSetup':
+      return { ...state, setupDone: true, setupSteps: { about: true, crops: true, paddocks: true, soil: true, details: true, plan: true } };
+    case 'import':
+      return { ...initialState, ...action.value, user: state.user };
     default:
       throw new Error(`Unknown action ${action.type}`);
   }
+}
+
+// What changed in a paddock, in words, for the activity feed (auto-filled site data is skipped).
+const PADDOCK_CHANGES = [
+  ['coords', 'Shape edited'],
+  ['history', 'Crop history updated'],
+  ['issues', 'Known issues updated'],
+  ['comments', 'Notes edited'],
+  ['priorities', 'Priorities adjusted'],
+  ['reasons', 'Rotation goals updated'],
+];
+
+function describe(prev, next, action) {
+  switch (action.type) {
+    case 'addPaddock': {
+      const p = next.paddocks.at(-1);
+      return { kind: 'paddock', text: `${p.name} outlined`, paddockId: p.id };
+    }
+    case 'removePaddock': {
+      const p = prev.paddocks.find((q) => q.id === action.id);
+      return p && { kind: 'delete', text: `${p.name} deleted` };
+    }
+    case 'setPaddocks':
+      return { kind: 'paddock', text: action.note || `Paddocks updated (${next.paddocks.length})` };
+    case 'setSpace':
+      return action.value && { kind: 'satellite', text: `Satellite record read (${action.value.result?.looks ?? 'NASA'} images)` };
+    case 'setFarm':
+      return { kind: 'crops', text: 'Crop list changed' };
+    case 'updatePaddock': {
+      const a = prev.paddocks.find((q) => q.id === action.id);
+      const b = next.paddocks.find((q) => q.id === action.id);
+      const hit = a && b && PADDOCK_CHANGES.find(([k]) => a[k] !== b[k]);
+      return hit && { kind: 'edit', text: `${b.name}: ${hit[1].toLowerCase()}`, paddockId: b.id };
+    }
+    default:
+      return null;
+  }
+}
+
+let activityId = 0;
+function reducer(state, action) {
+  const next = baseReducer(state, action);
+  if (next === state || !next.user) return next;
+  const entry = describe(state, next, action);
+  if (!entry) return next;
+  const log = next.activity || [];
+  const now = Date.now();
+  // slider drags and typing make many small changes: fold repeats within two minutes
+  if (log[0] && log[0].text === entry.text && now - log[0].at < 120000) return { ...next, activity: [{ ...log[0], at: now }, ...log.slice(1)] };
+  return { ...next, activity: [{ id: `${now.toString(36)}${activityId++}`, at: now, ...entry }, ...log].slice(0, 40) };
 }
 
 function load() {
