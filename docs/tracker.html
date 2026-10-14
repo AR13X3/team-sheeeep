@@ -62,7 +62,7 @@
 <script type="application/json" id="tracker-data">
 {
   "updated": "2026-10-14",
-  "phase": "Session 5 · team repo ready: UI redo merged and deployed, member branches created; invite the team next",
+  "phase": "Session 5 · team repo ready, live on Cloudflare with branch previews; CI in PR #3; invite the team next",
   "summary": "The app is now a full planning workspace in the same colours, Lato and Manami as the Figma design: a soil-coloured sidebar, Ctrl K search, live satellite status, light and dark themes, an Overview dashboard with charts and alerts, a Paddocks table, paddock pages with tabs, a rotation grid in the Planner with “why this crop”, Insights and Settings. The four NASA features (Paddock Memory from Space, neighbour canola → blackleg, safest sowing window, “Did my rotation work?”) are unchanged and now easier to find. The repo is now set up for teammates: a short README with setup, team and structure, CONTRIBUTING.md with the branch → pull request → review flow and design rules, pull request and issue templates, and docs/how-it-works.md for the detail. Still to do: merge ui-redo into main and invite the team, talk through the open questions (including button label contrast), then hosting and Phase 1.",
   "resumePrompt": "Read docs/tracker.html (the JSON in #tracker-data) and pick up from “Next up”. Start by going through “To discuss” with me.",
   "next": [
@@ -77,13 +77,11 @@
       ]
     },
     {
-      "title": "Fix Cloudflare preview builds for branches",
-      "detail": "Live site: https://team-sheeeep.joytoufiqahmed.workers.dev (deployed from main; its bundle matched a local build on 14 Oct). Builds from main pass, but builds of other branches fail (ui-redo 6f5650a, joy 0a13caa), so every pull request shows a red Workers Builds check. wrangler versions upload --dry-run passes locally, so the cause is only in the Cloudflare build log (dashboard → Worker team-sheeeep → Deployments/Builds). Also check Settings → Builds: production branch main, and the non-production deploy command (default npx wrangler versions upload). The site is public; Cloudflare Access can limit it to team emails.",
+      "title": "Optional: limit the live site to the team",
+      "detail": "https://team-sheeeep.joytoufiqahmed.workers.dev and the branch previews are public to anyone with the link. Cloudflare Access (free for small teams) can require a team email. Worth deciding before the demo.",
       "size": "S",
-      "status": "todo",
-      "where": [
-        "wrangler.jsonc"
-      ]
+      "status": "idea",
+      "where": []
     },
     {
       "title": "Phase 1: Supabase sign-in and cloud save",
@@ -339,6 +337,14 @@
     {
       "title": "A branch per team member",
       "detail": "joy (owner), sami, apurva, nila, nyla and dewmini, all created from main after PR #1, and listed in the Team table in README.md."
+    },
+    {
+      "title": "Previews for every branch",
+      "detail": "Branch builds run `wrangler preview`, which needed an empty previews block in wrangler.jsonc. Since 14 Oct every branch gets a preview at https://<branch>-team-sheeeep.joytoufiqahmed.workers.dev, linked on its pull request by the Cloudflare bot."
+    },
+    {
+      "title": "CI on GitHub Actions",
+      "detail": "Like SiteScore’s CI: .github/workflows/ci.yml runs npm ci, npm run build and npm run check:docs on every pull request and on main. check:docs (tools/checks/check-docs.mjs) validates the tracker JSON and the links between the markdown docs."
     }
   ],
   "decisions": [
@@ -513,6 +519,18 @@
     {
       "what": "Deploy as a Cloudflare Worker with static assets (wrangler.jsonc), not Pages",
       "why": "The repo was connected through Workers Builds, which runs wrangler deploy after npm run build and needs a config naming the assets folder. dist/ is served as-is; the hash router needs no SPA fallback. The Worker name in wrangler.jsonc must stay team-sheeeep."
+    },
+    {
+      "what": "Branch builds use Cloudflare Worker Previews (wrangler preview), so wrangler.jsonc keeps an empty previews block",
+      "why": "That’s the non-production deploy command Cloudflare set up for this Worker. Without the block every pull request showed a red check."
+    },
+    {
+      "what": "CI runs the build and the docs check only; browser checks stay local",
+      "why": "The e2e checks call live NASA, SoilGrids and map services and take minutes, so in CI they would be slow and flaky and use up the private repo’s free Actions minutes. Cloudflare already builds every branch too."
+    },
+    {
+      "what": "check:docs validates the tracker JSON and doc links",
+      "why": "Six people now edit the tracker; a stray comma would blank the page. Docs moved around in session 5, so links are checked too."
     }
   ],
   "issues": [
@@ -653,7 +671,10 @@
         "tools/validation/",
         "tools/e2e/",
         "docs/TEAM-SHEEEEP-Project-Breakdown.docx",
-        "tools/docs/build_breakdown.py"
+        "tools/docs/build_breakdown.py",
+        "tools/checks/",
+        ".github/workflows/ci.yml",
+        "wrangler.jsonc"
       ]
     }
   ],
@@ -676,7 +697,12 @@
     {
       "what": "Production build",
       "cmd": "npm run build",
-      "note": ""
+      "note": "Also runs in CI on every pull request."
+    },
+    {
+      "what": "Docs check",
+      "cmd": "npm run check:docs",
+      "note": "Tracker JSON valid and links between docs resolve. Also runs in CI on every pull request."
     },
     {
       "what": "Browser checks (dev server must be running)",
@@ -778,9 +804,11 @@
         "The user merged PR #1 into main; the Cloudflare build of main then succeeded (first green deploy)",
         "Created the member branches from main: joy (the owner’s), sami, apurva, nila, nyla, dewmini; this tracker update went through joy → main as the first pull request under the new workflow",
         "Live site confirmed at https://team-sheeeep.joytoufiqahmed.workers.dev; added to README, CONTRIBUTING, readme.html and this tracker",
-        "Found that branch preview builds fail (main passes); waiting on the Cloudflare build log"
+        "Branch builds failed because Cloudflare runs `npx wrangler preview` for them, which needs a previews block (from the build log the user pasted). An empty block fixed it: the joy preview built and deployed",
+        "The user merged PR #2 (joy → main)",
+        "Added CI like the user’s SiteScore repo: GitHub Actions runs build + a new docs check (tracker JSON, doc links) on every pull request"
       ],
-      "leftOff": "Everything is on main and live. PR #2 (joy → main) is open. Next: get the Cloudflare log for the failing branch builds, invite the five teammates, then talk through “To discuss”."
+      "leftOff": "PR #3 (joy → main) adds CI. Next: invite the five teammates, decide whether to limit the live site to the team, then talk through “To discuss”."
     }
   ]
 }

@@ -124,11 +124,13 @@ team-sheeeep/
 │   ├── data/                 crop knowledge base, demo farm
 │   ├── styles/               tokens.css (colours, light/dark) + one file per area
 │   └── assets/               artwork exported from Figma: sheep, Manami, scenes, icons
+├── .github/                  CI workflow, pull request and issue templates
 ├── docs/                     visual docs (readme, plan, tracker), how-it-works.md,
 │                             the Word breakdown, screenshots in img/
 ├── tools/
 │   ├── e2e/                  browser checks (npm run test:e2e) + doc screenshot script
 │   ├── validation/           crop-from-space accuracy checks vs. USDA crop maps
+│   ├── checks/               docs check: tracker JSON and links (npm run check:docs)
 │   ├── figma-export/         turns design/*.fig into the SVG artwork
 │   └── docs/                 builds the Word breakdown
 ├── design/                   the Figma source file
@@ -153,6 +155,7 @@ together), then [`src/logic/rotation.js`](src/logic/rotation.js) (how a crop is 
 | `npm run validate:phenology` | Crop-from-space accuracy against USDA crop maps |
 | `npm run validate:pixels` | Pure vs. all pixels on whole fields |
 | `npm run validate:canola10m` | NASA HLS 30 m vs. Sentinel-2 10 m canola map |
+| `npm run check:docs` | Check the tracker JSON is valid and the links between docs work (also runs in CI) |
 | `npm run export:figma` | Re-export the artwork from `design/TEAM SHEEEEP.fig` |
 | `node tools/e2e/_doc-shots.mjs` | Refresh the screenshots in `docs/img` (dev server running) |
 | `python tools/docs/build_breakdown.py` | Rebuild the Word breakdown (needs `python-docx` and `Pillow`) |
@@ -174,9 +177,10 @@ apurva    ●──●──●──●──●──●──●──●─�
 5. Open a pull request from your branch into `main`. A teammate reviews it, then it's merged
    with **Create a merge commit**.
 
-Nobody pushes to `main` directly. Cloudflare builds every pushed branch (the
-*Workers Builds* check on a pull request) and deploys `main` to the live site. Details,
-design rules and review tips are in [CONTRIBUTING.md](CONTRIBUTING.md).
+Nobody pushes to `main` directly. Every pull request gets two automatic checks: **CI**
+(GitHub Actions builds the app and checks the docs) and **Workers Builds** (Cloudflare builds
+a preview of your branch at `https://<branch>-team-sheeeep.joytoufiqahmed.workers.dev` and posts the link on the pull request). Merges into
+`main` go live. Details, design rules and review tips are in [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Where we're up to
 
