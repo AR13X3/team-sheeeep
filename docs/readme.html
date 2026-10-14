@@ -36,6 +36,7 @@
         <span class="chip chip--olive">No login or API key</span>
         <span class="chip">React 19 + Vite</span>
       </div>
+      <p><a href="#team"><strong>New to the team? Start here →</strong></a></p>
     </div>
     <div class="frame">
       <div class="frame__bar"><i></i><i></i><i></i></div>
@@ -93,27 +94,103 @@
     <p class="muted small" style="margin-top:14px">Everything runs in the browser and images are cached, so a farm is read once (about 30 seconds the first time). Click any screenshot to enlarge it.</p>
   </section>
 
-  <!-- ============ RUN IT ============ -->
-  <section class="block" id="run">
-    <span class="eyebrow">Run it</span>
-    <h2>Start the app</h2>
-    <div class="grid grid-2">
-      <div>
-<pre data-copy="npm install
-npm run dev"><span class="c"># first time</span>
+  <!-- ============ TEAM ============ -->
+  <section class="block" id="team">
+    <span class="eyebrow">New to the team</span>
+    <h2>From invite to your first pull request</h2>
+    <p class="lead">About ten minutes to a running app. The full guide is <code>CONTRIBUTING.md</code> in the repo.</p>
+    <ol class="timeline">
+      <li class="tl-item"><div class="tl-node">1</div><div class="card">
+        <div class="tl-head"><h3>Accept the invite</h3><span class="chip">GitHub</span></div>
+        <p style="margin:0">The repo is private. The owner adds you under <em>Settings → Collaborators</em>; accept it from your email.</p>
+      </div></li>
+      <li class="tl-item"><div class="tl-node">2</div><div class="card">
+        <div class="tl-head"><h3>Install the tools</h3></div>
+        <dl class="kv">
+          <dt>Git</dt><dd>Set your name and email once with <code>git config --global</code>.</dd>
+          <dt>Node.js 22</dt><dd>The version is in <code>.nvmrc</code>. With nvm: <code>nvm install 22</code>, <code>nvm use 22</code>.</dd>
+          <dt>Chrome</dt><dd>The browser checks drive it. On macOS or Linux, set <code>CHROME_PATH</code>.</dd>
+        </dl>
+      </div></li>
+      <li class="tl-item"><div class="tl-node">3</div><div class="card">
+        <div class="tl-head"><h3>Get the code and run it</h3><span class="chip chip--olive">No API keys</span></div>
+<pre data-copy="git clone https://github.com/AR13X3/team-sheeeep.git
+cd team-sheeeep
+npm install
+npm run dev" style="white-space:pre-wrap;overflow-wrap:anywhere">git clone https://github.com/AR13X3/team-sheeeep.git
+cd team-sheeeep
 npm install
 <span class="c"># then open http://localhost:5173</span>
 npm run dev</pre>
-<pre data-copy="npm run build"><span class="c"># production build in dist/</span>
+        <p class="small muted" style="margin:0">Keep the folder outside OneDrive, Dropbox or iCloud if you can: <code>node_modules/</code> holds thousands of files.</p>
+      </div></li>
+      <li class="tl-item"><div class="tl-node">4</div><div class="card">
+        <div class="tl-head"><h3>Look around</h3></div>
+        <p style="margin:0">Press <strong>“Try the demo farm”</strong> on the sign-in page: four paddocks near Wagga Wagga, straight to the Overview. Then open the <a href="tracker.html">tracker</a> for what’s next, the open questions and every decision so far.</p>
+      </div></li>
+      <li class="tl-item"><div class="tl-node">5</div><div class="card">
+        <div class="tl-head"><h3>Make your first pull request</h3><span class="chip chip--gold">Good first task</span></div>
+        <p style="margin:0">Add yourself to the <strong>Team</strong> table in <code>README.md</code>. It’s small and safe, and it walks you through branch → pull request → review → merge.</p>
+      </div></li>
+    </ol>
+  </section>
+
+  <!-- ============ HOW WE WORK ============ -->
+  <section class="block" id="workflow">
+    <span class="eyebrow">How we work</span>
+    <h2>Every change goes through a pull request</h2>
+    <p class="lead"><code>main</code> always works and is what gets deployed. Nobody pushes to it directly.</p>
+    <div class="card" style="margin:18px 0">
+      <div class="diagram">
+        <div class="diagram__col">
+          <div class="box"><h3>Pick a task</h3><p class="small muted" style="margin:0">From <strong>Next up</strong> in the tracker.<br>Assign yourself a GitHub issue.</p></div>
+        </div>
+        <div class="diagram__arrow">→</div>
+        <div class="diagram__col">
+          <div class="box"><h3>Branch and build</h3><p class="small muted" style="margin:0"><code>your-name/short-topic</code><br>Small, clear commits. Run the checks.</p></div>
+        </div>
+        <div class="diagram__arrow">→</div>
+        <div class="diagram__col">
+          <div class="box box--out"><h3>Pull request</h3><p class="small muted" style="margin:0">Template + screenshots. One teammate approves.<br>Squash and merge.</p></div>
+        </div>
+      </div>
+    </div>
+    <div class="grid grid-2">
+      <div class="card card--flat">
+        <h3>Before you open a pull request</h3>
+<pre data-copy="npm run build"><span class="c"># always</span>
 npm run build</pre>
-<pre data-copy="npm run validate:phenology"><span class="c"># re-check the crop-from-space accuracy</span>
+<pre data-copy="npm run test:e2e"><span class="c"># any screen or style</span>
+npm run test:e2e</pre>
+<pre data-copy="npm run validate:phenology"><span class="c"># the crop classifier</span>
 npm run validate:phenology</pre>
+        <p class="small muted" style="margin:0"><code>test:e2e</code> needs <code>npm run dev</code> running in another terminal. Then look at the change in light and dark, and at phone width.</p>
       </div>
-      <div class="grid" style="align-content:start">
-        <div class="callout callout--teal"><p><strong>Node.js 20.19+</strong> runs the app. <strong>22.15+</strong> is needed only for <code>npm run export:figma</code>.</p></div>
-        <div class="callout"><p>No API keys are needed. The project lives in OneDrive, so <code>node_modules/</code> syncs too. Consider pausing OneDrive sync for this folder.</p></div>
-        <div class="card card--flat"><p class="small" style="margin:0">No farm handy? On the login screen press <strong>“Try the demo farm”</strong>: four paddocks in the NSW Riverina, near Wagga Wagga.</p></div>
+      <div class="card card--flat">
+        <h3>Ground rules</h3>
+        <ul class="checks">
+          <li><span>Button fill and label colours stay exactly as in Figma.</span></li>
+          <li><span>Colours come from the tokens in <code>src/styles/tokens.css</code>, so light and dark both work.</span></li>
+          <li><span>Signed-in pages use <code>AppShell</code> and <code>&lt;Page&gt;</code>; farm numbers come from <code>useFarm()</code>.</span></li>
+          <li><span>Update the tracker, docs and screenshots in the same pull request.</span></li>
+          <li><span>Never commit keys or passwords. Local keys go in <code>.env.local</code>.</span></li>
+        </ul>
       </div>
+    </div>
+    <h3 style="margin-top:28px">Where to read what</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>I want to…</th><th>Open</th></tr></thead>
+        <tbody>
+          <tr><td>Get set up, find my way around, see who’s on the team</td><td><code>README.md</code></td></tr>
+          <tr><td>Know how we branch, review, merge, and the design rules</td><td><code>CONTRIBUTING.md</code></td></tr>
+          <tr><td>Know what’s next, what’s open and what was decided</td><td><a href="tracker.html">tracker.html</a></td></tr>
+          <tr><td>See the app page by page, with screenshots</td><td>this page</td></tr>
+          <tr><td>Understand a feature in depth: data, accuracy, planner, design</td><td><code>docs/how-it-works.md</code></td></tr>
+          <tr><td>See how the NASA features were planned and validated</td><td><a href="plan.html">plan.html</a></td></tr>
+          <tr><td>Read the whole project end to end, with the demo script</td><td><code>docs/TEAM-SHEEEEP-Project-Breakdown.docx</code></td></tr>
+        </tbody>
+      </table>
     </div>
   </section>
 
@@ -302,10 +379,16 @@ npm run export:figma -- path/to/new.fig</pre>
   <section class="block" id="structure">
     <span class="eyebrow">Project structure</span>
     <h2>Where things live</h2>
-<pre>design/                 the source .fig file
-docs/                   these pages: readme, plan, tracker (+ screenshots in img/)
-tools/figma-export/     .fig decoder + SVG renderer + asset manifest
+<pre>README.md               start here: what it is, setup, team, commands
+CONTRIBUTING.md         how we work: branches, checks, pull requests, design rules
+.github/                pull request and issue templates
+design/                 the source .fig file
+docs/                   these pages (readme, plan, tracker), how-it-works.md,
+                        the Word breakdown, screenshots in img/
+tools/e2e/              browser checks (npm run test:e2e) + doc screenshot script
 tools/validation/       crop-from-space classifier vs. USDA Cropland Data Layer
+tools/figma-export/     .fig decoder + SVG renderer + asset manifest
+tools/docs/             builds the Word breakdown
 src/
   App.jsx               routes (hash router, lazy-loaded screens)
   config.js             app name, mascot name, planning horizon, sowing date
@@ -336,7 +419,7 @@ src/
     </div>
   </section>
 
-  <footer class="foot">TEAM SHEEEEP · built from <code>design/TEAM SHEEEEP.fig</code> · plain-text version: <code>README.md</code></footer>
+  <footer class="foot">TEAM SHEEEEP · built from <code>design/TEAM SHEEEEP.fig</code> · plain-text versions: <code>README.md</code>, <code>docs/how-it-works.md</code>, <code>CONTRIBUTING.md</code></footer>
 </main>
 <script src="docs.js"></script>
 </body>

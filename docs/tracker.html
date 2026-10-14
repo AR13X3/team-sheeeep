@@ -61,11 +61,28 @@
 -->
 <script type="application/json" id="tracker-data">
 {
-  "updated": "2026-10-09",
-  "phase": "Session 4 · enterprise UI redo done (same theme); open questions still to talk through",
-  "summary": "The app is now a full planning workspace in the same colours, Lato and Manami as the Figma design: a soil-coloured sidebar, Ctrl K search, live satellite status, light and dark themes, an Overview dashboard with charts and alerts, a Paddocks table, paddock pages with tabs, a rotation grid in the Planner with “why this crop”, Insights and Settings. The four NASA features (Paddock Memory from Space, neighbour canola → blackleg, safest sowing window, “Did my rotation work?”) are unchanged and now easier to find. Still to do: talk through the open questions (including button label contrast), then hosting and Phase 1.",
+  "updated": "2026-10-14",
+  "phase": "Session 5 · repo set up for the team; merge ui-redo into main next, then invite teammates",
+  "summary": "The app is now a full planning workspace in the same colours, Lato and Manami as the Figma design: a soil-coloured sidebar, Ctrl K search, live satellite status, light and dark themes, an Overview dashboard with charts and alerts, a Paddocks table, paddock pages with tabs, a rotation grid in the Planner with “why this crop”, Insights and Settings. The four NASA features (Paddock Memory from Space, neighbour canola → blackleg, safest sowing window, “Did my rotation work?”) are unchanged and now easier to find. The repo is now set up for teammates: a short README with setup, team and structure, CONTRIBUTING.md with the branch → pull request → review flow and design rules, pull request and issue templates, and docs/how-it-works.md for the detail. Still to do: merge ui-redo into main and invite the team, talk through the open questions (including button label contrast), then hosting and Phase 1.",
   "resumePrompt": "Read docs/tracker.html (the JSON in #tracker-data) and pick up from “Next up”. Start by going through “To discuss” with me.",
   "next": [
+    {
+      "title": "Merge ui-redo into main",
+      "detail": "Teammates clone main, which still has the old UI and the old README. Open a pull request from ui-redo into main and merge it, so the team starts from the current app and the new team docs (README, CONTRIBUTING.md, templates).",
+      "size": "S",
+      "status": "todo",
+      "where": []
+    },
+    {
+      "title": "Invite the team",
+      "detail": "Owner: GitHub → Settings → Collaborators → Add people, once per teammate. Each teammate follows Start here in README.md and adds themselves to the Team table as their first pull request.",
+      "size": "S",
+      "status": "todo",
+      "where": [
+        "README.md",
+        "CONTRIBUTING.md"
+      ]
+    },
     {
       "title": "Host on Cloudflare Pages (user connects the repo)",
       "detail": "Repo is ready (.nvmrc = Node 22; build tested with vite preview). In Cloudflare: Workers & Pages → Create → Pages → Connect to Git → AR13X3/team-sheeeep; framework Vite (or None), build command npm run build, output dir dist. Every push to main redeploys; other branches get preview URLs. Optional: Cloudflare Access to limit the site to team emails.",
@@ -103,7 +120,7 @@
       "status": "todo",
       "where": [
         "supabase/functions/manami-chat",
-        "src/components/ChatBot.jsx",
+        "src/components/shell/ManamiPanel.jsx",
         "src/logic/manami.js"
       ]
     },
@@ -205,6 +222,14 @@
   ],
   "discuss": [
     {
+      "q": "Who’s on the team, and who owns which area?",
+      "why": "The Team table in README.md only lists the owner so far. Splitting by area (e.g. NASA data and the classifier, UI, backend with Supabase, pitch and demo) stops two people editing the same files at once."
+    },
+    {
+      "q": "Happy with the team workflow in CONTRIBUTING.md?",
+      "why": "Proposed: a branch per task (your-name/short-topic), a pull request into main, one teammate approves, squash and merge. GitHub can’t enforce reviews on a private repo on the free plan (checked: branch protection needs GitHub Pro or a public repo), so it’s a team agreement. Easier to change now than after habits form."
+    },
+    {
       "q": "Should the planner keep some crop variety across the whole farm?",
       "why": "Each paddock is still planned on its own, so the whole farm can end up in one crop in a season (in the demo every paddock gets Lupins in 2027). With the new crop list this matters more, because short lists make it more likely. Seen again in the design critique (7 Oct): after the soil check finished, all four paddocks were Lupins in 2027 (122 ha), and paddock #3 had changed from Chickpeas between two visits. The plan is the main thing the app shows, so a one-crop farm looks wrong to farmers and judges."
     },
@@ -299,12 +324,16 @@
       "detail": "25-page end-to-end breakdown in the team’s voice: problem, the farmer’s journey screen by screen, every capability in depth, data sources, accuracy and validation, stack and architecture diagram, design, quality checks, how we got here, a 3-minute demo script, limits and next steps, glossary. File: docs/TEAM-SHEEEEP-Project-Breakdown.docx; regenerate with python tools/docs/build_breakdown.py."
     },
     {
-      "title": "Next-stage plan written into both documents",
-      "detail": "Public breakdown section 13 and the private guide’s part 22 describe phases 1–5: Supabase accounts and sync, farm diary, AI Manami via OpenRouter, daily weather actions, dashboard v2."
+      "title": "Next-stage plan written down",
+      "detail": "Section 13 of the Word breakdown describes phases 1–5: Supabase accounts and sync, farm diary, AI Manami via OpenRouter, daily weather actions, dashboard v2."
     },
     {
       "title": "Enterprise UI redo, same theme",
       "detail": "Rebuilt the whole interface as a workspace: app shell (collapsible soil sidebar, breadcrumbs, Ctrl K command palette, live satellite status, light/dark/system theme, Manami as a side panel with page tips inline), Overview dashboard (KPIs with animated numbers, season map, Needs attention, soil-health outlook chart, crop-mix donut, paddock table, activity feed, data-source status), Paddocks register, paddock tabs (Overview, History, Conditions, Priorities) with a sticky map rail, Planner rotation grid with a “why this crop” panel and option scores, CSV export and print, Insights (rotation report, rain chart, paddock memory grid, canola distances, sowing windows), Settings (profile, tips, crops, theme, export/import, delete). Background loading with inline progress replaced the full-screen loaders; toasts with Undo; six-step setup with a sidebar checklist. Also fixed every item from the 7 Oct critique (tip bubble, phone overflow, unlabelled bar, duplicate step, small text, mixed capitals, dates, best-guess badge, NDVI wording, demo button, Continue placement, small targets)."
+    },
+    {
+      "title": "Repo ready for the team",
+      "detail": "README.md rewritten as a short landing page (what it does, Start here, Team, where to find things, structure, commands, how we work, status). The long reference moved to docs/how-it-works.md. New CONTRIBUTING.md (setup, picking up work, branches, commits, checks, reviews, design rules, docs upkeep, secrets, Claude Code). Pull request template and Task/Bug issue templates in .github/. .env files ignored. readme.html gained a “New to the team” timeline, the workflow diagram and a “where to read what” table."
     }
   ],
   "decisions": [
@@ -418,7 +447,7 @@
     },
     {
       "what": "Code lives in a private GitHub repo (AR13X3/team-sheeeep), branch main",
-      "why": "So the team can access it. private/ (personal guide) and all caches are in .gitignore."
+      "why": "So the team can access it. Personal notes and all caches are in .gitignore."
     },
     {
       "what": "Step outside the Figma layout; keep the theme",
@@ -459,6 +488,22 @@
     {
       "what": "Charts are our own small SVG components",
       "why": "No chart library needed for a line, a donut and bars; they follow the theme tokens and have hover tooltips."
+    },
+    {
+      "what": "README.md is the team’s landing page; the detail lives in docs/how-it-works.md",
+      "why": "Teammates land on the README on GitHub, so setup, team, structure and commands come first. Pages, data sources, accuracy, the planner and design→code moved to their own file so the README stays short."
+    },
+    {
+      "what": "Team workflow: branch per task, pull request into main, one approving review, squash and merge",
+      "why": "Keeps main always working (it’s what Cloudflare Pages will deploy) and lets everyone see each change. Written down in CONTRIBUTING.md, with templates in .github/."
+    },
+    {
+      "what": "Teammates add themselves to the Team table as their first pull request",
+      "why": "A small, safe change that tests their setup and walks them through the whole branch → review → merge flow."
+    },
+    {
+      "what": "Local keys go in .env.local, which Git ignores",
+      "why": "Phases 1 and 3 add Supabase and OpenRouter keys. .env files are ignored from now on so nobody commits one by mistake."
     }
   ],
   "issues": [
@@ -486,16 +531,6 @@
       "kind": "limit",
       "title": "Login is front-end only, prices are examples",
       "detail": "No accounts, no live market prices."
-    },
-    {
-      "kind": "bug",
-      "title": "Small visual nits",
-      "detail": "Duplicate “2026” chip in the time-lapse. The chat nudge can cover text at the bottom-right of the right-hand cards. Both are in Next up."
-    },
-    {
-      "kind": "limit",
-      "title": "Very short windows still scroll",
-      "detail": "Below about 515 px of window height the zoom stops at 0.62× (to keep text readable), so the page scrolls instead."
     }
   ],
   "files": [
@@ -584,7 +619,7 @@
       "area": "Manami",
       "paths": [
         "src/logic/manami.js",
-        "src/components/ChatBot.jsx"
+        "src/components/shell/ManamiPanel.jsx"
       ]
     },
     {
@@ -600,8 +635,11 @@
     {
       "area": "Docs & checks",
       "paths": [
-        "docs/*.html",
         "README.md",
+        "CONTRIBUTING.md",
+        "docs/how-it-works.md",
+        "docs/*.html",
+        ".github/",
         "CLAUDE.md",
         "tools/validation/",
         "tools/e2e/",
@@ -614,7 +652,7 @@
     {
       "what": "Get the code",
       "cmd": "git clone https://github.com/AR13X3/team-sheeeep.git",
-      "note": "Private repo: teammates need an invite (Settings → Collaborators). Then npm install and npm run dev."
+      "note": "Private repo: teammates need an invite (Settings → Collaborators). Then follow Start here in README.md; the workflow is in CONTRIBUTING.md."
     },
     {
       "what": "Run the app",
@@ -676,7 +714,7 @@
         "Analysis picked by test: pure-pixel paddock readings adopted (+5–17 pts); 10 m canola map tested and rejected",
         "Wrote the 25-page Word project breakdown (docs/TEAM-SHEEEEP-Project-Breakdown.docx) with a generator in tools/docs",
         "Planned the next stage (Supabase, OpenRouter Manami, weather actions, dashboard v2) in both documents",
-        "Pushed the project to a private GitHub repo: https://github.com/AR13X3/team-sheeeep (private/ excluded)"
+        "Pushed the project to a private GitHub repo: https://github.com/AR13X3/team-sheeeep (personal notes excluded)"
       ],
       "leftOff": "Next stage planned. Start with Phase 1 (Supabase sign-in + cloud save) when the user is ready; the user needs to create a free Supabase project first."
     },
@@ -706,6 +744,21 @@
         "Committed and pushed to the branch ui-redo on GitHub (not merged into main yet)"
       ],
       "leftOff": "UI redo done, checked, and pushed to branch ui-redo. Next: merge it into main (or open a pull request), then talk through “To discuss” (button label contrast, app name, one-crop seasons, pitch), then hosting on Cloudflare Pages and Phase 1."
+    },
+    {
+      "date": "14 Oct 2026",
+      "title": "Session 5: repo set up for the team",
+      "did": [
+        "The user is adding teammates and asked for repo information that is structured and easy to understand",
+        "Rewrote README.md as a short landing page: what it does, Start here, Team table, where to find things, project structure, commands, how we work, where we’re up to",
+        "Moved the long reference (pages, data sources, accuracy, planner, design → code) into docs/how-it-works.md",
+        "Wrote CONTRIBUTING.md: setup, picking up work, branches, commits, checks, reviews, design rules, docs upkeep, secrets, Claude Code",
+        "Added a pull request template and Task/Bug issue templates in .github/; .env files are now ignored",
+        "readme.html: “New to the team” timeline, workflow diagram, ground rules, where to read what, updated structure",
+        "CLAUDE.md now points Claude at the team workflow and the new docs",
+        "Tracker tidy-up: fixed the Manami file paths and dropped two issues that earlier sessions had already fixed"
+      ],
+      "leftOff": "Repo docs ready on branch ui-redo. Next: merge ui-redo into main so teammates see the current app, invite the team, then talk through “To discuss” (team roles and workflow are new questions)."
     }
   ]
 }
