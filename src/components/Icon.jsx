@@ -1,53 +1,123 @@
-// Icons exported from the Figma file…
-import arrowBack from '../assets/icons/arrow-back.svg?raw';
-import search from '../assets/icons/search.svg?raw';
-import arrowDropDown from '../assets/icons/arrow-drop-down.svg?raw';
-import add from '../assets/icons/add.svg?raw';
-import check from '../assets/icons/check.svg?raw';
-import close from '../assets/icons/close.svg?raw';
-import menu from '../assets/icons/menu.svg?raw';
-// …plus Material Icons for controls the design has no icon for (see material/README.txt).
-import arrowForward from '../assets/icons/material/arrow-forward.svg?raw';
-import myLocation from '../assets/icons/material/my-location.svg?raw';
-import layers from '../assets/icons/material/layers.svg?raw';
-import fit from '../assets/icons/material/fit.svg?raw';
-import edit from '../assets/icons/material/edit.svg?raw';
-import undo from '../assets/icons/material/undo.svg?raw';
-import remove from '../assets/icons/material/remove.svg?raw';
-import del from '../assets/icons/material/delete.svg?raw';
-import plus from '../assets/icons/material/plus.svg?raw';
-import done from '../assets/icons/material/done.svg?raw';
+// Lucide line icons (ISC licence) behind one name map, so screens ask for "planner", not a component.
+import {
+  Activity, ArrowDown, ArrowLeft, ArrowRight, ArrowUp, ArrowUpDown, ArrowUpRight, BookOpen, Calendar, CalendarRange, ChartColumn, ChartLine,
+  Check, ChevronDown, ChevronLeft, ChevronRight, ChevronUp, CircleCheck, CircleHelp, CircleX, Clock, CloudRain, Coins, Command, CornerDownLeft,
+  Database, Download, Droplets, Ellipsis, Eye, EyeOff, FileText, Flag, Flame, Flower2, Gauge, History, House, Info, Keyboard, LandPlot, Layers,
+  LayoutDashboard, Leaf, ListFilter, LoaderCircle, LocateFixed, LogOut, Map as MapIcon, MapPin, Maximize2, Menu, MessageCircle, Minus, Monitor,
+  Moon, Mountain, PanelLeftClose, PanelLeftOpen, Pause, Pencil, Play, Plus, Printer, RefreshCw, Rocket, Satellite, Search, Send, Settings,
+  ShieldCheck, Snowflake, Sparkles, Sprout, Sun, Table2, Target, Thermometer, Trash2, TrendingDown, TrendingUp, TriangleAlert, Undo2, Upload,
+  User, Wheat, X, Zap,
+} from 'lucide-react';
 
 const ICONS = {
-  'arrow-back': arrowBack,
-  search,
-  'arrow-drop-down': arrowDropDown,
-  add,
-  check,
-  close,
-  menu,
-  'arrow-forward': arrowForward,
-  'my-location': myLocation,
-  layers,
-  fit,
-  edit,
-  undo,
-  remove,
-  delete: del,
-  plus,
-  done,
+  // names used since the Figma build
+  'arrow-back': ArrowLeft,
+  'arrow-forward': ArrowRight,
+  'arrow-drop-down': ChevronDown,
+  search: Search,
+  add: Plus,
+  plus: Plus,
+  check: Check,
+  done: Check,
+  close: X,
+  menu: Menu,
+  'my-location': LocateFixed,
+  layers: Layers,
+  fit: Maximize2,
+  edit: Pencil,
+  undo: Undo2,
+  remove: Minus,
+  delete: Trash2,
+  // app shell & pages
+  dashboard: LayoutDashboard,
+  map: MapIcon,
+  paddocks: LandPlot,
+  planner: CalendarRange,
+  insights: ChartLine,
+  chart: ChartColumn,
+  settings: Settings,
+  home: House,
+  satellite: Satellite,
+  sprout: Sprout,
+  leaf: Leaf,
+  wheat: Wheat,
+  flower: Flower2,
+  droplets: Droplets,
+  rain: CloudRain,
+  frost: Snowflake,
+  heat: Flame,
+  thermometer: Thermometer,
+  mountain: Mountain,
+  gauge: Gauge,
+  pin: MapPin,
+  alert: TriangleAlert,
+  info: Info,
+  help: CircleHelp,
+  'circle-check': CircleCheck,
+  'circle-x': CircleX,
+  sun: Sun,
+  moon: Moon,
+  monitor: Monitor,
+  logout: LogOut,
+  user: User,
+  download: Download,
+  upload: Upload,
+  filter: ListFilter,
+  sort: ArrowUpDown,
+  'sort-up': ArrowUp,
+  'sort-down': ArrowDown,
+  'chevron-down': ChevronDown,
+  'chevron-up': ChevronUp,
+  'chevron-left': ChevronLeft,
+  'chevron-right': ChevronRight,
+  'arrow-up-right': ArrowUpRight,
+  sparkles: Sparkles,
+  send: Send,
+  'panel-close': PanelLeftClose,
+  'panel-open': PanelLeftOpen,
+  command: Command,
+  enter: CornerDownLeft,
+  keyboard: Keyboard,
+  history: History,
+  calendar: Calendar,
+  clock: Clock,
+  play: Play,
+  pause: Pause,
+  printer: Printer,
+  refresh: RefreshCw,
+  spinner: LoaderCircle,
+  chat: MessageCircle,
+  flag: Flag,
+  target: Target,
+  coins: Coins,
+  eye: Eye,
+  'eye-off': EyeOff,
+  more: Ellipsis,
+  table: Table2,
+  file: FileText,
+  database: Database,
+  shield: ShieldCheck,
+  'trend-up': TrendingUp,
+  'trend-down': TrendingDown,
+  activity: Activity,
+  rocket: Rocket,
+  zap: Zap,
+  book: BookOpen,
 };
 
-/** Inline SVG icon; inherits `color`. */
-export default function Icon({ name, size = 24, className = '', label }) {
+/** Line icon; inherits `color`. `label` makes it an image for screen readers, otherwise it's hidden. */
+export default function Icon({ name, size = 18, className = '', label, strokeWidth = 2 }) {
+  const Svg = ICONS[name] || CircleHelp;
   return (
-    <span
-      className={`svg-inline icon ${className}`}
-      style={{ width: size, height: size, flex: 'none' }}
+    <Svg
+      className={`icon ${className}`}
+      width={size}
+      height={size}
+      strokeWidth={strokeWidth}
       role={label ? 'img' : undefined}
       aria-label={label}
       aria-hidden={label ? undefined : true}
-      dangerouslySetInnerHTML={{ __html: ICONS[name] }}
+      focusable="false"
     />
   );
 }

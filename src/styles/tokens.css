@@ -1,6 +1,8 @@
-/* Design tokens taken from the TEAM SHEEEEP Figma file (palette board + component sets). */
+/* Design tokens. The palette is the TEAM SHEEEEP Figma palette board; everything else
+   (surfaces, text, borders, status colours) is derived from it so the theme stays the same
+   in light and dark mode. Components use the semantic tokens (--bg, --surface, --text…). */
 :root {
-  /* Palette board */
+  /* Palette board (Figma) */
   --c-charcoal: #5d6052;
   --c-teal: #6ba7a9;
   --c-olive: #989b66;
@@ -8,22 +10,21 @@
   --c-rose: #df9c93;
   --c-taupe: #d1b8a6;
 
-  /* Surfaces & ink */
   --c-ink: #372f2a;
-  --c-ink-30: rgb(55 47 42 / 0.3); /* borders only (design value) */
-  --c-ink-muted: rgb(55 47 42 / 0.78); /* secondary text: ~5:1 on cream */
-  --c-ink-hint: rgb(55 47 42 / 0.6); /* placeholders & input icons */
+  --c-ink-30: rgb(55 47 42 / 0.3);
+  --c-ink-muted: rgb(55 47 42 / 0.78);
+  --c-ink-hint: rgb(55 47 42 / 0.6);
   --c-cream: #ece4d4;
   --c-sand: #e7dac1;
   --c-soil: #464033;
   --c-stone: #c6c0b2;
 
-  /* Grass layers */
   --c-grass-1: #626735;
   --c-grass-2: #71763e;
   --c-grass-3: #989b66;
 
-  /* Buttons: [default, hover] per tone (Action Button component set) */
+  /* Buttons: [default, hover] per tone (Figma "Action Button" set). Fill and label colours
+     stay exactly as designed. */
   --btn-primary: #969965;
   --btn-primary-hover: #7e8155;
   --btn-secondary: #cfb173;
@@ -35,31 +36,77 @@
   --btn-login: #df9c93;
   --btn-login-hover: #d37f74;
   --btn-login-border: #be7369;
+  --btn-label: #ece4d4;
 
-  /* Season markers (Planner season strip) */
-  --c-marker-now: #9b7255;
-  --c-marker-selected: #838459;
+  /* ---------- Semantic: light ---------- */
+  --bg: #efe8da; /* page canvas */
+  --surface: #fbf8f2; /* cards, panels */
+  --surface-2: #f5efe4; /* table heads, inset areas */
+  --surface-3: #ece4d4; /* chips, segmented tracks (brand cream) */
+  --surface-hover: #f1eadc;
+  --overlay: rgb(55 47 42 / 0.38);
+  --border: rgb(55 47 42 / 0.12);
+  --border-strong: rgb(55 47 42 / 0.22);
+  --text: #372f2a;
+  --text-2: #5b524a;
+  --text-3: #7a7065;
+  --text-inverse: #ece4d4;
+  --accent: #6f7240; /* links, active states (olive, readable on light) */
+  --accent-soft: rgb(152 155 102 / 0.18);
+  --focus: #cfb173;
 
-  /* Shape */
-  --radius: 15px;
+  --ok: #5f6a2c;
+  --ok-bg: #e7e8d0;
+  --warn: #8a6a24;
+  --warn-bg: #f5ebcf;
+  --bad: #a4483d;
+  --bad-bg: #f7e0db;
+  --info: #3a7476;
+  --info-bg: #dcebea;
+
+  /* Sidebar (dark soil in both themes) */
+  --side-bg: #372f2a;
+  --side-bg-2: #2f2824;
+  --side-text: #ece4d4;
+  --side-text-2: rgb(236 228 212 / 0.66);
+  --side-hover: rgb(236 228 212 / 0.07);
+  --side-active: rgb(207 177 115 / 0.16);
+  --side-border: rgb(236 228 212 / 0.09);
+
+  /* Charts */
+  --chart-1: #6ba7a9;
+  --chart-1-deep: #3f7f81;
+  --chart-2: #989b66;
+  --chart-3: #cfb173;
+  --chart-4: #df9c93;
+  --chart-grid: rgb(55 47 42 / 0.09);
+
+  /* Shape & depth */
+  --r-xs: 6px;
+  --r-sm: 8px;
+  --r: 12px;
+  --r-lg: 16px;
+  --radius: 15px; /* Figma card radius (kept for the sign-in card and loaders) */
   --radius-map: 12px;
-  --border-input: 3px solid var(--c-ink-30);
-
-  /* Elevation (Figma drop shadows) */
-  --shadow-card: 0 4px 80px -27px var(--c-ink);
-  --shadow-round: 0 2.26px 45px -7.35px var(--c-ink);
+  --border-input: 1px solid var(--border-strong);
+  --shadow-1: 0 1px 2px rgb(55 47 42 / 0.06), 0 1px 1px rgb(55 47 42 / 0.04);
+  --shadow-2: 0 4px 16px -6px rgb(55 47 42 / 0.18), 0 1px 3px rgb(55 47 42 / 0.08);
+  --shadow-3: 0 24px 60px -18px rgb(55 47 42 / 0.45), 0 4px 12px -4px rgb(55 47 42 / 0.15);
+  --shadow-card: 0 4px 80px -27px var(--c-ink); /* Figma */
   --shadow-chip: 0 0.45px 9px -3px var(--c-ink);
 
-  /* Type (Lato) */
+  /* Type */
   --font: 'Lato', system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --fs-title: 36.46px;
-  --fs-heading: 25px;
-  --fs-body: 23px;
-  --fs-control: 20px;
-  --fs-small: 16px;
-  --fs-caption: 14px;
+  --fs-xs: 12px;
+  --fs-sm: 13px;
+  --fs-md: 14px;
+  --fs-lg: 16px;
+  --fs-xl: 18px;
+  --fs-2xl: 22px;
+  --fs-3xl: 28px;
+  --fs-4xl: 34px;
 
-  /* Spacing scale */
+  /* Spacing */
   --s-1: 4px;
   --s-2: 8px;
   --s-3: 12px;
@@ -67,24 +114,78 @@
   --s-5: 24px;
   --s-6: 32px;
   --s-7: 48px;
-  --card-pad: 28px; /* inside every card */
-  --card-gap: 24px; /* between cards */
-  --content-top: 120px; /* where content starts under the title tab */
+  --gutter: 28px;
 
-  /* Layout: the design canvas is 1280 x 832 */
-  --canvas-w: 1280px;
-  --gutter: 32px;
+  /* Shell */
+  --side-w: 252px;
+  --side-w-min: 72px;
+  --top-h: 60px;
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+
+  /* Legacy (sign-in scene, loaders) */
+  --fs-title: 36.46px;
+  --fs-heading: 25px;
+  --fs-body: 18px;
+  --fs-control: 17px;
+  --fs-small: 14px;
+  --fs-caption: 13px;
+  --card-pad: 24px;
+  --card-gap: 20px;
+
+  /* The app fills the window (no page zoom any more). */
+  --ui-scale: 1;
+  --app-w: 100vw;
+  --app-h: 100dvh;
+
+  color-scheme: light;
+}
+
+/* ---------- Semantic: dark (soil) ---------- */
+:root[data-theme='dark'] {
+  --bg: #1f1b18;
+  --surface: #2a2521;
+  --surface-2: #322c27;
+  --surface-3: #3b342e;
+  --surface-hover: #352f29;
+  --overlay: rgb(10 8 6 / 0.6);
+  --border: rgb(236 228 212 / 0.09);
+  --border-strong: rgb(236 228 212 / 0.18);
+  --text: #ece4d4;
+  --text-2: #c2b9aa;
+  --text-3: #9a9184;
+  --text-inverse: #372f2a;
+  --accent: #c9cc8f;
+  --accent-soft: rgb(152 155 102 / 0.22);
+  --focus: #cfb173;
+
+  --ok: #b9c47a;
+  --ok-bg: rgb(152 155 102 / 0.18);
+  --warn: #e0c47e;
+  --warn-bg: rgb(207 177 115 / 0.16);
+  --bad: #eaa59b;
+  --bad-bg: rgb(223 156 147 / 0.15);
+  --info: #8fc5c7;
+  --info-bg: rgb(107 167 169 / 0.16);
+
+  --side-bg: #171411;
+  --side-bg-2: #13110e;
+  --side-border: rgb(236 228 212 / 0.07);
+
+  --chart-1: #7fb7b9;
+  --chart-1-deep: #a6d3d4;
+  --chart-grid: rgb(236 228 212 / 0.08);
+
+  --shadow-1: 0 1px 2px rgb(0 0 0 / 0.3);
+  --shadow-2: 0 6px 18px -6px rgb(0 0 0 / 0.5), 0 1px 3px rgb(0 0 0 / 0.3);
+  --shadow-3: 0 24px 60px -18px rgb(0 0 0 / 0.75);
+
+  color-scheme: dark;
 }
 
 @media (max-width: 720px) {
   :root {
-    --fs-title: 28px;
-    --fs-heading: 21px;
-    --fs-body: 18px;
-    --fs-control: 17px;
     --gutter: 16px;
-    --card-pad: 20px;
-    --card-gap: 16px;
-    --content-top: 100px;
+    --fs-3xl: 24px;
+    --fs-4xl: 28px;
   }
 }

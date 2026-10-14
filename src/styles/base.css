@@ -8,18 +8,19 @@ html,
 body,
 #root {
   margin: 0;
-  min-height: 100%;
+  height: 100%;
 }
 
-/* body is zoomed to fit the window (see index.html): use var(--app-w) / var(--app-h)
-   instead of 100vw / 100dvh, because zoom scales viewport units too. */
 body {
-  overflow-x: hidden;
+  overflow: hidden; /* the shell scrolls its own content area */
   font-family: var(--font);
-  color: var(--c-ink);
-  background: var(--c-soil);
+  font-size: var(--fs-md);
+  line-height: 1.45;
+  color: var(--text);
+  background: var(--bg);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+  font-feature-settings: 'kern', 'liga';
 }
 
 button,
@@ -34,16 +35,32 @@ button {
   cursor: pointer;
 }
 
+a {
+  color: var(--accent);
+}
+
 :focus-visible {
-  outline: 3px solid var(--c-gold);
-  outline-offset: 3px;
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
 }
 
 h1,
 h2,
 h3,
-p {
+h4,
+p,
+ul,
+ol,
+dl,
+dd,
+figure {
   margin: 0;
+}
+
+ul,
+ol {
+  padding: 0;
+  list-style: none;
 }
 
 .visually-hidden {
@@ -55,15 +72,23 @@ p {
   white-space: nowrap;
 }
 
+.num {
+  font-variant-numeric: tabular-nums;
+}
+
 .muted {
-  color: var(--c-ink-muted);
+  color: var(--text-2);
+}
+
+.small {
+  font-size: var(--fs-sm);
 }
 
 .accent {
-  color: var(--c-olive);
+  color: var(--accent);
 }
 
-/* Inline SVG art (scenes, mascot, icons) */
+/* Inline SVG art (scenes, mascot, figma icons) */
 .svg-inline {
   display: block;
 }
@@ -71,4 +96,33 @@ p {
   display: block;
   width: 100%;
   height: 100%;
+}
+
+/* Thin, warm scrollbars */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+}
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-thumb {
+  border: 3px solid transparent;
+  border-radius: 999px;
+  background: var(--border-strong) padding-box;
+}
+
+::selection {
+  background: rgb(207 177 115 / 0.45);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
 }

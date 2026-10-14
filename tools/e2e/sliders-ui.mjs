@@ -6,7 +6,7 @@ __mk('shots', { recursive: true });
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const browser = await puppeteer.launch({ executablePath: process.env.CHROME_PATH || 'C:/Program Files/Google/Chrome/Application/chrome.exe', headless: 'new' });
 const page = await browser.newPage();
-await page.setViewport({ width: +(process.env.E2E_W || 1280), height: +(process.env.E2E_H || 832) }); // E2E_H=665 tests a laptop window (the app zooms to fit)
+await page.setViewport({ width: +(process.env.E2E_W || 1280), height: +(process.env.E2E_H || 832) }); // E2E_H=665 tests a laptop window
 const errors = [];
 page.on('pageerror', (e) => errors.push(e.message));
 await page.goto('http://localhost:5173/', { waitUntil: 'networkidle2' });
@@ -20,7 +20,7 @@ await sleep(1500);
 const res = (ok, m) => console.log(ok ? '✓' : '✗', m);
 const stored = (k) => page.evaluate((k) => JSON.parse(localStorage.getItem('sheeep:v1')).paddocks[0].priorities[k], k);
 const sl = async (label) => page.evaluateHandle((l) => document.querySelector(`.slider[aria-label="${l}"]`), label);
-const info = (label) => page.evaluate((l) => { const s = document.querySelector(`.slider[aria-label="${l}"]`); const r = s.getBoundingClientRect(); const h = s.querySelector('.slider__handle').getBoundingClientRect(); return { x: r.x, y: r.y + r.height / 2, w: r.width, now: +s.getAttribute('aria-valuenow'), text: s.getAttribute('aria-valuetext'), handleX: h.x + h.width / 2 - r.x }; }, label);
+const info = (label) => page.evaluate((l) => { const s = document.querySelector(`.slider[aria-label="${l}"]`); s.scrollIntoView({ block: 'center' }); const r = s.getBoundingClientRect(); const h = s.querySelector('.slider__handle').getBoundingClientRect(); return { x: r.x, y: r.y + r.height / 2, w: r.width, now: +s.getAttribute('aria-valuenow'), text: s.getAttribute('aria-valuetext'), handleX: h.x + h.width / 2 - r.x }; }, label);
 const preview = () => page.evaluate(() => [...document.querySelectorAll('.plan-preview li')].map((l) => l.textContent).join(' → '));
 
 let i = await info('Profit');

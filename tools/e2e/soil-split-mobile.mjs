@@ -54,7 +54,7 @@ const shot = async (name, wait = 600) => {
   console.log('shot', name, page.url());
 };
 
-await page.setViewport({ width: +(process.env.E2E_W || 1280), height: +(process.env.E2E_H || 832) }); // E2E_H=665 tests a laptop window (the app zooms to fit)
+await page.setViewport({ width: +(process.env.E2E_W || 1280), height: +(process.env.E2E_H || 832) }); // E2E_H=665 tests a laptop window
 await page.goto(BASE, { waitUntil: 'networkidle2' });
 await page.evaluate((seed) => {
   localStorage.clear();
@@ -62,16 +62,16 @@ await page.evaluate((seed) => {
 }, seed);
 await page.reload({ waitUntil: 'networkidle2' });
 await page.type('input[autocomplete=username]', 'Ahmed');
-await clickText(page, 'Login');
-await sleep(300);
-await clickText(page, 'Experienced Farmer');
+await clickText(page, 'Sign in');
+await sleep(1500);
+await clickText(page, 'Experienced farmer');
 await sleep(800);
-await clickText(page, 'Continue'); // Your Farm: keep every crop
+await clickText(page, 'Continue to farm map'); // Your crops: keep every crop
 await sleep(800);
-await clickText(page, 'Demo farm');
-await sleep(800);
+await clickText(page, 'Load demo farm');
+await sleep(1500);
 // Draw an extra paddock with real clicks on the map
-await clickText(page, 'Paddock');
+await clickText(page, 'Draw paddock');
 const box = await page.$eval('.paddock-map', (el) => { const r = el.getBoundingClientRect(); return { x: r.x, y: r.y, w: r.width, h: r.height }; });
 const P = (fx, fy) => [box.x + box.w * fx, box.y + box.h * fy];
 for (const [fx, fy] of [[0.08, 0.2], [0.24, 0.2], [0.24, 0.42], [0.08, 0.42]]) { await page.mouse.click(...P(fx, fy)); await sleep(150); }
@@ -87,10 +87,10 @@ await page.evaluate(() => document.querySelector('.paddock-chip__name').click())
 await sleep(900);
 await clickText(page, 'Edit shape');
 await shot('02b-edit-shape', 900);
-await clickText(page, 'Done editing');
-await clickText(page, 'Continue');
+await page.evaluate(() => [...document.querySelectorAll('.paddock-chip__actions button')].find((b) => b.textContent.trim() === 'Done').click());
+await clickText(page, 'Soil check');
 for (let i = 0; i < 40; i++) {
-  if (await page.evaluate(() => !document.body.textContent.includes('Checking the soil'))) break;
+  if (await page.evaluate(() => ![...document.querySelectorAll('button')].some((b) => /checking soil/i.test(b.textContent)))) break;
   await sleep(500);
 }
 await shot('03-review-split', 1500);
@@ -102,7 +102,7 @@ await page.evaluate(() => {
 await shot('04-review-selected', 600);
 await clickText(page, 'Accept new paddocks');
 await shot('05-history-after-accept', 2500);
-await page.evaluate(() => document.querySelector('.scroll-col').scrollTo(0, 700));
+await page.evaluate(() => document.querySelector('.shell__content').scrollTo(0, 700));
 await shot('06-history-soil-slope', 3000);
 const names = await page.evaluate(() => JSON.parse(localStorage.getItem('sheeep:v1')).paddocks.map((p) => p.name + ':' + (p.site.soil?.texture || '-')));
 console.log('paddocks after accept:', names.join(', '));
@@ -117,7 +117,7 @@ await page.goto(BASE + '#/planner', { waitUntil: 'networkidle2' });
 await shot('07-m-planner', 2500);
 const pid = await page.evaluate(() => JSON.parse(localStorage.getItem('sheeep:v1')).paddocks[0].id);
 await page.goto(BASE + '#/paddocks/' + pid + '/history', { waitUntil: 'networkidle2' });
-await page.evaluate(() => window.scrollTo(0, 900));
+await page.evaluate(() => document.querySelector('.shell__content').scrollTo(0, 900));
 await shot('07b-m-history', 1500);
 await page.goto(BASE + '#/paddocks', { waitUntil: 'networkidle2' });
 await shot('08-m-outline', 2000);

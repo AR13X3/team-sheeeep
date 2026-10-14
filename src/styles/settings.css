@@ -1,0 +1,87 @@
+/* ============ Settings ============ */
+.settings {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+.settings__nav {
+  position: sticky;
+  top: 16px;
+  display: grid;
+  gap: 2px;
+}
+.settings__nav button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 38px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 10px;
+  background: none;
+  color: var(--text-2);
+  font-weight: 700;
+  text-align: left;
+}
+.settings__nav button:hover {
+  background: var(--surface-hover);
+  color: var(--text);
+}
+.settings__nav button.is-on {
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: var(--shadow-1), 0 0 0 1px var(--border);
+}
+.settings__body {
+  display: grid;
+  gap: 16px;
+  min-width: 0;
+}
+.settings__row {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+}
+.settings__row .field {
+  flex: 1;
+  max-width: 360px;
+}
+.settings__field {
+  display: grid;
+  gap: 8px;
+  justify-items: start;
+  padding-bottom: 12px;
+}
+.settings__label {
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  color: var(--text-2);
+}
+.settings__danger {
+  border-color: color-mix(in srgb, var(--c-rose) 45%, transparent);
+}
+@media (max-width: 860px) {
+  .settings {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .settings__nav {
+    position: static;
+    display: flex;
+    overflow-x: auto;
+  }
+  .settings__nav button {
+    flex: none;
+  }
+}
+
+@container main (max-width: 700px) {
+  .settings {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .settings__nav {
+    position: static;
+    display: flex;
+    overflow-x: auto;
+  }
+}

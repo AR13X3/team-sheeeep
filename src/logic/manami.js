@@ -3,17 +3,49 @@
 import { MASCOT_NAME } from '../config.js';
 
 export const SCREEN_TIPS = {
-  experience: 'Pick the option that fits you best — new farmers get extra tips from me along the way.',
-  farm: 'Tell me if you keep livestock, then untick any crop you can’t grow or sell. I only plan with what’s ticked, and you can change it any time from the Planner.',
-  paddocks: 'Search for your farm, press “+ Paddock”, then click each corner of a paddock. Click the first corner again to close it.',
-  review: 'I checked the soil at both ends of every paddock. Where it changes a lot, I suggest splitting the paddock so each part can be managed for its own soil.',
-  history: 'I’ve looked at your paddock from space! “Seen from space” shows what NASA satellites saw growing each season. Press “Use as crop history” or fix any season by hand.',
-  priorities: 'Slide each priority to show what matters most to you, and tick why you rotate crops. I use this to rank the crops.',
-  planner: 'Pick a season in the strip at the top. The dots show each paddock’s crop, so you can see the whole rotation at a glance. The Sowing window card shows the safest sowing dates from 30 years of NASA weather.',
-  dashboard: 'This is your farm at a glance.',
+  experience: 'Pick the option that fits you best. New farmers get a short tip from me at the top of each page.',
+  farm: 'Tell me if you keep livestock, then untick any crop you can’t grow or sell. I only plan with what’s ticked, and you can change it any time in Settings or from the Planner.',
+  paddocks: 'Search for your farm, press “Draw paddock”, then click each corner. Click the first corner again (or press Enter) to close it. Corners snap onto neighbouring paddocks so they share an edge.',
+  register: 'Every paddock in one table. Sort by any column, search by name, and click a row to open its details.',
+  review: 'I sample the soil at both ends of every paddock. Where it changes a lot, I suggest splitting the paddock so each part can be managed for its own soil.',
+  paddock: 'This is the paddock at a glance: its soil health, next crop, the safest sowing window and its ten-season plan.',
+  history: '“Seen from space” shows what NASA satellites saw growing here each season. Press “Use as crop history”, or set any season by hand.',
+  conditions: 'Soil, slope and climate are filled in for you from global datasets. A soil test from the paddock itself is always more accurate.',
+  priorities: 'Slide each priority to show what matters most here, and tick why you rotate. The preview on the right updates as you go.',
+  planner: 'Each row is a paddock and each column a season. Click a column (or use ← →) to see that season on the map, or click a cell to see why I chose that crop.',
+  insights: 'Proof from your own farm: how cereals did after a break crop, rain each season, and the safest sowing windows from 30 years of NASA weather.',
+  dashboard: 'Your farm at a glance. Alerts on the right link straight to the paddock that needs attention.',
+  settings: 'Change your crop list, theme and tips here. Your farm is saved in this browser; export it to keep a copy.',
 };
 
 const INTENTS = [
+  {
+    test: /\b(what can you do|help me|how do i use|what do you do)\b/,
+    answer: () =>
+      `I can explain anything in the planner: drawing paddocks, the soil check, what NASA satellites saw on your paddocks, blackleg, sowing windows, soil health and why I picked each crop. Press Ctrl K any time to jump to a page or paddock.`,
+  },
+  {
+    test: /\b(snap|snapping|share an edge|neighbouring paddock)/,
+    answer: () => 'While you draw or reshape, corners lock onto a neighbouring paddock’s corners and edges, so paddocks share a boundary with no gaps or overlaps. Hold Alt to place a corner freely, or turn Snap off.',
+  },
+  {
+    test: /\b(soil health|health index|health score)/,
+    answer: () =>
+      'Soil health is a 0–100 index. It starts from the paddock’s organic carbon and pH (from SoilGrids) minus known problems like erosion or salinity, then each season moves it up or down by the crop grown: legumes and pasture build it, cereal after cereal runs it down.',
+  },
+  {
+    test: /\b(best guess|confiden|sure|likely|how certain)/,
+    answer: () =>
+      '“Sure” and “likely” seasons have a clear greenness curve, so I fill them in for you. “Best guess” means the curve could fit more than one crop (cereal vs pulse is my weakest call), so I only use it when you press “Use as crop history”.',
+  },
+  {
+    test: /\b(shortcut|keyboard|ctrl|command|search)/,
+    answer: () => 'Press Ctrl K (⌘ K on a Mac) to search pages, paddocks and actions. On the Planner, ← and → move between seasons. While drawing, Enter finishes, Backspace undoes and Esc cancels.',
+  },
+  {
+    test: /\b(export|csv|download|print|backup)/,
+    answer: () => 'On the Planner, “Export” saves the whole rotation as a CSV for Excel. In Settings you can export the farm as a file and import it again on another computer.',
+  },
   {
     test: /\b(hi|hello|hey|g'?day|howdy)\b/,
     answer: () => `Hi! I'm ${MASCOT_NAME}, the farm sheep. Ask me about outlining paddocks, soil, slope, rainfall or crop rotations.`,
@@ -33,7 +65,7 @@ const INTENTS = [
   {
     test: /\b(draw|outlin|boundar|corner|add (a )?paddock|polygon)/,
     answer: () =>
-      'On the “Outline your Paddocks” screen: search for your farm, press “+ Paddock”, click each corner of the paddock and click the first corner again to finish. Use “Undo” to remove the last corner. No farm handy? Try “Demo farm”.',
+      'On the Farm map: search for your farm, press “Draw paddock”, click each corner of the paddock and click the first corner again (or press Enter) to finish. Backspace removes the last corner. No farm handy? Load the demo farm.',
   },
   {
     test: /\b(space|satellite|nasa image|landsat|sentinel|hls|from above|time-?lapse|seen from)/,

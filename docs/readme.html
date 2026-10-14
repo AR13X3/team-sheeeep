@@ -36,10 +36,11 @@
         <span class="chip chip--olive">No login or API key</span>
         <span class="chip">React 19 + Vite</span>
       </div>
+      <p><a href="#team"><strong>New to the team? Start here →</strong></a></p>
     </div>
     <div class="frame">
       <div class="frame__bar"><i></i><i></i><i></i></div>
-      <img src="img/space-history.webp" alt="Paddock details: the “Seen from space” card shows the crop in each of the last five seasons and warns that canola flowered 52 m away">
+      <img src="img/dashboard.webp" alt="Overview: greeting with next season’s crops and sowing window, KPI tiles, the farm map coloured by crop and the Needs attention list">
     </div>
   </section>
 
@@ -77,7 +78,7 @@
         </div>
       </article>
       <article class="card feature">
-        <img src="img/dashboard.webp" alt="Dashboard: Did my rotation work? Cereals after a break crop were 21% more vigorous">
+        <img src="img/insights.webp" alt="Insights: Did my rotation work? next to growing-season rain by season">
         <div class="feature__body">
           <h3>4 · “Did my rotation work?”</h3>
           <div class="feature__row"><b>Problem</b><span>Farmers rarely see evidence that their rotation pays off on their own farm.</span></div>
@@ -93,56 +94,156 @@
     <p class="muted small" style="margin-top:14px">Everything runs in the browser and images are cached, so a farm is read once (about 30 seconds the first time). Click any screenshot to enlarge it.</p>
   </section>
 
-  <!-- ============ RUN IT ============ -->
-  <section class="block" id="run">
-    <span class="eyebrow">Run it</span>
-    <h2>Start the app</h2>
-    <div class="grid grid-2">
-      <div>
-<pre data-copy="npm install
-npm run dev"><span class="c"># first time</span>
+  <!-- ============ TEAM ============ -->
+  <section class="block" id="team">
+    <span class="eyebrow">New to the team</span>
+    <h2>From invite to your first pull request</h2>
+    <p class="lead">About ten minutes to a running app. The full guide is <code>CONTRIBUTING.md</code> in the repo.</p>
+    <ol class="timeline">
+      <li class="tl-item"><div class="tl-node">1</div><div class="card">
+        <div class="tl-head"><h3>Accept the invite</h3><span class="chip">GitHub</span></div>
+        <p style="margin:0">The repo is private. The owner adds you under <em>Settings → Collaborators</em>; accept it from your email.</p>
+      </div></li>
+      <li class="tl-item"><div class="tl-node">2</div><div class="card">
+        <div class="tl-head"><h3>Install the tools</h3></div>
+        <dl class="kv">
+          <dt>Git</dt><dd>Set your name and email once with <code>git config --global</code>.</dd>
+          <dt>Node.js 22</dt><dd>The version is in <code>.nvmrc</code>. With nvm: <code>nvm install 22</code>, <code>nvm use 22</code>.</dd>
+          <dt>Chrome</dt><dd>The browser checks drive it. On macOS or Linux, set <code>CHROME_PATH</code>.</dd>
+        </dl>
+      </div></li>
+      <li class="tl-item"><div class="tl-node">3</div><div class="card">
+        <div class="tl-head"><h3>Get the code and run it</h3><span class="chip chip--olive">No API keys</span></div>
+<pre data-copy="git clone https://github.com/AR13X3/team-sheeeep.git
+cd team-sheeeep
+npm install
+npm run dev" style="white-space:pre-wrap;overflow-wrap:anywhere">git clone https://github.com/AR13X3/team-sheeeep.git
+cd team-sheeeep
 npm install
 <span class="c"># then open http://localhost:5173</span>
 npm run dev</pre>
-<pre data-copy="npm run build"><span class="c"># production build in dist/</span>
+        <p class="small muted" style="margin:0">Keep the folder outside OneDrive, Dropbox or iCloud if you can: <code>node_modules/</code> holds thousands of files.</p>
+      </div></li>
+      <li class="tl-item"><div class="tl-node">4</div><div class="card">
+        <div class="tl-head"><h3>Look around</h3></div>
+        <p style="margin:0">Press <strong>“Try the demo farm”</strong> on the sign-in page: four paddocks near Wagga Wagga, straight to the Overview. Then open the <a href="tracker.html">tracker</a> for what’s next, the open questions and every decision so far.</p>
+      </div></li>
+      <li class="tl-item"><div class="tl-node">5</div><div class="card">
+        <div class="tl-head"><h3>Make your first pull request</h3><span class="chip chip--gold">Good first task</span></div>
+        <p style="margin:0">Switch to <strong>your own branch</strong>, named after you (e.g. <code>git switch sami</code>), and fill in your row of the <strong>Team</strong> table in <code>README.md</code>. It’s small and safe, and it walks you through branch → pull request → review → merge.</p>
+      </div></li>
+    </ol>
+  </section>
+
+  <!-- ============ HOW WE WORK ============ -->
+  <section class="block" id="workflow">
+    <span class="eyebrow">How we work</span>
+    <h2>Every change goes through a pull request</h2>
+    <p class="lead"><code>main</code> always works and is what gets deployed. Nobody pushes to it directly.</p>
+    <div class="card" style="margin:18px 0">
+      <div class="diagram">
+        <div class="diagram__col">
+          <div class="box"><h3>Pick a task</h3><p class="small muted" style="margin:0">From <strong>Next up</strong> in the tracker.<br>Assign yourself a GitHub issue.</p></div>
+        </div>
+        <div class="diagram__arrow">→</div>
+        <div class="diagram__col">
+          <div class="box"><h3>Your own branch</h3><p class="small muted" style="margin:0">Everyone has one, named after them (<code>sami</code>).<br>Merge in <code>main</code>, commit, run the checks.</p></div>
+        </div>
+        <div class="diagram__arrow">→</div>
+        <div class="diagram__col">
+          <div class="box box--out"><h3>Pull request</h3><p class="small muted" style="margin:0">Your branch → <code>main</code>. One teammate approves.<br>Create a merge commit, then sync.</p></div>
+        </div>
+      </div>
+    </div>
+    <div class="grid grid-2">
+      <div class="card card--flat">
+        <h3>Before you open a pull request</h3>
+<pre data-copy="npm run build"><span class="c"># always</span>
 npm run build</pre>
-<pre data-copy="npm run validate:phenology"><span class="c"># re-check the crop-from-space accuracy</span>
+<pre data-copy="npm run test:e2e"><span class="c"># any screen or style</span>
+npm run test:e2e</pre>
+<pre data-copy="npm run validate:phenology"><span class="c"># the crop classifier</span>
 npm run validate:phenology</pre>
+        <p class="small muted" style="margin:0"><code>test:e2e</code> needs <code>npm run dev</code> running in another terminal. Then look at the change in light and dark, and at phone width.</p>
       </div>
-      <div class="grid" style="align-content:start">
-        <div class="callout callout--teal"><p><strong>Node.js 20.19+</strong> runs the app. <strong>22.15+</strong> is needed only for <code>npm run export:figma</code>.</p></div>
-        <div class="callout"><p>No API keys are needed. The project lives in OneDrive, so <code>node_modules/</code> syncs too. Consider pausing OneDrive sync for this folder.</p></div>
-        <div class="card card--flat"><p class="small" style="margin:0">No farm handy? On the login screen press <strong>“Try the demo farm”</strong>: four paddocks in the NSW Riverina, near Wagga Wagga.</p></div>
+      <div class="card card--flat">
+        <h3>Ground rules</h3>
+        <ul class="checks">
+          <li><span>Button fill and label colours stay exactly as in Figma.</span></li>
+          <li><span>Colours come from the tokens in <code>src/styles/tokens.css</code>, so light and dark both work.</span></li>
+          <li><span>Signed-in pages use <code>AppShell</code> and <code>&lt;Page&gt;</code>; farm numbers come from <code>useFarm()</code>.</span></li>
+          <li><span>Update the tracker, docs and screenshots in the same pull request.</span></li>
+          <li><span>Never commit keys or passwords. Local keys go in <code>.env.local</code>.</span></li>
+        </ul>
       </div>
+    </div>
+    <h3 style="margin-top:28px">Where to read what</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>I want to…</th><th>Open</th></tr></thead>
+        <tbody>
+          <tr><td>Get set up, find my way around, see who’s on the team</td><td><code>README.md</code></td></tr>
+          <tr><td>Know how we branch, review, merge, and the design rules</td><td><code>CONTRIBUTING.md</code></td></tr>
+          <tr><td>Know what’s next, what’s open and what was decided</td><td><a href="tracker.html">tracker.html</a></td></tr>
+          <tr><td>See the app page by page, with screenshots</td><td>this page</td></tr>
+          <tr><td>Understand a feature in depth: data, accuracy, planner, design</td><td><code>docs/how-it-works.md</code></td></tr>
+          <tr><td>See how the NASA features were planned and validated</td><td><a href="plan.html">plan.html</a></td></tr>
+          <tr><td>Read the whole project end to end, with the demo script</td><td><code>docs/TEAM-SHEEEEP-Project-Breakdown.docx</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ WORKSPACE ============ -->
+  <section class="block" id="workspace">
+    <span class="eyebrow">The workspace</span>
+    <h2>Built like a tool farmers can run a farm from</h2>
+    <p class="muted">Same colours, Lato and Manami as the Figma file, laid out as a proper app: one sidebar, a page per job, and live data instead of loading screens.</p>
+    <div class="grid grid-2">
+      <figure><img class="shot" src="img/dashboard.webp" alt="Overview page"><figcaption><strong>Overview.</strong> Next season, the sowing window and blackleg risks up front; KPI tiles; the farm map for any of the next five seasons; a Needs attention list that links to each fix; soil-health outlook, crop mix, paddock table, “Did my rotation work?”, recent activity and the status of every data source.</figcaption></figure>
+      <figure><img class="shot" src="img/planner.webp" alt="Planner with the rotation grid"><figcaption><strong>Planner.</strong> Every paddock × every season in one grid. Click a season (or ← →) to see it on the map; click a cell to see why that crop, its soil-health effect and how the alternatives scored. Export CSV or print.</figcaption></figure>
+      <figure><img class="shot" src="img/planner-why.webp" alt="Why this crop panel"><figcaption><strong>Why this crop.</strong> The reasons, the soil-health change and, for next season, the scores of the top five options (blackleg shows up here when it pushed canola down).</figcaption></figure>
+      <figure><img class="shot" src="img/paddock-overview.webp" alt="Paddock overview"><figcaption><strong>Paddock pages.</strong> Overview, History, Conditions and Priorities tabs, with the map and the paddock’s next five seasons always beside them.</figcaption></figure>
+    </div>
+    <div class="grid grid-3" style="margin-top:16px">
+      <div class="card card--flat"><h3>Find anything</h3><p class="small"><kbd>Ctrl</kbd> <kbd>K</kbd> (or <kbd>/</kbd>) searches pages, paddocks and actions: draw a paddock, run the soil check, export the plan, switch theme.</p></div>
+      <div class="card card--flat"><h3>Live, not blocking</h3><p class="small">The satellite read, soil, slope and climate load in the background. The top bar shows satellite progress, and the plan refines itself as data arrives.</p></div>
+      <div class="card card--flat"><h3>Light and dark</h3><p class="small">Warm cream by day, soil brown by night, or follow the system. The sidebar collapses to icons for more room.</p></div>
+      <div class="card card--flat"><h3>Manami, on the side</h3><p class="small">She opens as a side panel with suggested questions for the page, and gives new farmers one short tip per page that never covers anything.</p></div>
+      <div class="card card--flat"><h3>Safe to try things</h3><p class="small">Every change shows a short notice; deleting a paddock can be undone. Export the farm to a file and import it on another computer.</p></div>
+      <div class="card card--flat"><h3>Guided setup</h3><p class="small">Six steps with a progress bar and a “Getting started” card in the sidebar. The demo farm skips straight to the Overview.</p></div>
     </div>
   </section>
 
   <!-- ============ FLOW ============ -->
   <section class="block" id="flow">
-    <span class="eyebrow">The flow</span>
-    <h2>Nine screens, from the Figma prototype</h2>
+    <span class="eyebrow">Every page</span>
+    <h2>Setup, then the workspace</h2>
     <p class="muted">Click a screenshot to enlarge it. Everything you enter is saved in this browser’s <code>localStorage</code> (<code>sheeep:v1</code>).</p>
     <div class="strip">
-      <article class="card step-card"><img src="img/login.webp" alt="Login screen"><div><h3><span class="step-num">1</span>Login</h3><p class="muted small"><code>#/</code></p>Names the local profile. Front-end only for now; passwords are never stored.</div></article>
-      <article class="card step-card"><img src="img/experience.webp" alt="Experience screen"><div><h3><span class="step-num">2</span>Experience</h3><p class="muted small"><code>#/experience</code></p>New or experienced farmer. New farmers get a tip from Manami on every screen.</div></article>
-      <article class="card step-card"><img src="img/your-farm.webp" alt="Your Farm: livestock and the crops the farm can grow"><div><h3><span class="step-num">2</span>Your Farm</h3><p class="muted small"><code>#/farm</code></p>Livestock or crops only, and a tick for every crop you can grow and sell. The plan only uses ticked crops.</div></article>
-      <article class="card step-card"><img src="img/outline.webp" alt="Outline your paddocks"><div><h3><span class="step-num">3</span>Outline paddocks</h3><p class="muted small"><code>#/paddocks</code></p>Search, then click corners. Corners snap to neighbours within 14 screen pixels, so zooming in keeps real gaps. Overlaps are trimmed.</div></article>
-      <article class="card step-card"><img src="img/snapping.webp" alt="Snapping to a neighbouring paddock while drawing"><div><h3><span class="step-num">3</span>Snapping</h3><p class="muted small">Alt or the Snap switch = free placement</p>Two clicks on a neighbour’s border trace it. Backspace undoes a click and its traced corners together.</div></article>
-      <article class="card step-card"><img src="img/soil-check.webp" alt="Soil check suggesting a paddock split"><div><h3><span class="step-num">4</span>Soil check</h3><p class="muted small"><code>#/paddocks/review</code></p>Samples soil at both ends of each paddock and suggests a split when it really differs.</div></article>
-      <article class="card step-card"><img src="img/space-history.webp" alt="Paddock history seen from space"><div><h3><span class="step-num">5</span>History</h3><p class="muted small"><code>#/paddocks/:id/history</code></p>“Seen from space” card, neighbour canola on the map, then crops, soil, slope, issues.</div></article>
-      <article class="card step-card"><img src="img/timelapse.webp" alt="Satellite time-lapse of the paddock"><div><h3><span class="step-num">5</span>Time-lapse</h3><p class="muted small">Real NASA HLS images</p>Peak of each season, plus the canola-flowering image, with the paddock outlined.</div></article>
-      <article class="card step-card"><img src="img/priorities.webp" alt="Priorities sliders"><div><h3><span class="step-num">6</span>Priorities</h3><p class="muted small"><code>#/paddocks/:id/priorities</code></p>Sliders from “Not important” to “Top priority”, reasons for rotating, a live preview of the plan.</div></article>
-      <article class="card step-card"><img src="img/planner.webp" alt="Planner"><div><h3><span class="step-num">7</span>Planner</h3><p class="muted small"><code>#/planner</code></p>A season strip on top: click any of the 10 seasons, and each dot shows a paddock’s crop. Below it: the map coloured by crop, Crops to Grow, Sowing window and Soil Health.</div></article>
-      <article class="card step-card"><img src="img/dashboard.webp" alt="Dashboard"><div><h3><span class="step-num">8</span>Dashboard</h3><p class="muted small"><code>#/dashboard</code></p>Farm summary, next season, soil health and “Did my rotation work?”.</div></article>
-      <article class="card step-card"><img src="img/manami.webp" alt="Chatting with Manami"><div><h3><span class="step-num">★</span>Manami</h3><p class="muted small">On every screen</p>Ask about soil, satellites, blackleg, sowing dates or rotations. Offline keyword answers for now.</div></article>
+      <article class="card step-card"><img src="img/login.webp" alt="Sign in"><div><h3><span class="step-num">1</span>Sign in</h3><p class="muted small"><code>#/</code></p>The meadow scene with a sign-in card. Names the local profile; passwords are never stored. “Try the demo farm” goes straight to the Overview.</div></article>
+      <article class="card step-card"><img src="img/experience.webp" alt="About you"><div><h3><span class="step-num">2</span>About you</h3><p class="muted small"><code>#/experience</code></p>New farmer (tips on) or experienced (tips off). Change it any time in Settings.</div></article>
+      <article class="card step-card"><img src="img/your-farm.webp" alt="Crops and livestock"><div><h3><span class="step-num">3</span>Crops and livestock</h3><p class="muted small"><code>#/farm</code></p>Livestock or crops only, and a tick for every crop you can grow and sell. The plan only uses ticked crops.</div></article>
+      <article class="card step-card"><img src="img/outline.webp" alt="Farm map"><div><h3><span class="step-num">4</span>Farm map</h3><p class="muted small"><code>#/paddocks</code></p>Search, then Draw paddock and click corners. Paddock list beside the map: edit shape, open, delete (with Undo).</div></article>
+      <article class="card step-card"><img src="img/snapping.webp" alt="Snapping to a neighbouring paddock while drawing"><div><h3><span class="step-num">4</span>Snapping</h3><p class="muted small">Alt or the Snap switch = free placement</p>Corners lock onto neighbours within 14 screen pixels. Two clicks on a border trace it; overlaps are trimmed.</div></article>
+      <article class="card step-card"><img src="img/soil-check.webp" alt="Soil check suggesting a paddock split"><div><h3><span class="step-num">5</span>Soil check</h3><p class="muted small"><code>#/paddocks/review</code></p>A live list samples both ends of each paddock and suggests a split where the soil really differs.</div></article>
+      <article class="card step-card"><img src="img/space-history.webp" alt="Paddock history seen from space"><div><h3><span class="step-num">6</span>History</h3><p class="muted small"><code>#/paddocks/:id/history</code></p>“Seen from space”, blackleg alert, the last three seasons (with what the satellite saw), known issues, notes.</div></article>
+      <article class="card step-card"><img src="img/timelapse.webp" alt="Satellite time-lapse of the paddock"><div><h3><span class="step-num">6</span>Time-lapse</h3><p class="muted small">10 m Sentinel-2 where possible</p>Peak of each season, plus the canola-flowering image, with the paddock outlined.</div></article>
+      <article class="card step-card"><img src="img/priorities.webp" alt="Priorities sliders"><div><h3><span class="step-num">6</span>Priorities</h3><p class="muted small"><code>#/paddocks/:id/priorities</code></p>Four sliders with a live preview of the next seasons, reasons for rotating, indicative prices.</div></article>
+      <article class="card step-card"><img src="img/planner.webp" alt="Planner"><div><h3><span class="step-num">7</span>Planner</h3><p class="muted small"><code>#/planner</code></p>Rotation grid, season map, crops to grow, sowing window. Reaching it finishes setup.</div></article>
+      <article class="card step-card"><img src="img/register.webp" alt="Paddocks table"><div><h3><span class="step-num">★</span>Paddocks</h3><p class="muted small"><code>#/register</code></p>Every paddock in a sortable, searchable table with soil, history, next crop, soil health and flags.</div></article>
+      <article class="card step-card"><img src="img/insights.webp" alt="Insights"><div><h3><span class="step-num">★</span>Insights</h3><p class="muted small"><code>#/insights</code></p>Rotation report, rain by season, paddock memory from space as one grid, neighbour canola, sowing windows.</div></article>
+      <article class="card step-card"><img src="img/settings.webp" alt="Settings"><div><h3><span class="step-num">★</span>Settings</h3><p class="muted small"><code>#/settings</code></p>Profile and tips, crops, theme and sidebar, export/import the farm, re-read the satellites.</div></article>
+      <article class="card step-card"><img src="img/search.webp" alt="Ctrl K search"><div><h3><span class="step-num">★</span>Search</h3><p class="muted small"><kbd>Ctrl</kbd> <kbd>K</kbd></p>Jump to any page or paddock, or run an action, by typing a few letters.</div></article>
+      <article class="card step-card"><img src="img/manami.webp" alt="Manami’s panel"><div><h3><span class="step-num">★</span>Manami</h3><p class="muted small">Side panel, every page</p>Tips for the page, suggested questions, and answers about soil, satellites, blackleg, sowing and rotations.</div></article>
     </div>
     <div class="grid grid-2" style="margin-top:10px;align-items:center">
       <div style="display:flex;gap:14px;justify-content:center">
-        <img class="shot" style="width:44%;max-width:200px" src="img/mobile-outline.webp" alt="Outline screen on a phone">
+        <img class="shot" style="width:44%;max-width:200px" src="img/mobile-outline.webp" alt="Farm map on a phone">
         <img class="shot" style="width:44%;max-width:200px" src="img/mobile-planner.webp" alt="Planner on a phone">
       </div>
-      <div><h3>Fits any window, phones too</h3><p class="muted">Every screen is drawn at the Figma frame size and zoomed to fit the window, so nothing needs scrolling on a laptop (a 1280×665 window shows it at 0.8×) and big monitors get it slightly larger. Windows 960 px wide or narrower stack the columns, and phones get smaller type and padding.</p>
-        <img class="shot" src="img/planner-laptop.webp" alt="The planner fitted to a 1280×665 laptop window" style="margin-top:10px"></div>
+      <div><h3>Any window, phones too, light or dark</h3><p class="muted">The app fills the window at its real size: no page zoom, no page scrolling, only the content area scrolls. Below 960 px the sidebar becomes a slide-out menu and wide tables scroll sideways. <code>npm run test:e2e -- fit</code> checks every page at 1280×665.</p>
+        <img class="shot" src="img/dashboard-dark.webp" alt="The Overview in dark mode" style="margin-top:10px"></div>
     </div>
   </section>
 
@@ -245,10 +346,10 @@ npm run validate:phenology</pre>
   <!-- ============ DESIGN ============ -->
   <section class="block" id="design">
     <span class="eyebrow">Design → code</span>
-    <h2>Straight from the Figma file</h2>
+    <h2>The Figma palette, grown into a design system</h2>
     <div class="grid grid-2">
       <div>
-        <p>Colours, radii, shadows and type sizes come from the Figma components and live in <code>src/styles/tokens.css</code>. Button fill and text colours are kept exactly as designed.</p>
+        <p>The palette and Lato come from the Figma file. <code>src/styles/tokens.css</code> turns them into semantic tokens (background, surfaces, text, borders, status colours) for a <strong>light</strong> theme on warm cream and a <strong>dark</strong> theme on soil brown. Button fills and label colours are kept exactly as designed. The UI kit (<code>src/components/ui.jsx</code>) adds cards, KPI tiles, tables, tabs, toasts, a command palette and SVG charts in the same style; icons are Lucide line icons.</p>
         <div class="swatches">
           <div class="swatch"><i style="background:#5d6052"></i><span>Charcoal<br><code>#5d6052</code></span></div>
           <div class="swatch"><i style="background:#6ba7a9"></i><span>Teal<br><code>#6ba7a9</code></span></div>
@@ -261,7 +362,7 @@ npm run validate:phenology</pre>
         </div>
       </div>
       <div>
-        <p>The scenes, sheep, Manami and icons are exported straight from the <code>.fig</code> file as SVG by <code>tools/figma-export</code>. It decodes the binary (Kiwi schema + zstd) and renders Figma’s own vector geometry. The exporter tags sheep, eyes and grass so they can bob, blink and sway. Click a sheep and it hops.</p>
+        <p>The scenes, sheep and Manami are exported straight from the <code>.fig</code> file as SVG by <code>tools/figma-export</code>. It decodes the binary (Kiwi schema + zstd) and renders Figma’s own vector geometry. The meadow scene stays on the sign-in page (click a sheep and it hops), the sheep mark each paddock, and Manami lives in the sidebar, the top bar and her panel.</p>
         <div style="display:flex;gap:10px;flex-wrap:wrap;margin:6px 0 14px">
           <img src="../src/assets/art/sheep-1.svg" alt="" style="width:54px"><img src="../src/assets/art/sheep-2.svg" alt="" style="width:54px"><img src="../src/assets/art/sheep-3.svg" alt="" style="width:54px"><img src="../src/assets/art/sheep-4.svg" alt="" style="width:54px"><img src="../src/assets/art/sheep-5.svg" alt="" style="width:54px"><img src="../src/assets/art/sheep-6.svg" alt="" style="width:54px">
         </div>
@@ -278,23 +379,31 @@ npm run export:figma -- path/to/new.fig</pre>
   <section class="block" id="structure">
     <span class="eyebrow">Project structure</span>
     <h2>Where things live</h2>
-<pre>design/                 the source .fig file
-docs/                   these pages: readme, plan, tracker (+ screenshots in img/)
-tools/figma-export/     .fig decoder + SVG renderer + asset manifest
+<pre>README.md               start here: what it is, setup, team, commands
+CONTRIBUTING.md         how we work: branches, checks, pull requests, design rules
+wrangler.jsonc          Cloudflare deploy settings (serves dist/)
+.github/                pull request and issue templates
+design/                 the source .fig file
+docs/                   these pages (readme, plan, tracker), how-it-works.md,
+                        the Word breakdown, screenshots in img/
+tools/e2e/              browser checks (npm run test:e2e) + doc screenshot script
 tools/validation/       crop-from-space classifier vs. USDA Cropland Data Layer
+tools/figma-export/     .fig decoder + SVG renderer + asset manifest
+tools/docs/             builds the Word breakdown
 src/
   App.jsx               routes (hash router, lazy-loaded screens)
   config.js             app name, mascot name, planning horizon, sowing date
-  screens/              one file per Figma frame
-  components/           Screen chrome, Scene, ChatBot, PaddockMap (Leaflet), SpaceHistoryCard,
-                        TimeLapse, SowingCard, RotationReportCard, Timeline, UI kit…
-  state/                store (useReducer + localStorage), site data, space, weather hooks
+  screens/              one file per page (Login, Dashboard, OutlinePaddocks, Planner, Insights…)
+  components/           shell/ (sidebar, top bar, Ctrl K search, Manami), Page, UI kit, charts,
+                        PaddockMap (Leaflet), PaddockTable, SpaceHistoryCard, TimeLapse, SowingCard…
+  state/                store (useReducer + localStorage, activity log), useFarm (plan + alerts),
+                        site data, space, weather, toasts, preferences (theme, sidebar)
   services/             NASA HLS (hls.js), farm analysis from space (space.js), NASA POWER
                         (climate + daily), SoilGrids, Open-Meteo, Nominatim, cached fetch
   logic/                rotation planner, crop classifier (phenology.js), sowing risk,
                         rotation report, snapping/overlap, geometry, Manami's replies
   data/                 crop knowledge base, demo farm
-  styles/               tokens, base, components, screens, scene animation, chat, map, space</pre>
+  styles/               tokens (light/dark), base, ui kit, shell, charts, one file per page area, map, scene</pre>
   </section>
 
   <!-- ============ GAPS ============ -->
@@ -304,14 +413,14 @@ src/
     <div class="grid grid-3">
       <div class="card card--flat"><h3>Crop from space</h3><p class="small">Telling cereals from pulses needs more than greenness. Sentinel-1 radar or labelled Australian paddocks (e.g. ABARES land use) would sharpen it.</p></div>
       <div class="card card--flat"><h3>Sowing window</h3><p class="small">Let the farmer pick variety maturity (early / mid / late) instead of assuming mid.</p></div>
-      <div class="card card--flat"><h3>Auth &amp; name</h3><p class="small">No backend yet; login only names the local profile. The design still says “Webapp Name” (<code>src/config.js</code>, <code>index.html</code>).</p></div>
+      <div class="card card--flat"><h3>Auth &amp; name</h3><p class="small">No backend yet; sign-in only names the local profile. The app is still called “Webapp Name” (<code>src/config.js</code>, <code>index.html</code>).</p></div>
       <div class="card card--flat"><h3>Prices</h3><p class="small">Static examples. Connect a market feed in <code>src/services/</code>.</p></div>
       <div class="card card--flat"><h3>Soil split</h3><p class="small">A two-sample heuristic per paddock. Soil-zone mapping from a raster or EM survey would sharpen it.</p></div>
       <div class="card card--flat"><h3>Live status</h3><p class="small">Open questions and next steps are kept in the <a href="tracker.html">tracker</a>.</p></div>
     </div>
   </section>
 
-  <footer class="foot">TEAM SHEEEEP · built from <code>design/TEAM SHEEEEP.fig</code> · plain-text version: <code>README.md</code></footer>
+  <footer class="foot">TEAM SHEEEEP · built from <code>design/TEAM SHEEEEP.fig</code> · plain-text versions: <code>README.md</code>, <code>docs/how-it-works.md</code>, <code>CONTRIBUTING.md</code></footer>
 </main>
 <script src="docs.js"></script>
 </body>

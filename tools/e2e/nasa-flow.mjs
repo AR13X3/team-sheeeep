@@ -6,7 +6,7 @@ __mk('shots', { recursive: true });
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const browser = await puppeteer.launch({ executablePath: process.env.CHROME_PATH || 'C:/Program Files/Google/Chrome/Application/chrome.exe', headless: 'new', userDataDir: './chrome-profile' });
 const page = await browser.newPage();
-await page.setViewport({ width: +(process.env.E2E_W || 1280), height: +(process.env.E2E_H || 832) }); // E2E_H=665 tests a laptop window (the app zooms to fit)
+await page.setViewport({ width: +(process.env.E2E_W || 1280), height: +(process.env.E2E_H || 832) }); // E2E_H=665 tests a laptop window
 const errors = [];
 page.on('pageerror', (e) => errors.push(e.message));
 page.on('console', (m) => ['error', 'warning'].includes(m.type()) && !/CORS|ERR_FAILED|net::/.test(m.text()) && errors.push(`[${m.type()}] ${m.text()}`));
@@ -34,12 +34,12 @@ await sleep(6000);
 await page.screenshot({ path: 'shots/n-planner.png' });
 console.log('planner notes:', await page.evaluate(() => [...document.querySelectorAll('.plan-list__note')].map((n) => n.textContent)));
 console.log('sowing:', await page.evaluate(() => [...document.querySelectorAll('.sow-list li')].map((li) => li.innerText.replace(/\s+/g, ' ')).join(' || ')));
-await page.evaluate(() => document.querySelector('.scroll-col').scrollTo(0, 560));
+await page.evaluate(() => document.querySelector('.shell__content').scrollTo(0, 99999));
 await sleep(800);
 await page.screenshot({ path: 'shots/n-planner-sowing.png' });
 await page.goto('http://localhost:5173/#/dashboard', { waitUntil: 'domcontentloaded' });
 await sleep(4000);
-await page.screenshot({ path: 'shots/n-dashboard.png', fullPage: true });
-console.log('report:', await page.evaluate(() => document.querySelector('.report-card__headline')?.textContent));
+await page.screenshot({ path: 'shots/n-dashboard.png' });
+console.log('report:', await page.evaluate(() => document.querySelector('.report__headline')?.textContent));
 console.log(errors.length ? errors.join('\n') : 'no console errors');
 await browser.close();

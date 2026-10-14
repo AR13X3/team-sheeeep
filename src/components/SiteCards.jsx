@@ -1,104 +1,84 @@
-// The "auto filled" cards from the design (Soil, Slope, Prices), backed by real data.
-import { Card, Status } from './ui.jsx';
+// Auto-filled paddock data (soil, terrain, climate) and indicative prices, backed by real datasets.
+import { Card, Facts, Skeleton, Source, Status } from './ui.jsx';
 import { describePh } from '../services/soil.js';
 import { describeSlope } from '../services/terrain.js';
 import { CROP_BY_ID } from '../data/crops.js';
 
 const fmt = (v, dp = 1) => (v == null ? '–' : Number(v).toFixed(dp));
 
-export function SoilFacts({ soil, climate }) {
+const Loading = ({ rows = 4 }) => (
+  <div className="facts" style={{ '--cols': 2 }} aria-busy="true">
+    {Array.from({ length: rows }, (_, i) => (
+      <div key={i} className="facts__item">
+        <Skeleton w={70} h={10} />
+        <Skeleton w={110} h={18} className="mt-6" />
+      </div>
+    ))}
+  </div>
+);
+
+export function SoilFacts({ soil }) {
+  if (!soil) return null;
   return (
-    <dl className="facts">
-      {soil ? (
-        <>
-          <div>
-            <dt>Texture</dt>
-            <dd>{soil.texture || '–'}</dd>
-          </div>
-          <div>
-            <dt>pH</dt>
-            <dd>
-              {fmt(soil.ph)} <span className="muted">{describePh(soil.ph)}</span>
-            </dd>
-          </div>
-          <div>
-            <dt>Clay / Sand</dt>
-            <dd>
-              {fmt(soil.clay, 0)}% / {fmt(soil.sand, 0)}%
-            </dd>
-          </div>
-          <div>
-            <dt>Organic carbon</dt>
-            <dd>{fmt(soil.soc)} g/kg</dd>
-          </div>
-        </>
-      ) : null}
-      {climate ? (
-        <>
-          <div>
-            <dt>Rainfall</dt>
-            <dd>
-              {Math.round(climate.rainfallMm)} mm/yr <span className="muted">({Math.round(climate.growingSeasonRainMm)} in season)</span>
-            </dd>
-          </div>
-          <div>
-            <dt>Root-zone moisture</dt>
-            <dd>{Math.round(climate.rootZoneWetness * 100)}%</dd>
-          </div>
-        </>
-      ) : null}
-    </dl>
+    <Facts
+      items={[
+        { label: 'Texture', value: soil.texture || '–' },
+        { label: 'pH (water)', value: fmt(soil.ph), sub: describePh(soil.ph) },
+        { label: 'Clay / sand', value: `${fmt(soil.clay, 0)}% / ${fmt(soil.sand, 0)}%` },
+        { label: 'Organic carbon', value: `${fmt(soil.soc)} g/kg` },
+      ]}
+    />
   );
 }
 
 export function SoilCard({ paddock, status = {} }) {
   const soil = paddock.site?.soil;
-  const climate = paddock.site?.climate;
   return (
-    <Card title="Soil" className="data-card">
-      <Status state={status.soil} />
-      {soil === null && <p className="status">No soil data for this spot (water or built-up area).</p>}
-      <Status state={status.climate}>Fetching NASA climate data…</Status>
-      <SoilFacts soil={soil} climate={climate} />
-      {(soil || climate) && (
-        <p className="source">
-          {[soil && 'ISRIC SoilGrids (0–30 cm)', climate && 'NASA POWER'].filter(Boolean).join(' · ')}
-        </p>
+    <Card title="Soil" subtitle="Top 30 cm at the centre of the paddock" icon="mountain">
+      {status.soil === 'loading' && soil === undefined ? <Loading /> : <Status state={status.soil === 'error' ? 'error' : null} />}
+      {soil === null && <p className="muted">No soil data for this spot (water or built-up area).</p>}
+      <SoilFacts soil={soil} />
+      {soil && <Source>ISRIC SoilGrids 2.0 (250 m), 0–30 cm average</Source>}
+    </Card>
+  );
+}
+
+export function TerrainCard({ paddock, status = {} }) {
+  const t = paddock.site?.terrain;
+  return (
+    <Card title="Slope and terrain" subtitle="Fitted across the whole paddock" icon="gauge">
+      {status.terrain === 'loading' && !t ? <Loading /> : <Status state={status.terrain === 'error' ? 'error' : null} />}
+      {t && (
+        <>
+          <Facts
+            items={[
+              { label: 'Slope', value: `${fmt(t.slopePct)}%`, sub: describeSlope(t.slopePct) },
+              { label: 'Faces', value: t.aspect },
+              t.reliefM != null && { label: 'Height difference', value: `${Math.round(t.reliefM)} m` },
+              { label: 'Elevation', value: `${Math.round(t.elevationM)} m` },
+            ]}
+          />
+          <Source>Copernicus 90 m DEM via Open-Meteo</Source>
+        </>
       )}
     </Card>
   );
 }
 
-export function SlopeCard({ paddock, status = {} }) {
-  const t = paddock.site?.terrain;
+export function ClimateCard({ paddock, status = {} }) {
+  const c = paddock.site?.climate;
   return (
-    <Card title="Slope" className="data-card">
-      <Status state={status.terrain} />
-      {t && (
+    <Card title="Climate" subtitle="Long-term averages for this location" icon="rain">
+      {status.climate === 'loading' && !c ? <Loading rows={2} /> : <Status state={status.climate === 'error' ? 'error' : null}>NASA POWER is unavailable right now.</Status>}
+      {c && (
         <>
-          <dl className="facts">
-            <div>
-              <dt>Slope</dt>
-              <dd>
-                {fmt(t.slopePct)}% <span className="muted">{describeSlope(t.slopePct)}</span>
-              </dd>
-            </div>
-            <div>
-              <dt>Faces</dt>
-              <dd>{t.aspect}</dd>
-            </div>
-            {t.reliefM != null && (
-              <div>
-                <dt>Height difference</dt>
-                <dd>{Math.round(t.reliefM)} m</dd>
-              </div>
-            )}
-            <div>
-              <dt>Elevation</dt>
-              <dd>{Math.round(t.elevationM)} m</dd>
-            </div>
-          </dl>
-          <p className="source">Average across the paddock · Copernicus 90 m DEM via Open-Meteo</p>
+          <Facts
+            items={[
+              { label: 'Rainfall', value: `${Math.round(c.rainfallMm)} mm/yr`, sub: `${Math.round(c.growingSeasonRainMm)} mm in the growing season` },
+              { label: 'Root-zone moisture', value: `${Math.round(c.rootZoneWetness * 100)}%`, sub: c.rootZoneWetness < 0.35 ? 'Dry' : c.rootZoneWetness < 0.6 ? 'Moderate' : 'Moist' },
+            ]}
+          />
+          <Source>NASA POWER (satellite + model climate, ~50 km grid)</Source>
         </>
       )}
     </Card>
@@ -108,18 +88,22 @@ export function SlopeCard({ paddock, status = {} }) {
 /** Indicative prices for the crops the planner is leaning towards. */
 export function PricesCard({ cropIds }) {
   const crops = cropIds.map((id) => CROP_BY_ID[id]).filter(Boolean);
+  const max = Math.max(...crops.map((c) => c.price || 0), 1);
   return (
-    <Card title="Prices" className="data-card">
+    <Card title="Indicative prices" subtitle="For the crops the plan leans towards" icon="coins">
       <ul className="price-list">
         {crops.map((c) => (
           <li key={c.id}>
             <span className="crop-dot" style={{ background: c.color }} />
             <span className="price-list__name">{c.name}</span>
-            <span className="price-list__value">{c.price ? `$${c.price}/t` : c.id === 'pasture' ? 'wool & meat' : '–'}</span>
+            <span className="price-list__bar">
+              <span style={{ width: `${((c.price || 0) / max) * 100}%`, background: c.color }} />
+            </span>
+            <span className="price-list__value num">{c.price ? `$${c.price}/t` : c.id === 'pasture' ? 'wool & meat' : '–'}</span>
           </li>
         ))}
       </ul>
-      <p className="source">Indicative AUD example prices — not live market data.</p>
+      <Source>Indicative AUD example prices, not live market data.</Source>
     </Card>
   );
 }

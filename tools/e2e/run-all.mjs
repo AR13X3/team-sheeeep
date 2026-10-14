@@ -1,7 +1,7 @@
 // Runs every browser check in this folder against the dev server (npm run dev must be running).
 //   npm run test:e2e            all checks
 //   npm run test:e2e -- nasa    only files whose name contains "nasa"
-//   E2E_H=665 npm run test:e2e  run everything in a laptop-sized window (the app zooms to fit)
+//   E2E_H=665 npm run test:e2e  run everything in a laptop-sized window
 // A check fails when it prints a line starting with ✗ or reports page/console errors.
 import { spawnSync } from 'node:child_process';
 import { readdirSync } from 'node:fs';

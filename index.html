@@ -8,27 +8,20 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;0,400;0,700;0,900;1,400&display=swap" rel="stylesheet" />
     <title>Webapp Name</title>
     <script>
-      // Fit the 1280×832 design to the window: zoom out on laptops, a little in on big screens.
-      // Narrow windows use the stacked layout at normal size instead (see the 960px media queries in screen.css and screens.css).
+      // Apply the saved light/dark theme before the first paint (see src/state/prefs.js).
       (function () {
-        var DESIGN_W = 1280, DESIGN_H = 832, MIN = 0.62, MAX = 1.2, STACK_BELOW = 960;
-        function fit() {
-          var w = window.innerWidth, h = window.innerHeight;
-          var s = w <= STACK_BELOW ? 1 : Math.min(MAX, Math.max(MIN, Math.min(w / DESIGN_W, h / DESIGN_H)));
-          document.documentElement.style.setProperty('--ui-scale', String(Math.round(s * 1000) / 1000));
-        }
-        fit();
-        window.addEventListener('resize', fit);
+        try {
+          var t = localStorage.getItem('sheeep:theme') || 'system';
+          var dark = t === 'dark' || (t === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+          document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+        } catch (e) {}
       })();
     </script>
     <style>
-      /* Fit-to-window zoom (scale set by the script above). Zoom also scales viewport units,
-         so inside the app use var(--app-w) / var(--app-h) instead of 100vw / 100dvh. */
-      :root { --app-w: calc(100vw / var(--ui-scale, 1)); --app-h: calc(100dvh / var(--ui-scale, 1)); }
-      body { zoom: var(--ui-scale, 1); }
+      :root { --app-w: 100vw; --app-h: 100dvh; }
       /* Boot loader: replaced by the app as soon as React renders into #root. */
       .boot { position: fixed; inset: 0; display: grid; place-items: center; background: linear-gradient(#6ba7a9, #a7b394); font: 700 20px/1.3 Lato, system-ui, sans-serif; color: #372f2a; }
       .boot__lane { position: absolute; left: 0; right: 0; bottom: calc(var(--app-h) * 0.22); height: 110px; overflow: hidden; }

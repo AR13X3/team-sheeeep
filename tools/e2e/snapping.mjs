@@ -7,7 +7,7 @@ __mk('shots', { recursive: true });
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const browser = await puppeteer.launch({ executablePath: process.env.CHROME_PATH || 'C:/Program Files/Google/Chrome/Application/chrome.exe', headless: 'new' });
 const page = await browser.newPage();
-await page.setViewport({ width: +(process.env.E2E_W || 1280), height: +(process.env.E2E_H || 832) }); // E2E_H=665 tests a laptop window (the app zooms to fit)
+await page.setViewport({ width: +(process.env.E2E_W || 1280), height: +(process.env.E2E_H || 832) }); // E2E_H=665 tests a laptop window
 const errors = [];
 page.on('pageerror', (e) => errors.push(e.message));
 page.on('console', (m) => m.type() === 'error' && errors.push(m.text()));
@@ -25,13 +25,15 @@ const north = (ll, m) => [ll[0] + m / 111320, ll[1]];
 const drawText = () => page.evaluate(() => document.querySelector('.draw-bar strong')?.textContent);
 
 await btn('Try the demo farm');
+await sleep(1500);
+await page.goto('http://localhost:5173/#/paddocks', { waitUntil: 'domcontentloaded' });
 await sleep(2000);
 const p1 = (await state()).paddocks[0]; // corners: NW, NE, SE, SW
 const [NW, NE] = [p1.coords[0], p1.coords[1]];
 
 // a. corner snapping: clicks a few px off Paddock #1's corners land exactly on them
 await view([-34.9335, 147.162], 16);
-await btn('Paddock'); await sleep(200);
+await btn('Draw paddock'); await sleep(200);
 await clickLL(NW, 6, -4);
 await clickLL(NE, -5, 5);
 const tipText = await page.evaluate(() => document.querySelector('.snap-tip')?.textContent);
@@ -49,7 +51,7 @@ await view([-34.9355, 147.163], 16);
 const c1 = (await state()).paddocks[0].coords;
 const topMid = [(c1[0][0] + c1[1][0]) / 2, (c1[0][1] + c1[1][1]) / 2];
 const rightMid = [(c1[1][0] + c1[2][0]) / 2, (c1[1][1] + c1[2][1]) / 2];
-await btn('Paddock'); await sleep(200);
+await btn('Draw paddock'); await sleep(200);
 await clickLL(topMid, 0, -4);
 await clickLL(rightMid, 4, 0);
 const traced = await drawText();
@@ -61,7 +63,7 @@ await page.keyboard.press('Escape'); await sleep(200);
 
 // c. Alt: no snapping
 await view([-34.9335, 147.162], 16);
-await btn('Paddock'); await sleep(200);
+await btn('Draw paddock'); await sleep(200);
 const pNW = await px(NW);
 await page.mouse.move(pNW.x + 6, pNW.y - 4); await sleep(80);
 const ringNoAlt = await page.evaluate(() => !!document.querySelector('.snap-tip'));
@@ -78,7 +80,7 @@ const westMid = [(c2[0][0] + c2[3][0]) / 2, (c2[0][1] + c2[3][1]) / 2];
 const gap = [westMid[0], westMid[1] - 25 / (111320 * Math.cos((34.94 * Math.PI) / 180))];
 for (const z of [14, 16, 18]) {
   await view(gap, z);
-  await btn('Paddock'); await sleep(200);
+  await btn('Draw paddock'); await sleep(200);
   const g = await px(gap); await page.mouse.move(g.x, g.y); await sleep(120);
   const snapped = await page.evaluate(() => document.querySelector('.snap-tip')?.textContent || null);
   console.log('·', `zoom ${z}: point 25 m from Paddock #2 ${snapped ? 'snaps → ' + snapped : 'stays free (gap kept)'}`);
@@ -87,8 +89,8 @@ for (const z of [14, 16, 18]) {
 
 // e. overlaps are trimmed (snapping off so the overlap really happens)
 await view([-34.936, 147.1645], 16);
-await btn('Paddock'); await sleep(200);
-await page.evaluate(() => document.querySelector('.snap-toggle').click()); await sleep(100);
+await btn('Draw paddock'); await sleep(200);
+await page.evaluate(() => document.querySelector('.editor__panel-foot .switch').click()); await sleep(100);
 for (const ll of [[-34.9350, 147.1630], [-34.9350, 147.1655], [-34.9370, 147.1655], [-34.9370, 147.1630]]) await clickLL(ll);
 console.log('  debug draw before Enter:', await drawText(), '| active:', await page.evaluate(() => document.activeElement?.className));
 await page.keyboard.press('Enter'); await sleep(600);
@@ -102,9 +104,9 @@ res(/Trimmed .* ha that overlapped Paddock #1/.test(msg) && left === 0, `overlap
 // f. dragging Paddock #4's corner near Paddock #1's corner locks it on exactly
 await page.evaluate(() => [...document.querySelectorAll('.paddock-chip__name')][3].click()); await sleep(900);
 await btn('Edit shape'); await sleep(400);
-const snapOn = await page.evaluate(() => document.querySelector('.snap-chip .snap-toggle')?.getAttribute('aria-checked'));
+const snapOn = await page.evaluate(() => document.querySelector('.editor__panel-foot .switch')?.getAttribute('aria-checked'));
 console.log('· snap switch visible while editing, currently', snapOn === 'true' ? 'on' : 'off', '→ turning it on');
-if (snapOn !== 'true') await page.evaluate(() => document.querySelector('.snap-chip .snap-toggle').click());
+if (snapOn !== 'true') await page.evaluate(() => document.querySelector('.editor__panel-foot .switch').click());
 await sleep(200);
 const s0 = await state();
 const target = s0.paddocks[0].coords[2];

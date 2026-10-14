@@ -10,3 +10,8 @@ tools/docs/.build/
 
 # personal notes and guides: never published
 private/
+
+# local keys and settings: never committed (see CONTRIBUTING.md, "Secrets and keys")
+.env
+.env.*
+!.env.example
