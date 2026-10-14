@@ -6,7 +6,7 @@ How we work together on this repo. If you haven't run the app yet, do
 **The short version**
 
 1. Pick a task from **Next up** in the [tracker](docs/tracker.html) and assign yourself a GitHub issue for it.
-2. Work on **your own branch**, named after you (e.g. `sam`). Bring in the latest `main` first.
+2. Work on **your own branch**, named after you (e.g. `sami`). Bring in the latest `main` first.
 3. Commit small, clear changes.
 4. Run the checks.
 5. Open a pull request from your branch into `main`. A teammate reviews it, then it's merged.
@@ -61,8 +61,8 @@ The app runs at <http://localhost:5173>. No API keys are needed.
 
 - **`main` always works.** It builds, the checks pass, and it's what gets deployed. Nobody
   pushes to `main` directly; every change arrives through a pull request.
-- **Every team member has their own branch**, named after them in lowercase: `sam`, `alex`,
-  `jo`. It's your workspace: push to it as often as you like. Nobody else pushes to it. The
+- **Every team member has their own branch**, named after them in lowercase: `sami`, `apurva`,
+  `nila`, `nyla`, `dewmini`. It's your workspace: push to it as often as you like. Nobody else pushes to it. The
   [Team table](README.md#team) lists each person's branch.
 - **Open a pull request from your branch whenever a task is finished.** Keep them small: one
   task per pull request, at least every few days, so your branch never drifts far from
@@ -72,13 +72,13 @@ The app runs at <http://localhost:5173>. No API keys are needed.
 
 ```bash
 git fetch origin
-git switch sam                          # use your own branch name
+git switch sami                         # use your own branch name
 ```
 
 **Every time you start work**, bring in what the others have merged:
 
 ```bash
-git switch sam
+git switch sami
 git pull                                # your own latest pushes
 git fetch origin
 git merge origin/main                   # everyone else's merged work
@@ -87,14 +87,14 @@ git merge origin/main                   # everyone else's merged work
 **When a task is done:**
 
 ```bash
-git push                                # then open a pull request: sam → main
+git push                                # then open a pull request: sami → main
 ```
 
 **After your pull request is merged**, run `git fetch origin` and `git merge origin/main`
 again before you start the next task.
 
 Need to work on two things at once? Make an extra branch from `main` with a dash, not a
-slash: `sam-supabase`, not `sam/supabase` (Git can't have both `sam` and `sam/…`). Delete it
+slash: `sami-supabase`, not `sami/supabase` (Git can't have both `sami` and `sami/…`). Delete it
 once it's merged.
 
 ## 4. Commits
@@ -119,6 +119,11 @@ once it's merged.
 
 To run a single browser check, add part of its file name: `npm run test:e2e -- drawing`.
 The checks live in `tools/e2e/`.
+
+**On GitHub**, Cloudflare builds every branch you push and shows the result as the
+*Workers Builds: team-sheeeep* check on your pull request. It must be green before merging.
+Merges into `main` go live. The deploy settings are in `wrangler.jsonc`; leave its `name`
+as `team-sheeeep`, because it has to match the Worker's name in Cloudflare.
 
 ## 6. Pull requests and reviews
 

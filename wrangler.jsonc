@@ -1,0 +1,9 @@
+// Cloudflare Workers Builds runs `npm run build`, then deploys dist/ as static files.
+// "name" must match the Worker's name in the Cloudflare dashboard (team-sheeeep).
+{
+  "name": "team-sheeeep",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    "directory": "./dist"
+  }
+}

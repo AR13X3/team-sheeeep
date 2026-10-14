@@ -77,8 +77,13 @@ Everyone works on their own branch, named after them, and opens a pull request f
 | Who | GitHub | Branch | Works on |
 | --- | --- | --- | --- |
 | Repo owner | [@AR13X3](https://github.com/AR13X3) | `ui-redo` for now | Everything so far: the app, the NASA features, the docs |
+| Sami | — | `sami` | — |
+| Apurva | — | `apurva` | — |
+| Nila | — | `nila` | — |
+| Nyla | — | `nyla` | — |
+| Dewmini | — | `dewmini` | — |
 
-*New here? Fill in your row (GitHub handle, what you're working on) from your own branch, as your first pull request.*
+*New here? Fill in your GitHub handle and what you're working on, from your own branch, as your first pull request.*
 
 ## Where to find things
 
@@ -126,6 +131,7 @@ team-sheeeep/
 │   └── docs/                 builds the Word breakdown
 ├── design/                   the Figma source file
 ├── public/                   files served as-is (favicon)
+├── wrangler.jsonc            Cloudflare deploy settings (serves dist/)
 ├── CONTRIBUTING.md           how we work together
 └── CLAUDE.md                 project notes for Claude Code
 ```
@@ -154,9 +160,9 @@ together), then [`src/logic/rotation.js`](src/logic/rotation.js) (how a crop is 
 ```
 main  ──●────────────●──────────────●────   always works; what gets deployed
          \          ↗  \           ↗
-sam       ●──●──●──●    ●──●──●──●          each member's own branch:
+sami      ●──●──●──●    ●──●──●──●          each member's own branch:
          \                         ↗        pull request → review → merge,
-alex      ●──●──●──●──●──●──●──●──●          then merge main back in
+apurva    ●──●──●──●──●──●──●──●──●          then merge main back in
 ```
 
 1. Pick a task from **Next up** in the tracker and open (or assign yourself) a GitHub issue for it.
@@ -166,8 +172,9 @@ alex      ●──●──●──●──●──●──●──●─�
 5. Open a pull request from your branch into `main`. A teammate reviews it, then it's merged
    with **Create a merge commit**.
 
-Nobody pushes to `main` directly. Details, design rules and review tips are in
-[CONTRIBUTING.md](CONTRIBUTING.md).
+Nobody pushes to `main` directly. Cloudflare builds every pushed branch (the
+*Workers Builds* check on a pull request) and deploys `main` to the live site. Details,
+design rules and review tips are in [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Where we're up to
 
