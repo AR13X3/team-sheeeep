@@ -78,9 +78,9 @@
     },
     {
       "title": "Fix Cloudflare preview builds for branches",
-      "detail": "Live site: https://team-sheeeep.joytoufiqahmed.workers.dev (deployed from main; its bundle matched a local build on 14 Oct). Builds from main pass, but builds of other branches fail (ui-redo 6f5650a, joy 0a13caa), so every pull request shows a red Workers Builds check. wrangler versions upload --dry-run passes locally, so the cause is only in the Cloudflare build log (dashboard → Worker team-sheeeep → Deployments/Builds). Also check Settings → Builds: production branch main, and the non-production deploy command (default npx wrangler versions upload). The site is public; Cloudflare Access can limit it to team emails.",
+      "detail": "Live site: https://team-sheeeep.joytoufiqahmed.workers.dev (deployed from main). Builds of other branches failed because Cloudflare runs `npx wrangler preview` for them (an open-beta command), which stops with “configuration is missing a previews block”. Fixed with an empty \"previews\": {} in wrangler.jsonc (cfebd34 on joy); it can’t be tested locally without publishing a real preview, so PR #2’s Workers Builds check is the test. The site is public; Cloudflare Access can limit it to team emails.",
       "size": "S",
-      "status": "todo",
+      "status": "doing",
       "where": [
         "wrangler.jsonc"
       ]
@@ -513,6 +513,10 @@
     {
       "what": "Deploy as a Cloudflare Worker with static assets (wrangler.jsonc), not Pages",
       "why": "The repo was connected through Workers Builds, which runs wrangler deploy after npm run build and needs a config naming the assets folder. dist/ is served as-is; the hash router needs no SPA fallback. The Worker name in wrangler.jsonc must stay team-sheeeep."
+    },
+    {
+      "what": "Branch builds use Cloudflare Worker Previews (wrangler preview), so wrangler.jsonc keeps an empty previews block",
+      "why": "That’s the non-production deploy command Cloudflare set up for this Worker. Without the block every pull request showed a red check."
     }
   ],
   "issues": [
@@ -778,7 +782,7 @@
         "The user merged PR #1 into main; the Cloudflare build of main then succeeded (first green deploy)",
         "Created the member branches from main: joy (the owner’s), sami, apurva, nila, nyla, dewmini; this tracker update went through joy → main as the first pull request under the new workflow",
         "Live site confirmed at https://team-sheeeep.joytoufiqahmed.workers.dev; added to README, CONTRIBUTING, readme.html and this tracker",
-        "Found that branch preview builds fail (main passes); waiting on the Cloudflare build log"
+        "Branch builds failed: Cloudflare runs `npx wrangler preview` for them, which needs a previews block in wrangler.jsonc (from the build log the user pasted). Added an empty block"
       ],
       "leftOff": "Everything is on main and live. PR #2 (joy → main) is open. Next: get the Cloudflare log for the failing branch builds, invite the five teammates, then talk through “To discuss”."
     }
