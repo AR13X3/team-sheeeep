@@ -62,7 +62,7 @@
 <script type="application/json" id="tracker-data">
 {
   "updated": "2026-10-14",
-  "phase": "Session 5 · repo set up for the team; PR #1 (ui-redo → main) waiting for the owner to merge, then invite teammates",
+  "phase": "Session 5 · repo set up for the team; PR #1 (ui-redo → main) waiting to merge, then member branches and invites",
   "summary": "The app is now a full planning workspace in the same colours, Lato and Manami as the Figma design: a soil-coloured sidebar, Ctrl K search, live satellite status, light and dark themes, an Overview dashboard with charts and alerts, a Paddocks table, paddock pages with tabs, a rotation grid in the Planner with “why this crop”, Insights and Settings. The four NASA features (Paddock Memory from Space, neighbour canola → blackleg, safest sowing window, “Did my rotation work?”) are unchanged and now easier to find. The repo is now set up for teammates: a short README with setup, team and structure, CONTRIBUTING.md with the branch → pull request → review flow and design rules, pull request and issue templates, and docs/how-it-works.md for the detail. Still to do: merge ui-redo into main and invite the team, talk through the open questions (including button label contrast), then hosting and Phase 1.",
   "resumePrompt": "Read docs/tracker.html (the JSON in #tracker-data) and pick up from “Next up”. Start by going through “To discuss” with me.",
   "next": [
@@ -81,6 +81,15 @@
       "where": [
         "README.md",
         "CONTRIBUTING.md"
+      ]
+    },
+    {
+      "title": "Create a branch per team member",
+      "detail": "One long-lived branch per person, named after them in lowercase (e.g. sam), created from main after PR #1 is merged so everyone starts from the current app. Fill each name into the Branch column of the Team table in README.md. Waiting on the team’s names.",
+      "size": "S",
+      "status": "todo",
+      "where": [
+        "README.md"
       ]
     },
     {
@@ -227,7 +236,7 @@
     },
     {
       "q": "Happy with the team workflow in CONTRIBUTING.md?",
-      "why": "Proposed: a branch per task (your-name/short-topic), a pull request into main, one teammate approves, squash and merge. GitHub can’t enforce reviews on a private repo on the free plan (checked: branch protection needs GitHub Pro or a public repo), so it’s a team agreement. Easier to change now than after habits form."
+      "why": "Agreed: each member has their own branch named after them, opens a pull request into main when a task is done, one teammate approves, merged with a merge commit (not squash, because the branch carries on). GitHub can’t enforce reviews on a private repo on the free plan (checked: branch protection needs GitHub Pro or a public repo), so it’s a team agreement. Still open: is one approving review the right bar?"
     },
     {
       "q": "Should the planner keep some crop variety across the whole farm?",
@@ -494,12 +503,12 @@
       "why": "Teammates land on the README on GitHub, so setup, team, structure and commands come first. Pages, data sources, accuracy, the planner and design→code moved to their own file so the README stays short."
     },
     {
-      "what": "Team workflow: branch per task, pull request into main, one approving review, squash and merge",
-      "why": "Keeps main always working (it’s what Cloudflare Pages will deploy) and lets everyone see each change. Written down in CONTRIBUTING.md, with templates in .github/."
+      "what": "Team workflow: one branch per member, pull request into main, one approving review, merge commit",
+      "why": "The user asked for branches per member. Each person works on a branch named after them (sam) and opens a pull request when a task is done; main always works (it’s what Cloudflare Pages will deploy). Merge commits, not squash, because the member branch carries on after each merge. Extra branches use a dash (sam-topic): Git can’t hold both sam and sam/topic."
     },
     {
-      "what": "Teammates add themselves to the Team table as their first pull request",
-      "why": "A small, safe change that tests their setup and walks them through the whole branch → review → merge flow."
+      "what": "Each teammate’s first pull request fills in their row of the Team table",
+      "why": "A small, safe change from their own branch that tests their setup and walks them through branch → review → merge."
     },
     {
       "what": "Local keys go in .env.local, which Git ignores",
@@ -757,9 +766,10 @@
         "readme.html: “New to the team” timeline, workflow diagram, ground rules, where to read what, updated structure",
         "CLAUDE.md now points Claude at the team workflow and the new docs",
         "Tracker tidy-up: fixed the Manami file paths and dropped two issues that earlier sessions had already fixed",
-        "Pushed ui-redo and opened pull request #1 into main: https://github.com/AR13X3/team-sheeeep/pull/1"
+        "Pushed ui-redo and opened pull request #1 into main: https://github.com/AR13X3/team-sheeeep/pull/1",
+        "The user asked for branches per member: CONTRIBUTING.md, README.md, readme.html and CLAUDE.md now describe one branch per person (named after them), pull requests from it into main, and merge commits instead of squash"
       ],
-      "leftOff": "Repo docs ready. PR #1 (ui-redo → main) is open: merge it so teammates see the current app, then invite the team and talk through “To discuss” (team roles and workflow are new questions)."
+      "leftOff": "Repo docs ready. PR #1 (ui-redo → main) is open: merge it (Create a merge commit), then create a branch per member from main once the user sends the names, invite the team, and talk through “To discuss”."
     }
   ]
 }

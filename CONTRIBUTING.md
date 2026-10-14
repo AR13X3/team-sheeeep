@@ -6,10 +6,10 @@ How we work together on this repo. If you haven't run the app yet, do
 **The short version**
 
 1. Pick a task from **Next up** in the [tracker](docs/tracker.html) and assign yourself a GitHub issue for it.
-2. Make a branch from `main` called `your-name/short-topic`.
+2. Work on **your own branch**, named after you (e.g. `sam`). Bring in the latest `main` first.
 3. Commit small, clear changes.
 4. Run the checks.
-5. Open a pull request into `main`. A teammate reviews it, then it's merged.
+5. Open a pull request from your branch into `main`. A teammate reviews it, then it's merged.
 
 ## Contents
 
@@ -61,25 +61,41 @@ The app runs at <http://localhost:5173>. No API keys are needed.
 
 - **`main` always works.** It builds, the checks pass, and it's what gets deployed. Nobody
   pushes to `main` directly; every change arrives through a pull request.
-- **One branch per task**, named `your-name/short-topic` in lowercase with dashes:
-  `sam/sowing-variety`, `alex/fix-legend-overlap`, `jo/supabase-login`.
-- **Keep branches short-lived.** A few days at most. Big features can land in smaller pull
-  requests one after another.
+- **Every team member has their own branch**, named after them in lowercase: `sam`, `alex`,
+  `jo`. It's your workspace: push to it as often as you like. Nobody else pushes to it. The
+  [Team table](README.md#team) lists each person's branch.
+- **Open a pull request from your branch whenever a task is finished.** Keep them small: one
+  task per pull request, at least every few days, so your branch never drifts far from
+  `main`.
 
-```bash
-git switch main
-git pull                                # get the latest main
-git switch -c your-name/short-topic     # new branch for your task
-# ...work, commit...
-git push -u origin your-name/short-topic
-```
-
-If `main` moves on while you work, bring it into your branch:
+**First time** (your branch already exists on GitHub):
 
 ```bash
 git fetch origin
-git merge origin/main
+git switch sam                          # use your own branch name
 ```
+
+**Every time you start work**, bring in what the others have merged:
+
+```bash
+git switch sam
+git pull                                # your own latest pushes
+git fetch origin
+git merge origin/main                   # everyone else's merged work
+```
+
+**When a task is done:**
+
+```bash
+git push                                # then open a pull request: sam → main
+```
+
+**After your pull request is merged**, run `git fetch origin` and `git merge origin/main`
+again before you start the next task.
+
+Need to work on two things at once? Make an extra branch from `main` with a dash, not a
+slash: `sam-supabase`, not `sam/supabase` (Git can't have both `sam` and `sam/…`). Delete it
+once it's merged.
 
 ## 4. Commits
 
@@ -124,8 +140,11 @@ The checks live in `tools/e2e/`.
 
 **Merging**
 
-- The author merges once it's approved and the checks pass, using **Squash and merge**, then
-  deletes the branch.
+- The author merges once it's approved and the checks pass, using **Create a merge commit**.
+  Don't squash: your branch carries on after the merge, and a squash would make the same
+  changes show up again in your next pull request.
+- **Don't delete your member branch** after the merge, even though GitHub offers to. Extra
+  `name-topic` branches can be deleted.
 
 ## 7. Design rules
 

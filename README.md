@@ -61,8 +61,9 @@ You need **Git**, **Node.js 22** (the version is in [`.nvmrc`](.nvmrc)) and **Go
    about 30 seconds; after that it is cached.
 4. **Read the tracker** at <http://localhost:5173/docs/tracker.html> while the dev server is
    running. It shows what's next, the open questions and every decision made so far.
-5. **Add yourself to the [Team](#team) table** in your first pull request. It's a small,
-   safe change that walks you through the whole branch → pull request → review flow in
+5. **Switch to your own branch** (it's named after you; see [Team](#team)) and **fill in
+   your row of the Team table** as your first pull request. It's a small, safe change that
+   walks you through the whole branch → pull request → review flow in
    [CONTRIBUTING.md](CONTRIBUTING.md).
 
 > Keep the project **outside** OneDrive, Dropbox or iCloud folders if you can.
@@ -70,11 +71,14 @@ You need **Git**, **Node.js 22** (the version is in [`.nvmrc`](.nvmrc)) and **Go
 
 ## Team
 
-| Who | GitHub | Works on |
-| --- | --- | --- |
-| Repo owner | [@AR13X3](https://github.com/AR13X3) | Everything so far: the app, the NASA features, the docs |
+Everyone works on their own branch, named after them, and opens a pull request from it into
+`main` whenever a task is done.
 
-*New here? Add your own row (name, GitHub handle, what you're working on) in your first pull request.*
+| Who | GitHub | Branch | Works on |
+| --- | --- | --- | --- |
+| Repo owner | [@AR13X3](https://github.com/AR13X3) | `ui-redo` for now | Everything so far: the app, the NASA features, the docs |
+
+*New here? Fill in your row (GitHub handle, what you're working on) from your own branch, as your first pull request.*
 
 ## Where to find things
 
@@ -148,16 +152,19 @@ together), then [`src/logic/rotation.js`](src/logic/rotation.js) (how a crop is 
 ## How we work
 
 ```
-main ──●─────────────────●──────────●──   always works; what gets deployed
-        \               /          /
-         ●──●──●───────●  your-name/short-topic → pull request → review → merge
+main  ──●────────────●──────────────●────   always works; what gets deployed
+         \          ↗  \           ↗
+sam       ●──●──●──●    ●──●──●──●          each member's own branch:
+         \                         ↗        pull request → review → merge,
+alex      ●──●──●──●──●──●──●──●──●          then merge main back in
 ```
 
 1. Pick a task from **Next up** in the tracker and open (or assign yourself) a GitHub issue for it.
-2. Branch from `main`: `your-name/short-topic`.
+2. Switch to **your own branch** (named after you) and merge in the latest `main`.
 3. Commit small, clear changes.
 4. Run `npm run build` and the browser checks.
-5. Open a pull request into `main`. A teammate reviews it, then it's merged.
+5. Open a pull request from your branch into `main`. A teammate reviews it, then it's merged
+   with **Create a merge commit**.
 
 Nobody pushes to `main` directly. Details, design rules and review tips are in
 [CONTRIBUTING.md](CONTRIBUTING.md).
