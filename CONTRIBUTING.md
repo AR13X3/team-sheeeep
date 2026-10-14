@@ -61,8 +61,8 @@ The app runs at <http://localhost:5173>. No API keys are needed.
 
 - **`main` always works.** It builds, the checks pass, and it's what gets deployed. Nobody
   pushes to `main` directly; every change arrives through a pull request.
-- **Every team member has their own branch**, named after them in lowercase: `sami`, `apurva`,
-  `nila`, `nyla`, `dewmini`. It's your workspace: push to it as often as you like. Nobody else pushes to it. The
+- **Every team member has their own branch**, named after them in lowercase: `joy`, `sami`,
+  `apurva`, `nila`, `nyla`, `dewmini`. It's your workspace: push to it as often as you like. Nobody else pushes to it. The
   [Team table](README.md#team) lists each person's branch.
 - **Open a pull request from your branch whenever a task is finished.** Keep them small: one
   task per pull request, at least every few days, so your branch never drifts far from

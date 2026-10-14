@@ -76,7 +76,7 @@ Everyone works on their own branch, named after them, and opens a pull request f
 
 | Who | GitHub | Branch | Works on |
 | --- | --- | --- | --- |
-| Repo owner | [@AR13X3](https://github.com/AR13X3) | `ui-redo` for now | Everything so far: the app, the NASA features, the docs |
+| Joy (repo owner) | [@AR13X3](https://github.com/AR13X3) | `joy` | Everything so far: the app, the NASA features, the docs |
 | Sami | — | `sami` | — |
 | Apurva | — | `apurva` | — |
 | Nila | — | `nila` | — |
