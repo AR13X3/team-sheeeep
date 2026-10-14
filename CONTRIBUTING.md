@@ -61,8 +61,8 @@ The app runs at <http://localhost:5173>. No API keys are needed.
 
 - **`main` always works.** It builds, the checks pass, and it's what gets deployed. Nobody
   pushes to `main` directly; every change arrives through a pull request.
-- **Every team member has their own branch**, named after them in lowercase: `sami`, `apurva`,
-  `nila`, `nyla`, `dewmini`. It's your workspace: push to it as often as you like. Nobody else pushes to it. The
+- **Every team member has their own branch**, named after them in lowercase: `joy`, `sami`,
+  `apurva`, `nila`, `nyla`, `dewmini`. It's your workspace: push to it as often as you like. Nobody else pushes to it. The
   [Team table](README.md#team) lists each person's branch.
 - **Open a pull request from your branch whenever a task is finished.** Keep them small: one
   task per pull request, at least every few days, so your branch never drifts far from
@@ -122,7 +122,7 @@ The checks live in `tools/e2e/`.
 
 **On GitHub**, Cloudflare builds every branch you push and shows the result as the
 *Workers Builds: team-sheeeep* check on your pull request. It must be green before merging.
-Merges into `main` go live. The deploy settings are in `wrangler.jsonc`; leave its `name`
+Merges into `main` go live at <https://team-sheeeep.joytoufiqahmed.workers.dev>. The deploy settings are in `wrangler.jsonc`; leave its `name`
 as `team-sheeeep`, because it has to match the Worker's name in Cloudflare.
 
 ## 6. Pull requests and reviews
