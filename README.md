@@ -5,6 +5,8 @@ satellites**. Farmers draw their paddocks on a map. The app works out what grew 
 paddock over the last five seasons, adds soil, slope and 30 years of NASA weather, and plans
 the next ten seasons. Manami the sheep guides them through it.
 
+**Live app: <https://team-sheeeep.joytoufiqahmed.workers.dev>** (deployed from `main`; press *Try the demo farm*)
+
 > **New to the team?** Do [Start here](#start-here) (about 10 minutes), then read
 > [CONTRIBUTING.md](CONTRIBUTING.md) before your first change.
 
@@ -180,10 +182,10 @@ design rules and review tips are in [CONTRIBUTING.md](CONTRIBUTING.md).
 
 **Done:** the four NASA features (validated against USDA crop maps), and a full planning
 workspace in the Figma theme: Overview dashboard, farm map editor, paddock pages, rotation
-planner, insights and settings, in light and dark.
+planner, insights and settings, in light and dark. Live at <https://team-sheeeep.joytoufiqahmed.workers.dev>.
 
-**Next:** hosting on Cloudflare Pages, then sign-in and cloud save (Supabase), a farm diary,
-Manami with AI, and daily weather actions.
+**Next:** sign-in and cloud save (Supabase), a farm diary, Manami with AI, and daily
+weather actions.
 
 **Known limits:** there is no backend yet (sign-in only names a local profile), the app is
 still called "Webapp Name" (`src/config.js`, `index.html`), prices are example values, and

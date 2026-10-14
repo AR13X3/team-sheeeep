@@ -122,7 +122,7 @@ The checks live in `tools/e2e/`.
 
 **On GitHub**, Cloudflare builds every branch you push and shows the result as the
 *Workers Builds: team-sheeeep* check on your pull request. It must be green before merging.
-Merges into `main` go live. The deploy settings are in `wrangler.jsonc`; leave its `name`
+Merges into `main` go live at <https://team-sheeeep.joytoufiqahmed.workers.dev>. The deploy settings are in `wrangler.jsonc`; leave its `name`
 as `team-sheeeep`, because it has to match the Worker's name in Cloudflare.
 
 ## 6. Pull requests and reviews

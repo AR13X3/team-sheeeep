@@ -77,13 +77,12 @@
       ]
     },
     {
-      "title": "Cloudflare follow-ups",
-      "detail": "main deploys (first green build 14 Oct, with wrangler.jsonc). Still to do in the dashboard: confirm the production branch is main (Worker team-sheeeep → Settings → Builds), note the live workers.dev URL here and in the README, and check that branch preview builds pass (the last ui-redo build “failed in 0s”, i.e. never ran, while PR #1 was merging). Optional: Cloudflare Access to limit the site to team emails.",
+      "title": "Fix Cloudflare preview builds for branches",
+      "detail": "Live site: https://team-sheeeep.joytoufiqahmed.workers.dev (deployed from main; its bundle matched a local build on 14 Oct). Builds from main pass, but builds of other branches fail (ui-redo 6f5650a, joy 0a13caa), so every pull request shows a red Workers Builds check. wrangler versions upload --dry-run passes locally, so the cause is only in the Cloudflare build log (dashboard → Worker team-sheeeep → Deployments/Builds). Also check Settings → Builds: production branch main, and the non-production deploy command (default npx wrangler versions upload). The site is public; Cloudflare Access can limit it to team emails.",
       "size": "S",
       "status": "todo",
       "where": [
-        "wrangler.jsonc",
-        ".nvmrc"
+        "wrangler.jsonc"
       ]
     },
     {
@@ -335,7 +334,7 @@
     },
     {
       "title": "Deployed on Cloudflare",
-      "detail": "The repo is connected to Cloudflare Workers Builds as the Worker team-sheeeep. Builds had failed since 9 Oct for lack of a wrangler config; wrangler.jsonc (dist/ as static assets) fixed it and main built and deployed successfully on 14 Oct."
+      "detail": "The repo is connected to Cloudflare Workers Builds as the Worker team-sheeeep. Builds had failed since 9 Oct for lack of a wrangler config; wrangler.jsonc (dist/ as static assets) fixed it and main built and deployed successfully on 14 Oct. Live at https://team-sheeeep.joytoufiqahmed.workers.dev."
     },
     {
       "title": "A branch per team member",
@@ -665,6 +664,11 @@
       "note": "Private repo: teammates need an invite (Settings → Collaborators). Then follow Start here in README.md; the workflow is in CONTRIBUTING.md."
     },
     {
+      "what": "Open the live app",
+      "cmd": "https://team-sheeeep.joytoufiqahmed.workers.dev",
+      "note": "Deployed from main by Cloudflare Workers Builds (wrangler.jsonc). Press “Try the demo farm”."
+    },
+    {
       "what": "Run the app",
       "cmd": "npm run dev",
       "note": "http://localhost:5173 · Claude: preview_start with name “web”"
@@ -772,9 +776,11 @@
         "Team names: Sami, Apurva, Nila, Nyla, Dewmini. Added to the Team table with branches sami, apurva, nila, nyla, dewmini; doc examples now use real names",
         "Cloudflare Workers Builds failed on every commit since 9 Oct (no wrangler config). Reproduced with wrangler 4.151 dry runs and fixed with wrangler.jsonc",
         "The user merged PR #1 into main; the Cloudflare build of main then succeeded (first green deploy)",
-        "Created the member branches from main: joy (the owner’s), sami, apurva, nila, nyla, dewmini; this tracker update went through joy → main as the first pull request under the new workflow"
+        "Created the member branches from main: joy (the owner’s), sami, apurva, nila, nyla, dewmini; this tracker update went through joy → main as the first pull request under the new workflow",
+        "Live site confirmed at https://team-sheeeep.joytoufiqahmed.workers.dev; added to README, CONTRIBUTING, readme.html and this tracker",
+        "Found that branch preview builds fail (main passes); waiting on the Cloudflare build log"
       ],
-      "leftOff": "Everything is on main and deployed. Member branches exist. Next: invite the five teammates, do the Cloudflare follow-ups (production branch, live URL, preview builds), then talk through “To discuss”."
+      "leftOff": "Everything is on main and live. PR #2 (joy → main) is open. Next: get the Cloudflare log for the failing branch builds, invite the five teammates, then talk through “To discuss”."
     }
   ]
 }
