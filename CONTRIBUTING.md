@@ -116,14 +116,24 @@ once it's merged.
 | Layout or sizes | `npm run test:e2e -- fit` | No page scrolls as a whole or is wider than the window |
 | The crop classifier (`src/logic/phenology.js`, `src/services/hls.js`) | `npm run validate:phenology` (and `validate:pixels`, `validate:canola10m`) | Accuracy is no worse than the numbers in [how-it-works.md](docs/how-it-works.md#accuracy) |
 | Anything visible | Look at it in **light and dark**, and at phone width | Nothing cut off, nothing unreadable |
+| The tracker or any doc | `npm run check:docs` | `✓ tracker JSON valid; links … all resolve` |
 
 To run a single browser check, add part of its file name: `npm run test:e2e -- drawing`.
 The checks live in `tools/e2e/`.
 
-**On GitHub**, Cloudflare builds every branch you push and shows the result as the
-*Workers Builds: team-sheeeep* check on your pull request. It must be green before merging.
-Merges into `main` go live at <https://team-sheeeep.joytoufiqahmed.workers.dev>. The deploy settings are in `wrangler.jsonc`; leave its `name`
-as `team-sheeeep`, because it has to match the Worker's name in Cloudflare.
+**On GitHub**, every pull request runs two checks by itself. Both must be green before merging.
+
+| Check | What it does |
+| --- | --- |
+| **CI / Build and docs** | GitHub Actions installs, runs `npm run build` and `npm run check:docs` (`.github/workflows/ci.yml`) |
+| **Workers Builds: team-sheeeep** | Cloudflare builds your branch and publishes a preview at `https://<branch>-team-sheeeep.joytoufiqahmed.workers.dev` (e.g. `https://sami-team-sheeeep.joytoufiqahmed.workers.dev`). The link is posted on the pull request, so reviewers can click through your change. |
+
+Merges into `main` go live at <https://team-sheeeep.joytoufiqahmed.workers.dev>. The browser checks (`npm run test:e2e`) don't run in
+CI: they call live NASA and soil services and need a few minutes, so run them yourself.
+
+The deploy settings are in `wrangler.jsonc`. Leave its `name` as `team-sheeeep` (it has to
+match the Worker's name in Cloudflare) and keep the empty `previews` block (branch previews
+need it).
 
 ## 6. Pull requests and reviews
 

@@ -12,7 +12,8 @@
     "validate:phenology": "node tools/validation/validate-phenology.mjs",
     "test:e2e": "node tools/e2e/run-all.mjs",
     "validate:pixels": "node tools/validation/validate-paddock-pixels.mjs",
-    "validate:canola10m": "node tools/validation/validate-canola-10m.mjs"
+    "validate:canola10m": "node tools/validation/validate-canola-10m.mjs",
+    "check:docs": "node tools/checks/check-docs.mjs"
   },
   "engines": {
     "node": ">=22.15"
